@@ -1,0 +1,63 @@
+package org.ogorodnik.shop.web.servlet;
+
+import org.ogorodnik.shop.entity.Item;
+import org.ogorodnik.shop.service.ItemService;
+import org.ogorodnik.shop.web.templater.PageGenerator;
+import org.ogorodnik.shop.web.templater.PageGeneratorCreator;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+
+public class AddItemServlet extends HttpServlet {
+
+    private ItemService itemService;
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        Map<String, Object> paramsMap = new HashMap<>();
+
+        PageGeneratorCreator pageGeneratorCreator = new PageGeneratorCreator();
+        PageGenerator pageGenerator = pageGeneratorCreator.getPageGenerator();
+        String page = pageGenerator.getPage("additem.html", paramsMap);
+        response.getWriter().write(page);
+    }
+
+    protected void doPost(HttpServletRequest request,
+                          HttpServletResponse response) throws IOException {
+        Map<String, Object> paramsMap = new HashMap<>();
+
+        String name = request.getParameter("name");
+        double price = Double.parseDouble(request.getParameter("price"));
+        LocalDateTime creationDate = LocalDateTime.parse(request.getParameter("creationday"));
+
+        Item item = new Item();
+        item.setName(name);
+        item.setPrice(price);
+        item.setCreationDate(creationDate);
+
+        try {
+            itemService.insertItem(item);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        paramsMap.put("name", name);
+        paramsMap.put("price", price);
+        paramsMap.put("creationdate", creationDate);
+
+        PageGeneratorCreator pageGeneratorCreator = new PageGeneratorCreator();
+        PageGenerator pageGenerator = pageGeneratorCreator.getPageGenerator();
+        String page = pageGenerator.getPage("addeditem.html", paramsMap);
+        response.getWriter().write(page);
+    }
+
+    public void setItemService(ItemService itemService) {
+        this.itemService = itemService;
+    }
+}

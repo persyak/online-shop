@@ -1,0 +1,5 @@
+# Project exclude paths
+/target/*
+.idea/*
+.fitignore
+.DS_Store
