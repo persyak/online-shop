@@ -8,7 +8,6 @@ import java.util.List;
 
 public class ItemService {
     private JdbcItemDao jdbcItemDao;
-    private Item item;
 
     public List<Item> getAll() throws SQLException {
         return jdbcItemDao.getAll();
@@ -28,9 +27,5 @@ public class ItemService {
 
     public void setJdbcItemDao(JdbcItemDao jdbcItemDao) {
         this.jdbcItemDao = jdbcItemDao;
-    }
-
-    public void setItem(Item item) {
-        this.item = item;
     }
 }

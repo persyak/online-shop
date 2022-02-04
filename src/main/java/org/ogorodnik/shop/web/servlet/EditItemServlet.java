@@ -1,13 +1,13 @@
 package org.ogorodnik.shop.web.servlet;
 
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.service.ItemService;
 import org.ogorodnik.shop.web.templater.PageGenerator;
 import org.ogorodnik.shop.web.templater.PageGeneratorCreator;
 
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -23,12 +23,13 @@ public class EditItemServlet extends HttpServlet {
         Map<String, Object> paramsMap = new HashMap<>();
 
         String name = request.getParameter("name");
-        double price = Double.parseDouble(request.getParameter("price"));
+        String rowPrice = request.getParameter("price");
+        String priceWithoutComma = rowPrice.replaceAll(",", "");
         LocalDateTime creationDate = LocalDateTime.parse(request.getParameter("creationDate"));
         long id = Long.parseLong(request.getParameter("id"));
 
         paramsMap.put("name", name);
-        paramsMap.put("price", price);
+        paramsMap.put("price", priceWithoutComma);
         paramsMap.put("creationdate", creationDate);
         paramsMap.put("id", id);
 

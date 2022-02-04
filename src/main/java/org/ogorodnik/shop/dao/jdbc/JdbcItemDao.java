@@ -14,10 +14,6 @@ public class JdbcItemDao {
     private final String DELETE_SQL = "DELETE FROM item WHERE id = ?";
     private final String UPDATE_SQL = "UPDATE item SET name=?, price=?, creationDate=? WHERE id=?";
 
-    public String getInsertSql() {
-        return insertSql;
-    }
-
     public List<Item> getAll() throws SQLException {
         List<Item> items = new ArrayList<>();
         try(Connection connection = getConnection()) {
