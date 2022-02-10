@@ -50,6 +50,11 @@
 </head>
 <body>
     <h1 class="text-center">ITEMS</h1>
+
+    <form action="/additem" class="inline">
+        <button class="float-left submit-button" >Push this button to add new item</button>
+    </form>
+
     <table class="table table-striped">
         <tr>
             <th>id</th>
@@ -81,9 +86,5 @@
         </tr>
     </#list>
     </table>
-
-    <form action="/additem" class="inline">
-        <button class="float-left submit-button" >Push this button to add new item</button>
-    </form>
 </body>
 </html>
