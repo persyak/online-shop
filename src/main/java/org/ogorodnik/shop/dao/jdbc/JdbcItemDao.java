@@ -16,8 +16,8 @@ public class JdbcItemDao {
 
     public List<Item> getAll() throws SQLException {
         List<Item> items = new ArrayList<>();
-        try(Connection connection = getConnection()) {
-            Statement statement = connection.createStatement();
+        try(Connection connection = getConnection();
+            Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(GET_ALL_SQL);
 
             ItemRowMapper itemRowMapper = new ItemRowMapper();
@@ -35,8 +35,8 @@ public class JdbcItemDao {
         double price = item.getPrice();
         LocalDateTime creationDate = item.getCreationDate();
 
-        try(Connection connection = getConnection()) {
-            PreparedStatement insertPreparedSql = connection.prepareStatement(insertSql);
+        try(Connection connection = getConnection();
+            PreparedStatement insertPreparedSql = connection.prepareStatement(insertSql)) {
             insertPreparedSql.setString(1, name);
             insertPreparedSql.setDouble(2, price);
 
@@ -48,8 +48,8 @@ public class JdbcItemDao {
     }
 
     public void deleteItem(long id) throws SQLException {
-        try(Connection connection = getConnection()){
-            PreparedStatement deletePreparedSql = connection.prepareStatement(DELETE_SQL);
+        try(Connection connection = getConnection();
+            PreparedStatement deletePreparedSql = connection.prepareStatement(DELETE_SQL)){
             deletePreparedSql.setLong(1, id);
 
             deletePreparedSql.execute();
@@ -61,8 +61,8 @@ public class JdbcItemDao {
         double price = item.getPrice();
         LocalDateTime creationDate = item.getCreationDate();
 
-        try(Connection connection = getConnection()) {
-            PreparedStatement updatePreparedSql = connection.prepareStatement(UPDATE_SQL);
+        try(Connection connection = getConnection();
+            PreparedStatement updatePreparedSql = connection.prepareStatement(UPDATE_SQL)) {
             updatePreparedSql.setString(1, name);
             updatePreparedSql.setDouble(2, price);
 
