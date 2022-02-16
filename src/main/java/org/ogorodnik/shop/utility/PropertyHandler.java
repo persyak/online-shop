@@ -7,7 +7,7 @@ import java.util.Properties;
 
 public class PropertyHandler {
 
-    public static Properties getConfigPropery(String fileName) throws IOException {
+    public static Properties getConfigPropery(String fileName){
         Properties property = new Properties();
         //I have a question here: why FileInputStream does not work here?
         try(InputStream inputStream = PropertyHandler.class.getClassLoader().getResourceAsStream(fileName)){
@@ -17,6 +17,8 @@ public class PropertyHandler {
                 throw new RuntimeException(
                         new FileNotFoundException("property file " + fileName + " was not found in the classpath"));
             }
+        } catch (IOException exception) {
+            throw new RuntimeException("property file " + fileName + " was not found in the classpath");
         }
         return property;
     }
