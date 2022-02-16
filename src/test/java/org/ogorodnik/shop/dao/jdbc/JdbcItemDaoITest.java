@@ -3,6 +3,7 @@ package org.ogorodnik.shop.dao.jdbc;
 import org.junit.jupiter.api.Test;
 import org.ogorodnik.shop.entity.Item;
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.List;
 
@@ -11,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class JdbcItemDaoITest {
 
     @Test
-    public void testGetAll() throws SQLException {
+    public void testGetAll() throws SQLException, IOException {
         JdbcItemDao jdbcItemDao = new JdbcItemDao();
         List<Item> items = jdbcItemDao.getAll();
 
