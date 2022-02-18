@@ -11,13 +11,14 @@ import java.io.Writer;
 import java.util.Map;
 
 public class PageGenerator {
-    private static final String HTML_DIR = "src/main/resources";
 
     public String getPage(String filename, Map<String, Object> data) {
         Writer stream = new StringWriter();
         try {
             Configuration configuration = new Configuration(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
-            Template template = configuration.getTemplate(HTML_DIR + File.separator + filename);
+            configuration.setClassForTemplateLoading(PageGenerator.class, "/");
+            configuration.setDefaultEncoding("UTF-8");
+            Template template = configuration.getTemplate(filename);
             template.process(data, stream);
         } catch (IOException | TemplateException e) {
             throw new RuntimeException(e);
