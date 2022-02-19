@@ -7,7 +7,7 @@ import java.util.Properties;
 
 public class PropertyHandler {
 
-    public static Properties getConfigPropery(String fileName){
+    public static Properties readConfigPropery(String fileName){
         Properties property = new Properties();
         //I have a question here: why FileInputStream does not work here?
         try(InputStream inputStream = PropertyHandler.class.getClassLoader().getResourceAsStream(fileName)){
