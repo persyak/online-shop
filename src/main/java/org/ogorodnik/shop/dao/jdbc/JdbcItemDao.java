@@ -21,9 +21,8 @@ public class JdbcItemDao {
     public List<Item> getAll() throws SQLException{
         List<Item> items = new ArrayList<>();
         try(Connection connection = getConnection();
-            Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery(GET_ALL_SQL);
-
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(GET_ALL_SQL)) {
             ItemRowMapper itemRowMapper = new ItemRowMapper();
 
             while(resultSet.next()){
