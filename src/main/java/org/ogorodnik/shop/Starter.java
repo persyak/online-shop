@@ -27,6 +27,7 @@ public class Starter {
         itemsServlet.setItemService(itemService);
         ServletHolder allItemsHandler = new ServletHolder(itemsServlet);
         contextHandler.addServlet(allItemsHandler, "/items");
+        contextHandler.addServlet(allItemsHandler, "/");
 
         AddItemServlet addItemServlet = new AddItemServlet();
         addItemServlet.setItemService(itemService);

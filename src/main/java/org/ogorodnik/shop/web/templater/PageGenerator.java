@@ -13,17 +13,17 @@ import java.util.Map;
 public class PageGenerator {
 
     public String getPage(String filename, Map<String, Object> data) {
-        Writer stream = new StringWriter();
+        Writer writer = new StringWriter();
         try {
             Configuration configuration = new Configuration(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
             configuration.setClassForTemplateLoading(PageGenerator.class, "/");
             configuration.setDefaultEncoding("UTF-8");
             Template template = configuration.getTemplate(filename);
-            template.process(data, stream);
+            template.process(data, writer);
         } catch (IOException | TemplateException e) {
             throw new RuntimeException(e);
         }
-        return stream.toString();
+        return writer.toString();
     }
 
 }
