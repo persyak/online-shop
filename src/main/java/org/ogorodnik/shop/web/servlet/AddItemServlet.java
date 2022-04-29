@@ -20,11 +20,9 @@ public class AddItemServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        Map<String, Object> paramsMap = new HashMap<>();
-
         PageGeneratorCreator pageGeneratorCreator = new PageGeneratorCreator();
         PageGenerator pageGenerator = pageGeneratorCreator.getPageGenerator();
-        String page = pageGenerator.getPage("additem.html", paramsMap);
+        String page = pageGenerator.getPage("additem.html");
         response.getWriter().write(page);
     }
 
@@ -35,11 +33,14 @@ public class AddItemServlet extends HttpServlet {
         String name = request.getParameter("name");
         double price = Double.parseDouble(request.getParameter("price"));
         LocalDateTime creationDate = LocalDateTime.parse(request.getParameter("creationday"));
+        String description = request.getParameter("description");
+
 
         Item item = new Item();
         item.setName(name);
         item.setPrice(price);
         item.setCreationDate(creationDate);
+        item.setDescription(description);
 
         try {
             itemService.insertItem(item);
@@ -50,6 +51,7 @@ public class AddItemServlet extends HttpServlet {
         paramsMap.put("name", name);
         paramsMap.put("price", price);
         paramsMap.put("creationdate", creationDate);
+        paramsMap.put("description", description);
 
         PageGeneratorCreator pageGeneratorCreator = new PageGeneratorCreator();
         PageGenerator pageGenerator = pageGeneratorCreator.getPageGenerator();

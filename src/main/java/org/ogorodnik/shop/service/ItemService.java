@@ -1,32 +1,31 @@
 package org.ogorodnik.shop.service;
 
-import org.ogorodnik.shop.dao.jdbc.JdbcItemDao;
+import org.ogorodnik.shop.dao.ItemDao;
 import org.ogorodnik.shop.entity.Item;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
 public class ItemService {
-    private JdbcItemDao jdbcItemDao;
+    private ItemDao itemDao;
 
-    public List<Item> getAll() throws SQLException{
-        return jdbcItemDao.getAll();
+    public List<Item> getAll() throws SQLException {
+        return itemDao.getAll();
     }
 
-    public void insertItem(Item item) throws SQLException{
-        jdbcItemDao.insertItem(item);
+    public void insertItem(Item item) throws SQLException {
+        itemDao.insertItem(item);
     }
 
-    public void deleteItem(long id) throws SQLException{
-        jdbcItemDao.deleteItem(id);
+    public void deleteItem(long id) throws SQLException {
+        itemDao.deleteItem(id);
     }
 
-    public void updateItem(Item item, long id) throws SQLException{
-        jdbcItemDao.updateItem(item, id);
+    public void updateItem(Item item, long id) throws SQLException {
+        itemDao.updateItem(item, id);
     }
 
-    public void setJdbcItemDao(JdbcItemDao jdbcItemDao) {
-        this.jdbcItemDao = jdbcItemDao;
+    public void setItemDao(ItemDao itemDao) {
+        this.itemDao = itemDao;
     }
 }

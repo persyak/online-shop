@@ -26,11 +26,13 @@ public class EditItemServlet extends HttpServlet {
         String rowPrice = request.getParameter("price");
         String priceWithoutComma = rowPrice.replaceAll(",", "");
         LocalDateTime creationDate = LocalDateTime.parse(request.getParameter("creationDate"));
+        String description = request.getParameter("description");
         long id = Long.parseLong(request.getParameter("id"));
 
         paramsMap.put("name", name);
         paramsMap.put("price", priceWithoutComma);
         paramsMap.put("creationdate", creationDate);
+        paramsMap.put("description", description);
         paramsMap.put("id", id);
 
         PageGeneratorCreator pageGeneratorCreator = new PageGeneratorCreator();
@@ -47,11 +49,13 @@ public class EditItemServlet extends HttpServlet {
         String name = request.getParameter("name");
         double price = Double.parseDouble(request.getParameter("price"));
         LocalDateTime creationDate = LocalDateTime.parse(request.getParameter("creationday"));
+        String description = request.getParameter("description");
 
         Item item = new Item();
         item.setName(name);
         item.setPrice(price);
         item.setCreationDate(creationDate);
+        item.setDescription(description);
 
         try {
             itemService.updateItem(item, id);
@@ -62,6 +66,7 @@ public class EditItemServlet extends HttpServlet {
         paramsMap.put("name", name);
         paramsMap.put("price", price);
         paramsMap.put("creationdate", creationDate);
+        paramsMap.put("description", description);
 
         PageGeneratorCreator pageGeneratorCreator = new PageGeneratorCreator();
         PageGenerator pageGenerator = pageGeneratorCreator.getPageGenerator();

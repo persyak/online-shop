@@ -18,6 +18,9 @@ public class ItemRowMapper {
         LocalDateTime date = timeStamp.toLocalDateTime();
         item.setCreationDate(date);
 
+        item.setDescription(resultSet.getString("description") == null ? "" :
+                resultSet.getString("description"));
+
         return item;
     }
 }
