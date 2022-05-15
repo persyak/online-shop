@@ -28,4 +28,8 @@ public class ItemService {
     public void setItemDao(ItemDao itemDao) {
         this.itemDao = itemDao;
     }
+
+    public List<Item> search(String searchItem) throws SQLException {
+        return itemDao.search(searchItem);
+    }
 }

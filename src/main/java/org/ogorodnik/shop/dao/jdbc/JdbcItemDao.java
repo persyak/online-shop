@@ -11,10 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JdbcItemDao implements ItemDao {
-    private final String GET_ALL_SQL = "SELECT id, name, price, creationDate, description FROM item;";
+    private final String GET_ALL_SQL = "SELECT id, name, price, creationDate, description FROM item";
     private final String insertSql = "INSERT INTO item (name, price, creationdate, description) values (?, ?, ?,?)";
     private final String DELETE_SQL = "DELETE FROM item WHERE id = ?";
     private final String UPDATE_SQL = "UPDATE item SET name=?, price=?, creationDate=?, description=? WHERE id=?";
+    private final String SEARCHITEM_SQL =
+            "SELECT id, name, price, creationDate, description FROM item where name like ? or description like ?";
 
     private final DataSource dataSource;
 
@@ -44,7 +46,8 @@ public class JdbcItemDao implements ItemDao {
         String description = item.getDescription();
 
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement insertPreparedSql = connection.prepareStatement(insertSql)) {
+             PreparedStatement insertPreparedSql = connection.prepareStatement(insertSql);
+        ) {
             insertPreparedSql.setString(1, name);
             insertPreparedSql.setDouble(2, price);
 
@@ -84,5 +87,24 @@ public class JdbcItemDao implements ItemDao {
 
             updatePreparedSql.executeUpdate();
         }
+    }
+
+    @Override
+    public List<Item> search(String searchItem) throws SQLException {
+        List<Item> items = new ArrayList<>();
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement searchPreparedSql = connection.prepareStatement(SEARCHITEM_SQL)) {
+            String searchCriteria = "%" + searchItem + "%";
+            searchPreparedSql.setString(1, searchCriteria);
+            searchPreparedSql.setString(2, searchCriteria);
+            ResultSet resultSet = searchPreparedSql.executeQuery();
+                ItemRowMapper itemRowMapper = new ItemRowMapper();
+
+                while (resultSet.next()) {
+                    Item item = itemRowMapper.mapRow(resultSet);
+                    items.add(item);
+                }
+            }
+        return items;
     }
 }
