@@ -1,10 +1,10 @@
 package org.ogorodnik.shop.web.servlet;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.ogorodnik.shop.service.ItemService;
+import org.ogorodnik.shop.utility.Validator;
 import org.ogorodnik.shop.web.templater.PageGenerator;
 import org.ogorodnik.shop.web.templater.PageGeneratorCreator;
 
@@ -26,33 +26,15 @@ public class ItemsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-
-        boolean isValid = false;
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("user-token".equals(cookie.getName())) {
-                    if (sessionList.contains(cookie.getValue())) {
-                        isValid = true;
-                    }
-                    break;
-                }
-            }
-        }
-
-        if (!isValid) {
-            response.sendRedirect("/login");
-        }
-
         String searchItem = request.getParameter("search");
         Map<String, Object> paramsMap = new HashMap<>();
-        if(null == searchItem || searchItem.isBlank()) {
+        if (null == searchItem || searchItem.isBlank()) {
             try {
                 paramsMap.put("items", itemService.getAll());
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        } else{
+        } else {
             try {
                 paramsMap.put("items", itemService.search(searchItem));
             } catch (SQLException e) {
@@ -70,18 +52,22 @@ public class ItemsServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response) throws IOException {
         String searchItem = request.getParameter("search");
-        if(!(null == searchItem) && !searchItem.isBlank()){
+        if (!(null == searchItem) && !searchItem.isBlank()) {
             doGet(request, response);
         } else {
             long id = request.getParameter("id") == null ? 0 : Long.parseLong(request.getParameter("id"));
 
             if (0 != id) {
-                try {
-                    itemService.deleteItem(id);
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                if (Validator.validateIfLoggedIn(request, sessionList)) {
+                    try {
+                        itemService.deleteItem(id);
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    doGet(request, response);
+                } else {
+                    response.sendRedirect("/login");
                 }
-                doGet(request, response);
             } else {
                 doGet(request, response);
             }

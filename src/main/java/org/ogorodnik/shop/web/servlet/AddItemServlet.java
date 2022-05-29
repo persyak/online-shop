@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.service.ItemService;
+import org.ogorodnik.shop.utility.Validator;
 import org.ogorodnik.shop.web.templater.PageGenerator;
 import org.ogorodnik.shop.web.templater.PageGeneratorCreator;
 
@@ -12,18 +13,28 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AddItemServlet extends HttpServlet {
 
     private ItemService itemService;
+    private List<String> sessionList;
+
+    public AddItemServlet(List<String> sessionList) {
+        this.sessionList = sessionList;
+    }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        PageGeneratorCreator pageGeneratorCreator = new PageGeneratorCreator();
-        PageGenerator pageGenerator = pageGeneratorCreator.getPageGenerator();
-        String page = pageGenerator.getPage("additem.html");
-        response.getWriter().write(page);
+        if(Validator.validateIfLoggedIn(request, sessionList)) {
+            PageGeneratorCreator pageGeneratorCreator = new PageGeneratorCreator();
+            PageGenerator pageGenerator = pageGeneratorCreator.getPageGenerator();
+            String page = pageGenerator.getPage("additem.html");
+            response.getWriter().write(page);
+        }else{
+            response.sendRedirect("/login");
+        }
     }
 
     protected void doPost(HttpServletRequest request,

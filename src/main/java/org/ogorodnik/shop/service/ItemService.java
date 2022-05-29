@@ -25,11 +25,11 @@ public class ItemService {
         itemDao.updateItem(item, id);
     }
 
-    public void setItemDao(ItemDao itemDao) {
-        this.itemDao = itemDao;
-    }
-
     public List<Item> search(String searchItem) throws SQLException {
         return itemDao.search(searchItem);
+    }
+
+    public void setItemDao(ItemDao itemDao) {
+        this.itemDao = itemDao;
     }
 }

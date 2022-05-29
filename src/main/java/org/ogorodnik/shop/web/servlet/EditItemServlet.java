@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.service.ItemService;
+import org.ogorodnik.shop.utility.Validator;
 import org.ogorodnik.shop.web.templater.PageGenerator;
 import org.ogorodnik.shop.web.templater.PageGeneratorCreator;
 
@@ -12,33 +13,43 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class EditItemServlet extends HttpServlet {
 
     private ItemService itemService;
+    private List<String> sessionList;
+
+    public EditItemServlet(List<String> sessionList) {
+        this.sessionList = sessionList;
+    }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        Map<String, Object> paramsMap = new HashMap<>();
+        if (Validator.validateIfLoggedIn(request, sessionList)) {
+            Map<String, Object> paramsMap = new HashMap<>();
 
-        String name = request.getParameter("name");
-        String rowPrice = request.getParameter("price");
-        String priceWithoutComma = rowPrice.replaceAll(",", "");
-        LocalDateTime creationDate = LocalDateTime.parse(request.getParameter("creationDate"));
-        String description = request.getParameter("description");
-        long id = Long.parseLong(request.getParameter("id"));
+            String name = request.getParameter("name");
+            String rowPrice = request.getParameter("price");
+            String priceWithoutComma = rowPrice.replaceAll(",", "");
+            LocalDateTime creationDate = LocalDateTime.parse(request.getParameter("creationDate"));
+            String description = request.getParameter("description");
+            long id = Long.parseLong(request.getParameter("id"));
 
-        paramsMap.put("name", name);
-        paramsMap.put("price", priceWithoutComma);
-        paramsMap.put("creationdate", creationDate);
-        paramsMap.put("description", description);
-        paramsMap.put("id", id);
+            paramsMap.put("name", name);
+            paramsMap.put("price", priceWithoutComma);
+            paramsMap.put("creationdate", creationDate);
+            paramsMap.put("description", description);
+            paramsMap.put("id", id);
 
-        PageGeneratorCreator pageGeneratorCreator = new PageGeneratorCreator();
-        PageGenerator pageGenerator = pageGeneratorCreator.getPageGenerator();
-        String page = pageGenerator.getPage("edititem.html", paramsMap);
-        response.getWriter().write(page);
+            PageGeneratorCreator pageGeneratorCreator = new PageGeneratorCreator();
+            PageGenerator pageGenerator = pageGeneratorCreator.getPageGenerator();
+            String page = pageGenerator.getPage("edititem.html", paramsMap);
+            response.getWriter().write(page);
+        } else {
+            response.sendRedirect("/login");
+        }
     }
 
     protected void doPost(HttpServletRequest request,

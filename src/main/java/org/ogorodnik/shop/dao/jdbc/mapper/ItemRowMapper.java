@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 public class ItemRowMapper {
+
     public Item mapRow(ResultSet resultSet) throws SQLException {
         Item item = new Item();
         item.setId(resultSet.getLong("id"));
