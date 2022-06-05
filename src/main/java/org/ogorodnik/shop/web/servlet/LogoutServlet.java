@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class LogoutServlet extends HttpServlet {
+
     private List<String> sessionList;
 
     public LogoutServlet(List<String> sessionList) {

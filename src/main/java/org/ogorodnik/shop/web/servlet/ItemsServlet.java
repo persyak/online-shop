@@ -3,6 +3,7 @@ package org.ogorodnik.shop.web.servlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Setter;
 import org.ogorodnik.shop.service.ItemService;
 import org.ogorodnik.shop.utility.Validator;
 import org.ogorodnik.shop.web.templater.PageGenerator;
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Setter
 public class ItemsServlet extends HttpServlet {
 
     private ItemService itemService;
@@ -72,9 +74,5 @@ public class ItemsServlet extends HttpServlet {
                 doGet(request, response);
             }
         }
-    }
-
-    public void setItemService(ItemService itemService) {
-        this.itemService = itemService;
     }
 }

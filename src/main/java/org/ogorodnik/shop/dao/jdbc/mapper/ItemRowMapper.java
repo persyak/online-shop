@@ -1,5 +1,6 @@
 package org.ogorodnik.shop.dao.jdbc.mapper;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.ogorodnik.shop.entity.Item;
 
 import java.sql.ResultSet;
@@ -12,7 +13,7 @@ public class ItemRowMapper {
     public Item mapRow(ResultSet resultSet) throws SQLException {
         Item item = new Item();
         item.setId(resultSet.getLong("id"));
-        item.setName(resultSet.getString("name"));
+        item.setName(StringEscapeUtils.escapeHtml4(resultSet.getString("name")));
         item.setPrice(resultSet.getDouble("price"));
 
         Timestamp timeStamp = resultSet.getTimestamp("creationDate");
@@ -20,7 +21,7 @@ public class ItemRowMapper {
         item.setCreationDate(date);
 
         item.setDescription(resultSet.getString("description") == null ? "" :
-                resultSet.getString("description"));
+                StringEscapeUtils.escapeHtml4(resultSet.getString("description")));
 
         return item;
     }

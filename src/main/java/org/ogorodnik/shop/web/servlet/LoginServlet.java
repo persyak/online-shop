@@ -1,6 +1,7 @@
 package org.ogorodnik.shop.web.servlet;
 
 import jakarta.servlet.http.*;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import org.ogorodnik.shop.service.UserService;
 import org.ogorodnik.shop.web.templater.PageGenerator;
@@ -10,7 +11,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
+@Setter
 public class LoginServlet extends HttpServlet {
+
     private UserService userService;
     private List<String> sessionList;
 
@@ -45,9 +48,5 @@ public class LoginServlet extends HttpServlet {
 
             response.getWriter().write(page);
         }
-    }
-
-    public void setUserService(UserService userService) {
-        this.userService = userService;
     }
 }
