@@ -66,7 +66,7 @@ public class Starter {
         contextHandler.addServlet(logoutHandler, "/logout");
 
         //config server
-        Server server = new Server(3000);
+        Server server = new Server(Integer.parseInt(args[0]));
         server.setHandler(contextHandler);
         server.start();
     }
