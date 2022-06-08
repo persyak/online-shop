@@ -36,13 +36,13 @@
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
 
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>org.ogorodnik.shop.Starter</mainClass>
-                        </manifest>
-                    </archive>
+<!--                    <archive>-->
+<!--                        <manifest>-->
+<!--                            <addClasspath>true</addClasspath>-->
+<!--                            <classpathPrefix>lib/</classpathPrefix>-->
+<!--                            <mainClass>org.ogorodnik.shop.Starter</mainClass>-->
+<!--                        </manifest>-->
+<!--                    </archive>-->
                 </configuration>
 
                 <executions>
