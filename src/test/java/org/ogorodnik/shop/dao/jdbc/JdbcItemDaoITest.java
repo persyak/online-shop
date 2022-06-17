@@ -12,9 +12,8 @@ public class JdbcItemDaoITest {
 
     @Test
     public void testGetAll() throws SQLException {
-        String databaseConfiguration = "configurations/databaseConfiguration.properties";
 
-        ConnectionFactory testConnectionFactory = new ConnectionFactory(databaseConfiguration);
+        ConnectionFactory testConnectionFactory = new ConnectionFactory();
 
         JdbcItemDao jdbcItemDao = new JdbcItemDao(testConnectionFactory);
         List<Item> items = jdbcItemDao.getAll();

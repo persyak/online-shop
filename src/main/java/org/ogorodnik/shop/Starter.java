@@ -20,9 +20,8 @@ import java.util.List;
 public class Starter {
 
     public static void main(String[] args) throws Exception {
-        String databaseConfiguration = "configurations/databaseConfiguration.properties";
 
-        ConnectionFactory connectionFactory = new ConnectionFactory(databaseConfiguration);
+        ConnectionFactory connectionFactory = new ConnectionFactory();
 
         //config dao
         ItemDao itemDao = new JdbcItemDao(connectionFactory);
