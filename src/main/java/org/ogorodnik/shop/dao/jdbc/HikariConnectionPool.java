@@ -8,7 +8,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
 
-public class HikariCP {
+public class HikariConnectionPool {
 
     private static final HikariConfig config = new HikariConfig();
     private static final HikariDataSource ds;
@@ -26,7 +26,7 @@ public class HikariCP {
         ds = new HikariDataSource( config );
     }
 
-    private HikariCP() {}
+    private HikariConnectionPool() {}
 
     public static Connection getConnection() throws SQLException {
         return ds.getConnection();

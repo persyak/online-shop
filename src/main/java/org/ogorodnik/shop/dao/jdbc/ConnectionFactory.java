@@ -12,7 +12,7 @@ public class ConnectionFactory implements DataSource {
     @Override
     @SneakyThrows
     public Connection getConnection() {
-        return HikariCP.getConnection();
+        return HikariConnectionPool.getConnection();
     }
 
     @Override
