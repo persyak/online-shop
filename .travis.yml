@@ -1,4 +1,7 @@
-# this is a java project using maven
 language: java
-# install
-install: mvn install
+jdk:
+  - oraclejdk17
+# git strips the wrapper jar file so we have to force its download during the build
+install:
+  - mvn -N io.takari:maven:wrapper
+  - ./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
