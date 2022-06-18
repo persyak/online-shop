@@ -8,8 +8,5 @@ install:
 
 deploy:
   provider: heroku
-  strategy: git
-    app:
-      master: [ REDACTED ]
-    api_key:
-      secure: [ REDACTED_TOKEN ]
+  api_key:
+    secure: "ENCRYPTED_API_KEY"
