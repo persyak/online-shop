@@ -5,3 +5,8 @@ jdk:
 install:
   - mvn -N wrapper:wrapper
   - ./mvnw install -Dmaven.javadoc.skip=true -B -V
+
+deploy:
+  provider: heroku
+  api_key:
+    secure: "ENCRYPTED_API_KEY"
