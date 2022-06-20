@@ -5,7 +5,7 @@ jdk:
 install:
   - mvn -N wrapper:wrapper
   - ./mvnw install -Dmaven.javadoc.skip=true -B -V
-  - gem install faraday -v 1.8.0
+#  - gem install faraday -v 1.8.0
 
 deploy:
   provider: heroku
