@@ -12,4 +12,4 @@ before_deploy:
 deploy:
   provider: heroku
   api_key:
-    secure: "ENCRYPTED_API_KEY"
+    secure: "9f8e4f78-d088-48ff-abdf-84eb22a7e5bc"
