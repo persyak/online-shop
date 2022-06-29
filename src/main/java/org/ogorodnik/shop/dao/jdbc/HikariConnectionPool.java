@@ -18,7 +18,7 @@ public class HikariConnectionPool {
 
     static {
         config.setJdbcUrl( properties.getProperty("url") );
-        config.setUsername( properties.getProperty("user") );
+        config.setUsername( properties.getProperty("username") );
         config.setPassword( properties.getProperty("password") );
         config.addDataSourceProperty( "cachePrepStmts" , "true" );
         config.addDataSourceProperty( "prepStmtCacheSize" , "250" );

@@ -58,7 +58,6 @@ public class ItemsServlet extends HttpServlet {
             doGet(request, response);
         } else {
             long id = request.getParameter("id") == null ? 0 : Long.parseLong(request.getParameter("id"));
-
             if (0 != id) {
                 if (Validator.validateIfLoggedIn(request, sessionList)) {
                     try {

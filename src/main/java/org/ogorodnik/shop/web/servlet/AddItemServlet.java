@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Setter;
-import org.apache.commons.text.StringEscapeUtils;
+import lombok.SneakyThrows;
 import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.service.ItemService;
 import org.ogorodnik.shop.utility.Validator;
@@ -14,9 +14,8 @@ import org.ogorodnik.shop.web.templater.PageGeneratorCreator;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Map;
 
 @Setter
 public class AddItemServlet extends HttpServlet {
@@ -30,25 +29,24 @@ public class AddItemServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        if(Validator.validateIfLoggedIn(request, sessionList)) {
+        if (Validator.validateIfLoggedIn(request, sessionList)) {
             PageGeneratorCreator pageGeneratorCreator = new PageGeneratorCreator();
             PageGenerator pageGenerator = pageGeneratorCreator.getPageGenerator();
             String page = pageGenerator.getPage("additem.html");
             response.getWriter().write(page);
-        }else{
+        } else {
             response.sendRedirect("/login");
         }
     }
 
+    @SneakyThrows
     protected void doPost(HttpServletRequest request,
-                          HttpServletResponse response) throws IOException {
-        Map<String, Object> paramsMap = new HashMap<>();
+                          HttpServletResponse response) {
 
-        String name =  request.getParameter("name");
+        String name = request.getParameter("name");
         double price = Double.parseDouble(request.getParameter("price"));
-        LocalDateTime creationDate = LocalDateTime.parse(request.getParameter("creationday"));
+        LocalDateTime creationDate = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
         String description = request.getParameter("description");
-
 
         Item item = new Item();
         item.setName(name);
@@ -61,15 +59,6 @@ public class AddItemServlet extends HttpServlet {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        paramsMap.put("name", StringEscapeUtils.escapeHtml4(name));
-        paramsMap.put("price", price);
-        paramsMap.put("creationdate", creationDate);
-        paramsMap.put("description", StringEscapeUtils.escapeHtml4(description));
-
-        PageGeneratorCreator pageGeneratorCreator = new PageGeneratorCreator();
-        PageGenerator pageGenerator = pageGeneratorCreator.getPageGenerator();
-        String page = pageGenerator.getPage("addeditem.html", paramsMap);
-        response.getWriter().write(page);
+        response.sendRedirect("/items");
     }
 }
