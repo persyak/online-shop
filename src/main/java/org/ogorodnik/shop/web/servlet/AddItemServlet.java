@@ -7,7 +7,7 @@ import lombok.Setter;
 import lombok.SneakyThrows;
 import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.service.ItemService;
-import org.ogorodnik.shop.utility.Validator;
+import org.ogorodnik.shop.service.SecurityService;
 import org.ogorodnik.shop.web.templater.PageGenerator;
 import org.ogorodnik.shop.web.templater.PageGeneratorCreator;
 
@@ -15,21 +15,15 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
 
 @Setter
 public class AddItemServlet extends HttpServlet {
 
     private ItemService itemService;
-    private List<String> sessionList;
-
-    public AddItemServlet(List<String> sessionList) {
-        this.sessionList = sessionList;
-    }
+    private SecurityService securityService;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-        if (Validator.validateIfLoggedIn(request, sessionList)) {
+        if (securityService.validateIfLoggedIn(request.getCookies())) {
             PageGeneratorCreator pageGeneratorCreator = new PageGeneratorCreator();
             PageGenerator pageGenerator = pageGeneratorCreator.getPageGenerator();
             String page = pageGenerator.getPage("additem.html");

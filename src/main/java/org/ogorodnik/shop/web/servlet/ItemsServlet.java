@@ -5,25 +5,20 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Setter;
 import org.ogorodnik.shop.service.ItemService;
-import org.ogorodnik.shop.utility.Validator;
+import org.ogorodnik.shop.service.SecurityService;
 import org.ogorodnik.shop.web.templater.PageGenerator;
 import org.ogorodnik.shop.web.templater.PageGeneratorCreator;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Setter
 public class ItemsServlet extends HttpServlet {
 
     private ItemService itemService;
-    private List<String> sessionList;
-
-    public ItemsServlet(List<String> sessionList) {
-        this.sessionList = sessionList;
-    }
+    private SecurityService securityService;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -59,7 +54,7 @@ public class ItemsServlet extends HttpServlet {
         } else {
             long id = request.getParameter("id") == null ? 0 : Long.parseLong(request.getParameter("id"));
             if (0 != id) {
-                if (Validator.validateIfLoggedIn(request, sessionList)) {
+                if (securityService.validateIfLoggedIn(request.getCookies())) {
                     try {
                         itemService.deleteItem(id);
                     } catch (SQLException e) {

@@ -2,14 +2,15 @@ version: '3.8'
 
 services:
 
-  mysql-database:
-    build: mysql
+  postgres-database:
+    build: postgres
     ports:
-      - "3307:3306"
+      - "5433:5432"
     environment:
-      - MYSQL_ROOT_PASSWORD=secret
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
     volumes:
-      - db:/var/lib/minesql/data
+      - db:/var/lib/postgres/data
 
 volumes:
   db:

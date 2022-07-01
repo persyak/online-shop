@@ -7,7 +7,7 @@ import lombok.Setter;
 import org.apache.commons.text.StringEscapeUtils;
 import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.service.ItemService;
-import org.ogorodnik.shop.utility.Validator;
+import org.ogorodnik.shop.service.SecurityService;
 import org.ogorodnik.shop.web.templater.PageGenerator;
 import org.ogorodnik.shop.web.templater.PageGeneratorCreator;
 
@@ -15,22 +15,16 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Setter
 public class EditItemServlet extends HttpServlet {
 
     private ItemService itemService;
-    private List<String> sessionList;
-
-    public EditItemServlet(List<String> sessionList) {
-        this.sessionList = sessionList;
-    }
+    private SecurityService securityService;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-        if (Validator.validateIfLoggedIn(request, sessionList)) {
+        if (securityService.validateIfLoggedIn(request.getCookies())) {
             Map<String, Object> paramsMap = new HashMap<>();
 
             String name = request.getParameter("name");

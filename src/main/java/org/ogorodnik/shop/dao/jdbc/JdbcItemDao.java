@@ -46,8 +46,7 @@ public class JdbcItemDao implements ItemDao {
         String description = item.getDescription();
 
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement insertPreparedSql = connection.prepareStatement(insertSql);
-        ) {
+             PreparedStatement insertPreparedSql = connection.prepareStatement(insertSql)) {
             insertPreparedSql.setString(1, name);
             insertPreparedSql.setDouble(2, price);
 
@@ -98,13 +97,13 @@ public class JdbcItemDao implements ItemDao {
             searchPreparedSql.setString(1, searchCriteria);
             searchPreparedSql.setString(2, searchCriteria);
             ResultSet resultSet = searchPreparedSql.executeQuery();
-                ItemRowMapper itemRowMapper = new ItemRowMapper();
+            ItemRowMapper itemRowMapper = new ItemRowMapper();
 
-                while (resultSet.next()) {
-                    Item item = itemRowMapper.mapRow(resultSet);
-                    items.add(item);
-                }
+            while (resultSet.next()) {
+                Item item = itemRowMapper.mapRow(resultSet);
+                items.add(item);
             }
+        }
         return items;
     }
 }
