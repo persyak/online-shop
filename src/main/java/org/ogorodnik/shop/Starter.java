@@ -14,9 +14,6 @@ import org.ogorodnik.shop.service.SecurityService;
 import org.ogorodnik.shop.service.UserService;
 import org.ogorodnik.shop.web.servlet.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Slf4j
 public class Starter {
 
@@ -37,8 +34,6 @@ public class Starter {
 
         //config contextHandler
         ServletContextHandler contextHandler = new ServletContextHandler();
-
-        List<String> sessionList = new ArrayList<>();
 
         //config servlets
         ItemsServlet itemsServlet = new ItemsServlet();
