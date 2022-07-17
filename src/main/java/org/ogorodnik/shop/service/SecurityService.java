@@ -1,6 +1,5 @@
 package org.ogorodnik.shop.service;
 
-import jakarta.servlet.http.Cookie;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.SQLException;
