@@ -18,8 +18,18 @@ public class LogoutServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+        boolean isLoggedOut = false;
         Cookie[] cookies = request.getCookies();
-        if (securityService.logout(cookies)) {
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("user-token".equals(cookie.getName())) {
+                    isLoggedOut = securityService.logout(cookie.getValue());
+                }
+            }
+        }
+
+        if (isLoggedOut) {
             PageGeneratorCreator pageGeneratorCreator = new PageGeneratorCreator();
             PageGenerator pageGenerator = pageGeneratorCreator.getPageGenerator();
             String page = pageGenerator.getPage("logout.html");

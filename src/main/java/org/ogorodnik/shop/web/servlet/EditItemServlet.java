@@ -1,5 +1,6 @@
 package org.ogorodnik.shop.web.servlet;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -24,7 +25,17 @@ public class EditItemServlet extends HttpServlet {
     private SecurityService securityService;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        if (securityService.validateIfLoggedIn(request.getCookies())) {
+        boolean isLoggedIn = false;
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("user-token".equals(cookie.getName())) {
+                    isLoggedIn = securityService.validateIfLoggedIn(cookie.getValue());
+                }
+            }
+        }
+
+        if (isLoggedIn) {
             Map<String, Object> paramsMap = new HashMap<>();
 
             String name = request.getParameter("name");

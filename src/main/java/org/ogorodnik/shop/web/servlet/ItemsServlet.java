@@ -1,5 +1,6 @@
 package org.ogorodnik.shop.web.servlet;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -54,7 +55,17 @@ public class ItemsServlet extends HttpServlet {
         } else {
             long id = request.getParameter("id") == null ? 0 : Long.parseLong(request.getParameter("id"));
             if (0 != id) {
-                if (securityService.validateIfLoggedIn(request.getCookies())) {
+                boolean isLoggedIn = false;
+                Cookie[] cookies = request.getCookies();
+                if (cookies != null) {
+                    for (Cookie cookie : cookies) {
+                        if ("user-token".equals(cookie.getName())) {
+                            isLoggedIn = securityService.validateIfLoggedIn(cookie.getValue());
+                        }
+                    }
+                }
+
+                if (isLoggedIn) {
                     try {
                         itemService.deleteItem(id);
                     } catch (SQLException e) {

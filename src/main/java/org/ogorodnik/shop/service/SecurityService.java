@@ -9,50 +9,33 @@ import java.util.List;
 import java.util.UUID;
 
 public class SecurityService {
-    private List<String> sessionList = new ArrayList<>();
-    private UserService userService;
+    private final List<String> sessionList = new ArrayList<>();
+    private final UserService userService;
 
     public SecurityService(UserService userService) {
         this.userService = userService;
     }
 
-    public Cookie allowLogin(String userName, String password) throws SQLException {
+    public String allowLogin(String userName, String password) throws SQLException {
         String passwordFromDatabase = userService.getUserPassword(userName);
         if (passwordFromDatabase != null && BCrypt.checkpw(password, passwordFromDatabase)) {
             String uuid = UUID.randomUUID().toString();
             sessionList.add(uuid);
-            return new Cookie("user-token", uuid);
+            return uuid;
         } else {
             return null;
         }
     }
 
-    public boolean logout(Cookie[] cookies) {
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("user-token".equals(cookie.getName())) {
-                    if (sessionList.contains(cookie.getValue())) {
-                        sessionList.remove(cookie.getValue());
-                        return true;
-                    }
-                }
-            }
+    public boolean logout(String uuid) {
+        if (sessionList.contains(uuid)) {
+            sessionList.remove(uuid);
+            return true;
         }
         return false;
     }
 
-    public boolean validateIfLoggedIn(Cookie[] cookies) {
-        boolean isValid = false;
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("user-token".equals(cookie.getName())) {
-                    if (sessionList.contains(cookie.getValue())) {
-                        isValid = true;
-                    }
-                    break;
-                }
-            }
-        }
-        return isValid;
+    public boolean validateIfLoggedIn(String uuid) {
+        return sessionList.contains(uuid);
     }
 }

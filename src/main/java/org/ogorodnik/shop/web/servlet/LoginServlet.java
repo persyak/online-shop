@@ -28,11 +28,12 @@ public class LoginServlet extends HttpServlet {
         String name = request.getParameter("name");
         String password = request.getParameter("password");
 
-        Cookie cookie = securityService.allowLogin(name, password);
-        if(null != cookie){
+        String uuid = securityService.allowLogin(name, password);
+        if (null != uuid) {
+            Cookie cookie = new Cookie("user-token", uuid);
             response.addCookie(cookie);
             response.sendRedirect("/items");
-        } else{
+        } else {
             PageGeneratorCreator pageGeneratorCreator = new PageGeneratorCreator();
             PageGenerator pageGenerator = pageGeneratorCreator.getPageGenerator();
             String page = pageGenerator.getPage("failedlogin.html");
