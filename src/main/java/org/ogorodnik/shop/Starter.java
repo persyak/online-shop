@@ -43,10 +43,6 @@ public class Starter {
         log.info("Configuring contextHandler");
         ServletContextHandler contextHandler = new ServletContextHandler();
 
-        //filters
-        log.info("Configuring filter");
-        SecurityFilter securityFilter = new SecurityFilter(securityService);
-
         //config servlets
         log.info("Configuring servlets");
         ItemsServlet itemsServlet = new ItemsServlet();
@@ -54,19 +50,16 @@ public class Starter {
         ServletHolder allItemsHandler = new ServletHolder(itemsServlet);
         contextHandler.addServlet(allItemsHandler, "/items");
         contextHandler.addServlet(allItemsHandler, "/index.html");
-        contextHandler.addFilter(new FilterHolder(securityFilter), "/items", EnumSet.of(DispatcherType.REQUEST));
 
         AddItemServlet addItemServlet = new AddItemServlet();
         addItemServlet.setItemService(itemService);
         ServletHolder addItemHandler = new ServletHolder(addItemServlet);
         contextHandler.addServlet(addItemHandler, "/additem");
-        contextHandler.addFilter(new FilterHolder(securityFilter), "/additem", EnumSet.of(DispatcherType.REQUEST));
 
         EditItemServlet editItemServlet = new EditItemServlet();
         editItemServlet.setItemService(itemService);
         ServletHolder editItemHandler = new ServletHolder(editItemServlet);
         contextHandler.addServlet(editItemHandler, "/edititem");
-        contextHandler.addFilter(new FilterHolder(securityFilter), "/edititem", EnumSet.of(DispatcherType.REQUEST));
 
         LoginServlet loginServlet = new LoginServlet();
         loginServlet.setSecurityService(securityService);
@@ -77,6 +70,11 @@ public class Starter {
         logoutServlet.setSecurityService(securityService);
         ServletHolder logoutHandler = new ServletHolder(logoutServlet);
         contextHandler.addServlet(logoutHandler, "/logout");
+
+        //filters
+        log.info("Configuring filter");
+        SecurityFilter securityFilter = new SecurityFilter(securityService);
+        contextHandler.addFilter(new FilterHolder(securityFilter), "/*", EnumSet.of(DispatcherType.REQUEST));
 
         //config server
         log.info("Starting server");
