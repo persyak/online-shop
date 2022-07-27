@@ -23,11 +23,12 @@ CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     login varchar(255),
     password varchar(255),
+    salt varchar(500),
     firstName varchar(50),
     lastName varchar(50)
 );
 
-INSERT INTO users (login, password, firstName, lastName)
-VALUES('atrubin', '$2a$08$nbAUf70eUmrC3PTv9i3jw.8Qiy.U/Dy.oHA4pBo/aiJHFPO3JVh5m', 'Tolik', 'Trubin');
-INSERT INTO users(login, password, firstName, lastName)
-VALUES('oohorodnik', '$2a$08$oA7LnDR4.bZL0gTjQBc4M.KIxERJBk2MaOT0pSfWBZCOGldP5RPAW', 'Oleksandr', 'Ohorodnik');
+INSERT INTO users (login, password, salt, firstName, lastName)
+VALUES('atrubin', '$2a$08$nbAUf70eUmrC3PTv9i3jw.8Qiy.U/Dy.oHA4pBo/aiJHFPO3JVh5m', 'salt', 'Tolik', 'Trubin');
+INSERT INTO users (login, password, salt, firstName, lastName)
+VALUES('oohorodnik', '$2a$08$oA7LnDR4.bZL0gTjQBc4M.KIxERJBk2MaOT0pSfWBZCOGldP5RPAW', 'salt', 'Oleksandr', 'Ohorodnik');

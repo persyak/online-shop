@@ -14,6 +14,7 @@ import org.ogorodnik.shop.dao.jdbc.JdbcUserDao;
 import org.ogorodnik.shop.service.ItemService;
 import org.ogorodnik.shop.service.SecurityService;
 import org.ogorodnik.shop.service.UserService;
+import org.ogorodnik.shop.web.security.PasswordManager;
 import org.ogorodnik.shop.web.security.SecurityFilter;
 import org.ogorodnik.shop.web.servlet.*;
 
@@ -38,6 +39,11 @@ public class Starter {
         UserService userService = new UserService();
         userService.setUserDao(userDao);
         SecurityService securityService = new SecurityService(userService);
+
+        //insert password with random salt into database (password == login)
+        PasswordManager passwordManager = new PasswordManager(userService);
+        passwordManager.setPasswordAndSalt("atrubin");
+        passwordManager.setPasswordAndSalt("oohorodnik");
 
         //config contextHandler
         log.info("Configuring contextHandler");

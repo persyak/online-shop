@@ -1,14 +1,10 @@
 package org.ogorodnik.shop.service;
 
-import lombok.CustomLog;
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 public class SecurityService {
@@ -21,9 +17,10 @@ public class SecurityService {
 
     public String allowLogin(String userName, String password) throws SQLException {
         log.info("Check if user password is correct and user can login");
-        String passwordFromDatabase = userService.getUserPassword(userName);
-        if (null != passwordFromDatabase) {
-            if (BCrypt.checkpw(password, passwordFromDatabase)) {
+        List<String> credentialsList = userService.getUserPassword(userName);
+        if (credentialsList.size() == 2) {
+            String hashPasswordFromUi = BCrypt.hashpw(password, credentialsList.get(1));
+            if (hashPasswordFromUi.equals(credentialsList.get(0))) {
                 String uuid = UUID.randomUUID().toString();
                 sessionList.add(uuid);
                 log.info("login is successful");
