@@ -17,6 +17,8 @@ import org.ogorodnik.shop.service.UserService;
 import org.ogorodnik.shop.web.security.PasswordManager;
 import org.ogorodnik.shop.web.security.SecurityFilter;
 import org.ogorodnik.shop.web.servlet.*;
+import org.ogorodnik.shop.web.templater.PageGenerator;
+import org.ogorodnik.shop.web.templater.PageGeneratorCreator;
 
 import java.util.EnumSet;
 
@@ -49,31 +51,40 @@ public class Starter {
         log.info("Configuring contextHandler");
         ServletContextHandler contextHandler = new ServletContextHandler();
 
+        //create pageGenerator
+        PageGeneratorCreator pageGeneratorCreator = new PageGeneratorCreator();
+        PageGenerator pageGenerator = pageGeneratorCreator.getPageGenerator();
+
         //config servlets
         log.info("Configuring servlets");
         ItemsServlet itemsServlet = new ItemsServlet();
         itemsServlet.setItemService(itemService);
+        itemsServlet.setPageGenerator(pageGenerator);
         ServletHolder allItemsHandler = new ServletHolder(itemsServlet);
         contextHandler.addServlet(allItemsHandler, "/items");
         contextHandler.addServlet(allItemsHandler, "/index.html");
 
         AddItemServlet addItemServlet = new AddItemServlet();
         addItemServlet.setItemService(itemService);
+        addItemServlet.setPageGenerator(pageGenerator);
         ServletHolder addItemHandler = new ServletHolder(addItemServlet);
         contextHandler.addServlet(addItemHandler, "/additem");
 
         EditItemServlet editItemServlet = new EditItemServlet();
         editItemServlet.setItemService(itemService);
+        editItemServlet.setPageGenerator(pageGenerator);
         ServletHolder editItemHandler = new ServletHolder(editItemServlet);
         contextHandler.addServlet(editItemHandler, "/edititem");
 
         LoginServlet loginServlet = new LoginServlet();
         loginServlet.setSecurityService(securityService);
+        loginServlet.setPageGenerator(pageGenerator);
         ServletHolder loginHandler = new ServletHolder(loginServlet);
         contextHandler.addServlet(loginHandler, "/login");
 
         LogoutServlet logoutServlet = new LogoutServlet();
         logoutServlet.setSecurityService(securityService);
+        logoutServlet.setPageGenerator(pageGenerator);
         ServletHolder logoutHandler = new ServletHolder(logoutServlet);
         contextHandler.addServlet(logoutHandler, "/logout");
 

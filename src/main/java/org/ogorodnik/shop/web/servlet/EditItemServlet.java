@@ -9,7 +9,6 @@ import org.apache.commons.text.StringEscapeUtils;
 import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.service.ItemService;
 import org.ogorodnik.shop.web.templater.PageGenerator;
-import org.ogorodnik.shop.web.templater.PageGeneratorCreator;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -22,6 +21,7 @@ import java.util.Map;
 public class EditItemServlet extends HttpServlet {
 
     private ItemService itemService;
+    private PageGenerator pageGenerator;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Map<String, Object> paramsMap = new HashMap<>();
@@ -40,8 +40,6 @@ public class EditItemServlet extends HttpServlet {
         paramsMap.put("id", id);
 
         log.info("Editing item");
-        PageGeneratorCreator pageGeneratorCreator = new PageGeneratorCreator();
-        PageGenerator pageGenerator = pageGeneratorCreator.getPageGenerator();
         String page = pageGenerator.getPage("edititem.html", paramsMap);
         response.getWriter().write(page);
     }
@@ -74,8 +72,6 @@ public class EditItemServlet extends HttpServlet {
         paramsMap.put("description", StringEscapeUtils.escapeHtml4(description));
 
         log.info("item " + StringEscapeUtils.escapeHtml4(name) + " edited");
-        PageGeneratorCreator pageGeneratorCreator = new PageGeneratorCreator();
-        PageGenerator pageGenerator = pageGeneratorCreator.getPageGenerator();
         String page = pageGenerator.getPage("editeditem.html", paramsMap);
         response.getWriter().write(page);
     }

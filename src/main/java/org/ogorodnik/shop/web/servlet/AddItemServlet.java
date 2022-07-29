@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.service.ItemService;
 import org.ogorodnik.shop.web.templater.PageGenerator;
-import org.ogorodnik.shop.web.templater.PageGeneratorCreator;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -21,13 +20,11 @@ import java.time.temporal.ChronoUnit;
 public class AddItemServlet extends HttpServlet {
 
     private ItemService itemService;
+    private PageGenerator pageGenerator;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        PageGeneratorCreator pageGeneratorCreator = new PageGeneratorCreator();
-        PageGenerator pageGenerator = pageGeneratorCreator.getPageGenerator();
-        String page = pageGenerator.getPage("additem.html");
         log.info("Accessing add item page");
-        response.getWriter().write(page);
+        response.getWriter().write(pageGenerator.getPage("additem.html"));
     }
 
     @SneakyThrows

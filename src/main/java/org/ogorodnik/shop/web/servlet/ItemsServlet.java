@@ -7,7 +7,6 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.service.ItemService;
 import org.ogorodnik.shop.web.templater.PageGenerator;
-import org.ogorodnik.shop.web.templater.PageGeneratorCreator;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -19,6 +18,7 @@ import java.util.Map;
 public class ItemsServlet extends HttpServlet {
 
     private ItemService itemService;
+    private PageGenerator pageGenerator;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -39,9 +39,6 @@ public class ItemsServlet extends HttpServlet {
                 e.printStackTrace();
             }
         }
-
-        PageGeneratorCreator pageGeneratorCreator = new PageGeneratorCreator();
-        PageGenerator pageGenerator = pageGeneratorCreator.getPageGenerator();
         String page = pageGenerator.getPage("items.html", paramsMap);
 
         response.getWriter().write(page);
