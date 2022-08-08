@@ -18,7 +18,6 @@ public class LogoutServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
         boolean isLoggedOut = false;
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
