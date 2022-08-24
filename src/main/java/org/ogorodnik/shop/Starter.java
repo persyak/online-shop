@@ -40,7 +40,7 @@ public class Starter {
         itemService.setItemDao(itemDao);
         UserService userService = new UserService();
         userService.setUserDao(userDao);
-        SecurityService securityService = new SecurityService(userService);
+        SecurityService securityService = new SecurityService(userService, itemService);
 
         //insert password with random salt into database (password == login)
         PasswordManager passwordManager = new PasswordManager(userService);
@@ -75,6 +75,13 @@ public class Starter {
         editItemServlet.setPageGenerator(pageGenerator);
         ServletHolder editItemHandler = new ServletHolder(editItemServlet);
         contextHandler.addServlet(editItemHandler, "/edititem");
+
+        ProcessUserCardServlet processUserCardServlet = new ProcessUserCardServlet();
+        processUserCardServlet.setSecurityService(securityService);
+        processUserCardServlet.setPageGenerator(pageGenerator);
+        ServletHolder processUserCardHandler = new ServletHolder(processUserCardServlet);
+        contextHandler.addServlet(processUserCardHandler, "/usercard");
+        contextHandler.addServlet(processUserCardHandler, "/usercard/*");
 
         LoginServlet loginServlet = new LoginServlet();
         loginServlet.setSecurityService(securityService);

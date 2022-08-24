@@ -15,4 +15,6 @@ public interface ItemDao {
     void updateItem(Item item, long id) throws SQLException;
 
     List<Item> search(String searchItem) throws SQLException;
+
+    List<Item> getCard(List<Long> idList) throws SQLException;
 }

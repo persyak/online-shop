@@ -2,6 +2,7 @@ package org.ogorodnik.shop.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
+import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.entity.Session;
 
 import java.sql.SQLException;
@@ -11,10 +12,12 @@ import java.util.*;
 @Slf4j
 public class SecurityService {
     private final List<Session> sessionList = Collections.synchronizedList(new ArrayList<>());
+    private ItemService itemService;
     private final UserService userService;
 
-    public SecurityService(UserService userService) {
+    public SecurityService(UserService userService, ItemService itemService) {
         this.userService = userService;
+        this.itemService = itemService;
     }
 
     public Session allowLogin(String userName, String password) throws SQLException {
@@ -23,9 +26,7 @@ public class SecurityService {
         if (credentialsList.size() == 2) {
             String hashPasswordFromUi = BCrypt.hashpw(password, credentialsList.get(1));
             if (hashPasswordFromUi.equals(credentialsList.get(0))) {
-                Session session = new Session();
-                session.setUuid(UUID.randomUUID().toString());
-                session.setExpireDate(LocalDateTime.now().plusHours(4));
+                Session session = new Session(UUID.randomUUID().toString(), LocalDateTime.now().plusHours(4));
                 sessionList.add(session);
                 log.info("login is successful");
                 return session;
@@ -68,5 +69,18 @@ public class SecurityService {
             }
         }
         return false;
+    }
+
+    //TODO: how to avoid using if when we know that session is available
+    // for sure and if has been already checked and there is no null value
+    public Session getSession(String uuid) {
+        return sessionList.stream()
+                .filter(session -> uuid.equals(session.getUuid()))
+                .findAny()
+                .orElse(null);
+    }
+
+    public List<Item> getCard(List<Long> card) throws SQLException {
+        return itemService.getCard(card);
     }
 }

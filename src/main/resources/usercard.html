@@ -65,15 +65,6 @@
                     <a class="nav-link active" aria-current="page" href="/items">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="/additem">Add item</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="/usercard">Basket</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="/login">Login</a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link active" href="/logout">Logout</a>
                 </li>
             </ul>
@@ -81,18 +72,8 @@
     </div>
 </nav>
 
-<nav class="navbar navbar-light bg-light justify-content-between">
-    <div class="container">
-        <a class="navbar-brand">Find items</a>
-        <form class="form-inline" action="/items" method="POST">
-            <input class="form-control mr-sm-1" type="search" placeholder="Search" name="search" aria-label="Search">
-            <button class="btn btn-outline-success my-1 my-sm-0" type="submit">Search</button>
-        </form>
-    </div>
-</nav>
-
 <div class="container">
-    <h1 class="text-center">ITEMS</h1>
+    <h1 class="text-center">BASKET</h1>
     <table class="table table-striped table-hover">
         <thread>
             <tr>
@@ -101,7 +82,6 @@
                 <th scope="col">Price</th>
                 <th scope="col">Creation date</th>
                 <th scope="col">Description</th>
-                <th scope="col">Menu</th>
             </tr>
         </thread>
 
@@ -120,20 +100,6 @@
                     <input type="hidden" name="price" value=${item.price}>
                     <input type="hidden" name="creationDate" value=${item.creationDate}>
                     <input type="hidden" name="description" value=${item.description}>
-                    <button class="btn btn-primary" role="button">Edit</button>
-                </form>
-                <form action="/items" method="POST">
-                    <input type="hidden" name="id" value=${item.id}>
-                    <input type="hidden" name="name" value=${item.name}>
-                    <button class="btn btn-primary" role="button">Delete</button>
-                </form>
-                <form action="/usercard/${item.id}" method="POST">
-<!--                    <input type="hidden" name="id" value=${item.id}>-->
-<!--                    <input type="hidden" name="name" value=${item.name}>-->
-<!--                    <input type="hidden" name="price" value=${item.price}>-->
-<!--                    <input type="hidden" name="creationDate" value=${item.creationDate}>-->
-<!--                    <input type="hidden" name="description" value=${item.description}>-->
-                    <button class="btn btn-primary" role="button">Add to basket</button>
                 </form>
             </td>
         </tr>

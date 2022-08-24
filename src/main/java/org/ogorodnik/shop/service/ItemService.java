@@ -29,6 +29,10 @@ public class ItemService {
         return itemDao.search(searchItem);
     }
 
+    public List<Item> getCard(List<Long> card) throws SQLException {
+        return itemDao.getCard(card);
+    }
+
     public void setItemDao(ItemDao itemDao) {
         this.itemDao = itemDao;
     }

@@ -1,27 +1,23 @@
 package org.ogorodnik.shop.entity;
 
+import lombok.Getter;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class Session {
     private String uuid;
     private LocalDateTime expireDate;
+    private final List<Long> card = new ArrayList<>();
 
-    public List<Item> card;
-
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
+    public Session(String uuid, LocalDateTime expireDate) {
         this.uuid = uuid;
-    }
-
-    public LocalDateTime getExpireDate() {
-        return expireDate;
-    }
-
-    public void setExpireDate(LocalDateTime expireDate) {
         this.expireDate = expireDate;
+    }
+
+    public void addItemToTheCard(long id) {
+        card.add(id);
     }
 }
