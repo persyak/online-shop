@@ -17,7 +17,7 @@ public class JdbcItemDao implements ItemDao {
     private final String UPDATE_SQL = "UPDATE item SET name=?, price=?, creationDate=?, description=? WHERE id=?";
     private final String SEARCHITEM_SQL =
             "SELECT id, name, price, creationDate, description FROM item where name like ? or description like ?";
-    private final String GET_CARD_SQL = "SELECT id, name, price, creationDate, description FROM item where id=?";
+    private final String GET_CARD_SQL = "SELECT id, name, price, creationDate, description FROM item where id in";
 
     private final DataSource dataSource;
 
@@ -111,16 +111,21 @@ public class JdbcItemDao implements ItemDao {
     public List<Item> getCard(List<Long> idList) throws SQLException {
         List<Item> items = new ArrayList<>();
         ItemRowMapper itemRowMapper = new ItemRowMapper();
-        for (Long id : idList) {
-            try (Connection connection = dataSource.getConnection();
-                 PreparedStatement getCardSql = connection.prepareStatement(GET_CARD_SQL)) {
-                getCardSql.setLong(1, id);
-                ResultSet resultSet = getCardSql.executeQuery();
 
-                while (resultSet.next()) {
-                    Item item = itemRowMapper.mapRow(resultSet);
-                    items.add(item);
-                }
+        StringBuilder builder = new StringBuilder();
+        builder.append("?,".repeat(idList.size()));
+        String placeHolders = builder.deleteCharAt(builder.length() - 1).toString();
+        String getCardSql = GET_CARD_SQL + "(" + placeHolders + ")";
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement getCardSqlStatement = connection.prepareStatement(getCardSql)) {
+            for (int i = 1; i <= idList.size(); i++) {
+                getCardSqlStatement.setLong(i, idList.get(i - 1));
+            }
+            ResultSet resultSet = getCardSqlStatement.executeQuery();
+            while (resultSet.next()) {
+                Item item = itemRowMapper.mapRow(resultSet);
+                items.add(item);
             }
         }
         return items;
