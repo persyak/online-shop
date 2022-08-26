@@ -5,12 +5,14 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.service.SecurityService;
 import org.ogorodnik.shop.web.templater.PageGenerator;
 
 import java.io.IOException;
 
 @Setter
+@Slf4j
 public class LogoutServlet extends HttpServlet {
 
     private SecurityService securityService;
@@ -23,14 +25,17 @@ public class LogoutServlet extends HttpServlet {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 if ("user-token".equals(cookie.getName())) {
+                    log.info("logging out user");
                     isLoggedOut = securityService.logout(cookie.getValue());
                 }
             }
         }
 
         if (isLoggedOut) {
+            log.info("user has been logged out");
             response.getWriter().write(pageGenerator.getPage("logout.html"));
         } else {
+            log.info("user is not logged in so no logout made");
             response.getWriter().write(pageGenerator.getPage("notloggedin.html"));
         }
     }

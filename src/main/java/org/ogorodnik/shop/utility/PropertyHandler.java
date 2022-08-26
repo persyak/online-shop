@@ -9,7 +9,7 @@ public class PropertyHandler {
 
     public static Properties readConfigPropery(String fileName) {
         Properties property = new Properties();
-        //I have a question here: why FileInputStream does not work here?
+        //TODO: I have a question here: why FileInputStream does not work here?
         try (InputStream inputStream = PropertyHandler.class.getClassLoader().getResourceAsStream(fileName)) {
             if (inputStream != null) {
                 property.load(inputStream);

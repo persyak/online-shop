@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.entity.Session;
 import org.ogorodnik.shop.service.SecurityService;
 import org.ogorodnik.shop.web.templater.PageGenerator;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @Setter
+@Slf4j
 public class ProcessUserCardServlet extends HttpServlet {
 
     private SecurityService securityService;
@@ -32,6 +34,7 @@ public class ProcessUserCardServlet extends HttpServlet {
             }
         }
         if (null != uuid) {
+            log.info("got user session. processing user card");
             Session session = securityService.getSession(uuid);
             List<Long> card = session.getCard();
             Map<String, Object> paramsMap = new HashMap<>();
@@ -61,6 +64,7 @@ public class ProcessUserCardServlet extends HttpServlet {
         }
         Session session = securityService.getSession(uuid);
         session.addItemToTheCard(id);
+        log.info("item with id " + id + " has been added to the card");
         response.sendRedirect("/items");
     }
 }
