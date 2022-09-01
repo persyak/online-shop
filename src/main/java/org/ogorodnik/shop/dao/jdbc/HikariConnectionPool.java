@@ -12,14 +12,14 @@ public class HikariConnectionPool {
 
     private static final HikariConfig config = new HikariConfig();
     private static final HikariDataSource ds;
-    private static final String databaseConfiguration = "configurations/databaseConfiguration.properties";
+    private static final String databaseConfiguration = "conf/applicationProperties.properties";
 
     private static final Properties properties = PropertyHandler.readConfigPropery(databaseConfiguration);
 
     static {
-        config.setJdbcUrl(properties.getProperty("url"));
-        config.setUsername(properties.getProperty("username"));
-        config.setPassword(properties.getProperty("password"));
+        config.setJdbcUrl(properties.getProperty("jdbc.url"));
+        config.setUsername(properties.getProperty("jdbc.username"));
+        config.setPassword(properties.getProperty("jdbc.password"));
         config.addDataSourceProperty("cachePrepStmts", "true");
         config.addDataSourceProperty("prepStmtCacheSize", "250");
         config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");

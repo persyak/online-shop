@@ -18,7 +18,7 @@ public class SecurityFilter implements Filter {
 
     private final SecurityService securityService;
     private List<String> excludedUrls;
-    private final String filtersConfiguration = "configurations/filtersConfiguration.properties";
+    private final String filtersConfiguration = "conf/applicationProperties.properties";
 
     private final Properties properties = PropertyHandler.readConfigPropery(filtersConfiguration);
 
@@ -28,7 +28,7 @@ public class SecurityFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) {
-        String excludePattern = properties.getProperty("urlsToExludeFromFiltering");
+        String excludePattern = properties.getProperty("web.filter.url.exclude");
         excludedUrls = Arrays.asList(excludePattern.split(","));
     }
 
