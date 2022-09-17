@@ -37,14 +37,19 @@ public class ProcessUserCardServlet extends HttpServlet {
             log.info("got user session. processing user card");
             Session session = securityService.getSession(uuid);
             List<Long> card = session.getCard();
-            Map<String, Object> paramsMap = new HashMap<>();
-            try {
-                paramsMap.put("items", securityService.getCard(card));
-            } catch (SQLException e) {
-                e.printStackTrace();
+            if (card.size() > 0) {
+                Map<String, Object> paramsMap = new HashMap<>();
+                try {
+                    paramsMap.put("items", securityService.getCard(card));
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+                String page = pageGenerator.getPage("usercard.html", paramsMap);
+                response.getWriter().write(page);
+            } else {
+                String page = pageGenerator.getPage("usercardisempty.html");
+                response.getWriter().write(page);
             }
-            String page = pageGenerator.getPage("usercard.html", paramsMap);
-            response.getWriter().write(page);
         }
     }
 
