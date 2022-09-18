@@ -20,7 +20,7 @@ public class SecurityFilter implements Filter {
     private List<String> excludedUrls;
     private final String filtersConfiguration = "conf/applicationProperties.properties";
 
-    private final Properties properties = PropertyHandler.readConfigPropery(filtersConfiguration);
+    private final Properties properties = PropertyHandler.readConfigProperty(filtersConfiguration);
 
     public SecurityFilter(SecurityService securityService) {
         this.securityService = securityService;

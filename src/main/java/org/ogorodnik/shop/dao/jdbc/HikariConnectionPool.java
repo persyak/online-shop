@@ -1,32 +1,23 @@
 package org.ogorodnik.shop.dao.jdbc;
 
-import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.ogorodnik.shop.utility.PropertyHandler;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Properties;
 
+//TODO: I do not fully understand why can't I create Singleton like it was done in PageGenerator. When I create it,
+//TODO: closes connectionPool
 public class HikariConnectionPool {
-
-    private static final HikariConfig config = new HikariConfig();
-    private static final HikariDataSource ds;
-    private static final String databaseConfiguration = "conf/applicationProperties.properties";
-
-    private static final Properties properties = PropertyHandler.readConfigPropery(databaseConfiguration);
+    private static final HikariDataSource dataSource;
 
     static {
-        config.setJdbcUrl(properties.getProperty("jdbc.url"));
-        config.setUsername(properties.getProperty("jdbc.username"));
-        config.setPassword(properties.getProperty("jdbc.password"));
-        config.addDataSourceProperty("cachePrepStmts", "true");
-        config.addDataSourceProperty("prepStmtCacheSize", "250");
-        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-        ds = new HikariDataSource(config);
+        ClassPathXmlApplicationContext context =
+                     new ClassPathXmlApplicationContext("context/connectionPool.xml");
+            dataSource = context.getBean("dataSource", HikariDataSource.class);
     }
 
     static Connection getConnection() throws SQLException {
-        return ds.getConnection();
+        return dataSource.getConnection();
     }
 }

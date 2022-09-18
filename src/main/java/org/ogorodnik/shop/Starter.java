@@ -1,5 +1,6 @@
 package org.ogorodnik.shop;
 
+import com.zaxxer.hikari.HikariConfig;
 import jakarta.servlet.DispatcherType;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.server.Server;
@@ -37,7 +38,7 @@ public class Starter {
             ServletHolder loginHandler = context.getBean("loginHandler", ServletHolder.class);
             ServletHolder logoutHandler = context.getBean("logoutHandler", ServletHolder.class);
 
-            contextHandler.addServlet(allItemsHandler, "/items*");
+            contextHandler.addServlet(allItemsHandler, "/items");
             contextHandler.addServlet(addItemHandler, "/additem");
             contextHandler.addServlet(editItemHandler, "/edititem");
             contextHandler.addServlet(processUserCardHandler, "/usercard");
