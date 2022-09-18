@@ -12,12 +12,29 @@
 
     <bean id="dataSource" class="org.ogorodnik.shop.dao.jdbc.ConnectionFactory"/>
 
-    <!-- Config dao -->
+    <!-- config dao -->
     <bean id="itemDao" class="org.ogorodnik.shop.dao.jdbc.JdbcItemDao">
         <constructor-arg ref="dataSource"/>
     </bean>
     <bean id="userDao" class="org.ogorodnik.shop.dao.jdbc.JdbcUserDao">
         <constructor-arg ref="dataSource"/>
+    </bean>
+
+    <!-- config services -->
+    <bean id="userService" class="org.ogorodnik.shop.service.UserService">
+        <property name="userDao" ref="userDao"/>
+    </bean>
+    <bean id="itemService" class="org.ogorodnik.shop.service.ItemService">
+        <property name="itemDao" ref="itemDao"/>
+    </bean>
+    <bean id="securityService" class="org.ogorodnik.shop.service.SecurityService">
+        <constructor-arg ref="userService"/>
+        <constructor-arg ref="itemService"/>
+    </bean>
+
+    <!-- insert password with random salt into database (password == login) -->
+    <bean id="passwordManager" class="org.ogorodnik.shop.web.security.PasswordManager">
+        <constructor-arg ref="userService"/>
     </bean>
 
     <bean id="contextHandler" class="org.eclipse.jetty.servlet.ServletContextHandler"/>

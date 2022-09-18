@@ -33,25 +33,19 @@ public class Starter {
 
             //config dao
             log.info("Configuring dao");
-            ItemDao itemDao = context.getBean("itemDao", ItemDao.class);
-            UserDao userDao = context.getBean("userDao", UserDao.class);
 
             //config services
             log.info("Configuring services");
-            ItemService itemService = new ItemService();
-            itemService.setItemDao(itemDao);
-            UserService userService = new UserService();
-            userService.setUserDao(userDao);
-            SecurityService securityService = new SecurityService(userService, itemService);
+            ItemService itemService = context.getBean("itemService", ItemService.class);
+            SecurityService securityService = context.getBean("securityService", SecurityService.class);
 
             //insert password with random salt into database (password == login)
-            PasswordManager passwordManager = new PasswordManager(userService);
+            PasswordManager passwordManager = context.getBean("passwordManager", PasswordManager.class);
             passwordManager.setPasswordAndSalt("atrubin");
             passwordManager.setPasswordAndSalt("oohorodnik");
 
             //config contextHandler
             log.info("Configuring contextHandler");
-//            ServletContextHandler contextHandler = new ServletContextHandler();
             ServletContextHandler contextHandler = context.getBean("contextHandler", ServletContextHandler.class);
 
             //create pageGenerator
