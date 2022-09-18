@@ -37,6 +37,61 @@
         <constructor-arg ref="userService"/>
     </bean>
 
+    <!-- config contexthandler -->
     <bean id="contextHandler" class="org.eclipse.jetty.servlet.ServletContextHandler"/>
+
+    <!-- config pagegenerator -->
+    <bean id="pageGenerator" class="org.ogorodnik.shop.web.templater.PageGenerator"/>
+
+    <!-- config servlets -->
+    <bean id="itemsServlet" class="org.ogorodnik.shop.web.servlet.ItemsServlet">
+        <property name="itemService" ref="itemService"/>
+        <property name="pageGenerator" ref="pageGenerator"/>
+    </bean>
+    <bean id="addItemServlet" class="org.ogorodnik.shop.web.servlet.AddItemServlet">
+        <property name="itemService" ref="itemService"/>
+        <property name="pageGenerator" ref="pageGenerator"/>
+    </bean>
+    <bean id="editItemServlet" class="org.ogorodnik.shop.web.servlet.EditItemServlet">
+        <property name="itemService" ref="itemService"/>
+        <property name="pageGenerator" ref="pageGenerator"/>
+    </bean>
+    <bean id="processUserCardServlet" class="org.ogorodnik.shop.web.servlet.ProcessUserCardServlet">
+        <property name="securityService" ref="securityService"/>
+        <property name="pageGenerator" ref="pageGenerator"/>
+    </bean>
+    <bean id="loginServlet" class="org.ogorodnik.shop.web.servlet.LoginServlet">
+        <property name="securityService" ref="securityService"/>
+        <property name="pageGenerator" ref="pageGenerator"/>
+    </bean>
+    <bean id="logoutServlet" class="org.ogorodnik.shop.web.servlet.LogoutServlet">
+        <property name="securityService" ref="securityService"/>
+        <property name="pageGenerator" ref="pageGenerator"/>
+    </bean>
+
+    <!-- config servletholders -->
+    <bean id="allItemsHandler" class="org.eclipse.jetty.servlet.ServletHolder">
+        <constructor-arg ref="itemsServlet"/>
+    </bean>
+    <bean id="addItemHandler" class="org.eclipse.jetty.servlet.ServletHolder">
+        <constructor-arg ref="addItemServlet"/>
+    </bean>
+    <bean id="editItemHandler" class="org.eclipse.jetty.servlet.ServletHolder">
+        <constructor-arg ref="editItemServlet"/>
+    </bean>
+    <bean id="processUserCardHandler" class="org.eclipse.jetty.servlet.ServletHolder">
+        <constructor-arg ref="processUserCardServlet"/>
+    </bean>
+    <bean id="loginHandler" class="org.eclipse.jetty.servlet.ServletHolder">
+        <constructor-arg ref="loginServlet"/>
+    </bean>
+    <bean id="logoutHandler" class="org.eclipse.jetty.servlet.ServletHolder">
+        <constructor-arg ref="logoutServlet"/>
+    </bean>
+
+    <!-- config securityfilter -->
+    <bean id="securityFilter" class="org.ogorodnik.shop.web.security.SecurityFilter">
+        <constructor-arg ref="securityService"/>
+    </bean>
 
 </beans>

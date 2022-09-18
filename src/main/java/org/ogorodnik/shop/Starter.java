@@ -6,12 +6,8 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.ogorodnik.shop.service.ItemService;
-import org.ogorodnik.shop.service.SecurityService;
 import org.ogorodnik.shop.web.security.PasswordManager;
 import org.ogorodnik.shop.web.security.SecurityFilter;
-import org.ogorodnik.shop.web.servlet.*;
-import org.ogorodnik.shop.web.templater.PageGenerator;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.EnumSet;
@@ -23,14 +19,6 @@ public class Starter {
         try (ClassPathXmlApplicationContext context =
                  new ClassPathXmlApplicationContext("context/applicationContext.xml")) {
 
-            //config dao
-            log.info("Configuring dao");
-
-            //config services
-            log.info("Configuring services");
-            ItemService itemService = context.getBean("itemService", ItemService.class);
-            SecurityService securityService = context.getBean("securityService", SecurityService.class);
-
             //insert password with random salt into database (password == login)
             PasswordManager passwordManager = context.getBean("passwordManager", PasswordManager.class);
             passwordManager.setPasswordAndSalt("atrubin");
@@ -40,52 +28,26 @@ public class Starter {
             log.info("Configuring contextHandler");
             ServletContextHandler contextHandler = context.getBean("contextHandler", ServletContextHandler.class);
 
-            //create pageGenerator
-            PageGenerator pageGenerator = PageGenerator.getPageGenerator();
-
             //config servlets
             log.info("Configuring servlets");
-            ItemsServlet itemsServlet = new ItemsServlet();
-            itemsServlet.setItemService(itemService);
-            itemsServlet.setPageGenerator(pageGenerator);
-            ServletHolder allItemsHandler = new ServletHolder(itemsServlet);
-            contextHandler.addServlet(allItemsHandler, "/items");
-            contextHandler.addServlet(allItemsHandler, "/index.html");
+            ServletHolder allItemsHandler = context.getBean("allItemsHandler", ServletHolder.class);
+            ServletHolder addItemHandler = context.getBean("addItemHandler", ServletHolder.class);
+            ServletHolder editItemHandler = context.getBean("editItemHandler", ServletHolder.class);
+            ServletHolder processUserCardHandler = context.getBean("processUserCardHandler", ServletHolder.class);
+            ServletHolder loginHandler = context.getBean("loginHandler", ServletHolder.class);
+            ServletHolder logoutHandler = context.getBean("logoutHandler", ServletHolder.class);
 
-            AddItemServlet addItemServlet = new AddItemServlet();
-            addItemServlet.setItemService(itemService);
-            addItemServlet.setPageGenerator(pageGenerator);
-            ServletHolder addItemHandler = new ServletHolder(addItemServlet);
+            contextHandler.addServlet(allItemsHandler, "/items*");
             contextHandler.addServlet(addItemHandler, "/additem");
-
-            EditItemServlet editItemServlet = new EditItemServlet();
-            editItemServlet.setItemService(itemService);
-            editItemServlet.setPageGenerator(pageGenerator);
-            ServletHolder editItemHandler = new ServletHolder(editItemServlet);
             contextHandler.addServlet(editItemHandler, "/edititem");
-
-            ProcessUserCardServlet processUserCardServlet = new ProcessUserCardServlet();
-            processUserCardServlet.setSecurityService(securityService);
-            processUserCardServlet.setPageGenerator(pageGenerator);
-            ServletHolder processUserCardHandler = new ServletHolder(processUserCardServlet);
             contextHandler.addServlet(processUserCardHandler, "/usercard");
             contextHandler.addServlet(processUserCardHandler, "/usercard/*");
-            LoginServlet loginServlet = new LoginServlet();
-
-            loginServlet.setSecurityService(securityService);
-            loginServlet.setPageGenerator(pageGenerator);
-            ServletHolder loginHandler = new ServletHolder(loginServlet);
             contextHandler.addServlet(loginHandler, "/login");
-
-            LogoutServlet logoutServlet = new LogoutServlet();
-            logoutServlet.setSecurityService(securityService);
-            logoutServlet.setPageGenerator(pageGenerator);
-            ServletHolder logoutHandler = new ServletHolder(logoutServlet);
             contextHandler.addServlet(logoutHandler, "/logout");
 
             //filters
             log.info("Configuring filter");
-            SecurityFilter securityFilter = new SecurityFilter(securityService);
+            SecurityFilter securityFilter = context.getBean("securityFilter", SecurityFilter.class);
             contextHandler.addFilter(new FilterHolder(securityFilter), "/*", EnumSet.of(DispatcherType.REQUEST));
 
             //config server
