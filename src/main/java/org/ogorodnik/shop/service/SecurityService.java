@@ -1,5 +1,6 @@
 package org.ogorodnik.shop.service;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
 import org.ogorodnik.shop.entity.Item;
@@ -10,15 +11,11 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
+@AllArgsConstructor
 public class SecurityService {
     private final List<Session> sessionList = Collections.synchronizedList(new ArrayList<>());
-    private ItemService itemService;
     private final UserService userService;
-
-    public SecurityService(UserService userService, ItemService itemService) {
-        this.userService = userService;
-        this.itemService = itemService;
-    }
+    private ItemService itemService;
 
     public Session allowLogin(String userName, String password) throws SQLException {
         log.info("Check if user password is correct and user can login");

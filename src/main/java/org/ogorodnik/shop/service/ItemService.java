@@ -1,11 +1,13 @@
 package org.ogorodnik.shop.service;
 
+import lombok.Setter;
 import org.ogorodnik.shop.dao.ItemDao;
 import org.ogorodnik.shop.entity.Item;
 
 import java.sql.SQLException;
 import java.util.List;
 
+@Setter
 public class ItemService {
     private ItemDao itemDao;
 
@@ -31,9 +33,5 @@ public class ItemService {
 
     public List<Item> getCard(List<Long> card) throws SQLException {
         return itemDao.getCard(card);
-    }
-
-    public void setItemDao(ItemDao itemDao) {
-        this.itemDao = itemDao;
     }
 }
