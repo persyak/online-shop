@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util
+        https://www.springframework.org/schema/util/spring-util.xsd">
+
+    <bean id="dataSource" class="org.ogorodnik.shop.dao.jdbc.ConnectionFactory"/>
+
+    <!-- Config dao -->
+    <bean id="itemDao" class="org.ogorodnik.shop.dao.jdbc.JdbcItemDao">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+    <bean id="userDao" class="org.ogorodnik.shop.dao.jdbc.JdbcUserDao">
+        <constructor-arg ref="dataSource"/>
+    </bean>
+
+    <bean id="contextHandler" class="org.eclipse.jetty.servlet.ServletContextHandler"/>
+
+</beans>

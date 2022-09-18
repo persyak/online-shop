@@ -19,91 +19,95 @@ import org.ogorodnik.shop.web.security.SecurityFilter;
 import org.ogorodnik.shop.web.servlet.*;
 import org.ogorodnik.shop.web.templater.PageGenerator;
 import org.ogorodnik.shop.web.templater.PageGeneratorCreator;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import javax.sql.DataSource;
 import java.util.EnumSet;
 
 @Slf4j
 public class Starter {
 
     public static void main(String[] args) throws Exception {
+        try (ClassPathXmlApplicationContext context =
+                 new ClassPathXmlApplicationContext("context/applicationContext.xml")) {
 
-        ConnectionFactory connectionFactory = new ConnectionFactory();
+            //config dao
+            log.info("Configuring dao");
+            ItemDao itemDao = context.getBean("itemDao", ItemDao.class);
+            UserDao userDao = context.getBean("userDao", UserDao.class);
 
-        //config dao
-        log.info("Configuring dao");
-        ItemDao itemDao = new JdbcItemDao(connectionFactory);
-        UserDao userDao = new JdbcUserDao(connectionFactory);
+            //config services
+            log.info("Configuring services");
+            ItemService itemService = new ItemService();
+            itemService.setItemDao(itemDao);
+            UserService userService = new UserService();
+            userService.setUserDao(userDao);
+            SecurityService securityService = new SecurityService(userService, itemService);
 
-        //config services
-        log.info("Configuring services");
-        ItemService itemService = new ItemService();
-        itemService.setItemDao(itemDao);
-        UserService userService = new UserService();
-        userService.setUserDao(userDao);
-        SecurityService securityService = new SecurityService(userService, itemService);
+            //insert password with random salt into database (password == login)
+            PasswordManager passwordManager = new PasswordManager(userService);
+            passwordManager.setPasswordAndSalt("atrubin");
+            passwordManager.setPasswordAndSalt("oohorodnik");
 
-        //insert password with random salt into database (password == login)
-        PasswordManager passwordManager = new PasswordManager(userService);
-        passwordManager.setPasswordAndSalt("atrubin");
-        passwordManager.setPasswordAndSalt("oohorodnik");
+            //config contextHandler
+            log.info("Configuring contextHandler");
+//            ServletContextHandler contextHandler = new ServletContextHandler();
+            ServletContextHandler contextHandler = context.getBean("contextHandler", ServletContextHandler.class);
 
-        //config contextHandler
-        log.info("Configuring contextHandler");
-        ServletContextHandler contextHandler = new ServletContextHandler();
+            //create pageGenerator
+            PageGeneratorCreator pageGeneratorCreator = new PageGeneratorCreator();
+            PageGenerator pageGenerator = pageGeneratorCreator.getPageGenerator();
 
-        //create pageGenerator
-        PageGeneratorCreator pageGeneratorCreator = new PageGeneratorCreator();
-        PageGenerator pageGenerator = pageGeneratorCreator.getPageGenerator();
+            //config servlets
+            log.info("Configuring servlets");
+            ItemsServlet itemsServlet = new ItemsServlet();
+            itemsServlet.setItemService(itemService);
+            itemsServlet.setPageGenerator(pageGenerator);
+            ServletHolder allItemsHandler = new ServletHolder(itemsServlet);
+            contextHandler.addServlet(allItemsHandler, "/items");
+            contextHandler.addServlet(allItemsHandler, "/index.html");
 
-        //config servlets
-        log.info("Configuring servlets");
-        ItemsServlet itemsServlet = new ItemsServlet();
-        itemsServlet.setItemService(itemService);
-        itemsServlet.setPageGenerator(pageGenerator);
-        ServletHolder allItemsHandler = new ServletHolder(itemsServlet);
-        contextHandler.addServlet(allItemsHandler, "/items");
-        contextHandler.addServlet(allItemsHandler, "/index.html");
+            AddItemServlet addItemServlet = new AddItemServlet();
+            addItemServlet.setItemService(itemService);
+            addItemServlet.setPageGenerator(pageGenerator);
+            ServletHolder addItemHandler = new ServletHolder(addItemServlet);
+            contextHandler.addServlet(addItemHandler, "/additem");
 
-        AddItemServlet addItemServlet = new AddItemServlet();
-        addItemServlet.setItemService(itemService);
-        addItemServlet.setPageGenerator(pageGenerator);
-        ServletHolder addItemHandler = new ServletHolder(addItemServlet);
-        contextHandler.addServlet(addItemHandler, "/additem");
+            EditItemServlet editItemServlet = new EditItemServlet();
+            editItemServlet.setItemService(itemService);
+            editItemServlet.setPageGenerator(pageGenerator);
+            ServletHolder editItemHandler = new ServletHolder(editItemServlet);
+            contextHandler.addServlet(editItemHandler, "/edititem");
 
-        EditItemServlet editItemServlet = new EditItemServlet();
-        editItemServlet.setItemService(itemService);
-        editItemServlet.setPageGenerator(pageGenerator);
-        ServletHolder editItemHandler = new ServletHolder(editItemServlet);
-        contextHandler.addServlet(editItemHandler, "/edititem");
+            ProcessUserCardServlet processUserCardServlet = new ProcessUserCardServlet();
+            processUserCardServlet.setSecurityService(securityService);
+            processUserCardServlet.setPageGenerator(pageGenerator);
+            ServletHolder processUserCardHandler = new ServletHolder(processUserCardServlet);
+            contextHandler.addServlet(processUserCardHandler, "/usercard");
+            contextHandler.addServlet(processUserCardHandler, "/usercard/*");
+            LoginServlet loginServlet = new LoginServlet();
 
-        ProcessUserCardServlet processUserCardServlet = new ProcessUserCardServlet();
-        processUserCardServlet.setSecurityService(securityService);
-        processUserCardServlet.setPageGenerator(pageGenerator);
-        ServletHolder processUserCardHandler = new ServletHolder(processUserCardServlet);
-        contextHandler.addServlet(processUserCardHandler, "/usercard");
-        contextHandler.addServlet(processUserCardHandler, "/usercard/*");
+            loginServlet.setSecurityService(securityService);
+            loginServlet.setPageGenerator(pageGenerator);
+            ServletHolder loginHandler = new ServletHolder(loginServlet);
+            contextHandler.addServlet(loginHandler, "/login");
 
-        LoginServlet loginServlet = new LoginServlet();
-        loginServlet.setSecurityService(securityService);
-        loginServlet.setPageGenerator(pageGenerator);
-        ServletHolder loginHandler = new ServletHolder(loginServlet);
-        contextHandler.addServlet(loginHandler, "/login");
+            LogoutServlet logoutServlet = new LogoutServlet();
+            logoutServlet.setSecurityService(securityService);
+            logoutServlet.setPageGenerator(pageGenerator);
+            ServletHolder logoutHandler = new ServletHolder(logoutServlet);
+            contextHandler.addServlet(logoutHandler, "/logout");
 
-        LogoutServlet logoutServlet = new LogoutServlet();
-        logoutServlet.setSecurityService(securityService);
-        logoutServlet.setPageGenerator(pageGenerator);
-        ServletHolder logoutHandler = new ServletHolder(logoutServlet);
-        contextHandler.addServlet(logoutHandler, "/logout");
+            //filters
+            log.info("Configuring filter");
+            SecurityFilter securityFilter = new SecurityFilter(securityService);
+            contextHandler.addFilter(new FilterHolder(securityFilter), "/*", EnumSet.of(DispatcherType.REQUEST));
 
-        //filters
-        log.info("Configuring filter");
-        SecurityFilter securityFilter = new SecurityFilter(securityService);
-        contextHandler.addFilter(new FilterHolder(securityFilter), "/*", EnumSet.of(DispatcherType.REQUEST));
-
-        //config server
-        log.info("Starting server");
-        Server server = new Server(Integer.parseInt(args[0]));
-        server.setHandler(contextHandler);
-        server.start();
+            //config server
+            log.info("Starting server");
+            Server server = new Server(Integer.parseInt(args[0]));
+            server.setHandler(contextHandler);
+            server.start();
+        }
     }
 }
