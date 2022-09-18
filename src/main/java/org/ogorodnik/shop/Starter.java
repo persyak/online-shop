@@ -6,22 +6,14 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.ogorodnik.shop.dao.ItemDao;
-import org.ogorodnik.shop.dao.UserDao;
-import org.ogorodnik.shop.dao.jdbc.ConnectionFactory;
-import org.ogorodnik.shop.dao.jdbc.JdbcItemDao;
-import org.ogorodnik.shop.dao.jdbc.JdbcUserDao;
 import org.ogorodnik.shop.service.ItemService;
 import org.ogorodnik.shop.service.SecurityService;
-import org.ogorodnik.shop.service.UserService;
 import org.ogorodnik.shop.web.security.PasswordManager;
 import org.ogorodnik.shop.web.security.SecurityFilter;
 import org.ogorodnik.shop.web.servlet.*;
 import org.ogorodnik.shop.web.templater.PageGenerator;
-import org.ogorodnik.shop.web.templater.PageGeneratorCreator;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import javax.sql.DataSource;
 import java.util.EnumSet;
 
 @Slf4j
@@ -49,8 +41,7 @@ public class Starter {
             ServletContextHandler contextHandler = context.getBean("contextHandler", ServletContextHandler.class);
 
             //create pageGenerator
-            PageGeneratorCreator pageGeneratorCreator = new PageGeneratorCreator();
-            PageGenerator pageGenerator = pageGeneratorCreator.getPageGenerator();
+            PageGenerator pageGenerator = PageGenerator.getPageGenerator();
 
             //config servlets
             log.info("Configuring servlets");

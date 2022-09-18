@@ -9,7 +9,15 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Map;
 
-public class PageGenerator {
+public final class PageGenerator {
+    private static PageGenerator pageGenerator;
+
+    public static PageGenerator getPageGenerator(){
+        if(pageGenerator == null){
+            pageGenerator = new PageGenerator();
+        }
+        return pageGenerator;
+    }
 
     public String getPage(String filename, Map<String, Object> data) {
         Writer writer = new StringWriter();
