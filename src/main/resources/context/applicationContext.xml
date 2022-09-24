@@ -10,6 +10,8 @@
         http://www.springframework.org/schema/util
         https://www.springframework.org/schema/util/spring-util.xsd">
 
+    <context:property-placeholder location="classpath:conf/applicationProperties.properties"/>
+
     <bean id="dataSource" class="org.ogorodnik.shop.dao.jdbc.ConnectionFactory"/>
 
     <!-- config dao -->
@@ -92,6 +94,11 @@
     <!-- config securityfilter -->
     <bean id="securityFilter" class="org.ogorodnik.shop.web.security.SecurityFilter">
         <constructor-arg ref="securityService"/>
+        <constructor-arg value="${web.filter.url.exclude}"/>
+    </bean>
+
+    <bean id="server" class="org.eclipse.jetty.server.Server">
+        <constructor-arg value="${server.port}"/>
     </bean>
 
 </beans>

@@ -1,6 +1,5 @@
 package org.ogorodnik.shop;
 
-import com.zaxxer.hikari.HikariConfig;
 import jakarta.servlet.DispatcherType;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.jetty.server.Server;
@@ -53,7 +52,7 @@ public class Starter {
 
             //config server
             log.info("Starting server");
-            Server server = new Server(Integer.parseInt(args[0]));
+            Server server = context.getBean("server", Server.class);
             server.setHandler(contextHandler);
             server.start();
         }
