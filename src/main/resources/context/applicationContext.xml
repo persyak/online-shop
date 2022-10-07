@@ -12,7 +12,9 @@
 
     <context:property-placeholder location="classpath:conf/applicationProperties.properties"/>
 
-    <bean id="dataSource" class="org.ogorodnik.shop.dao.jdbc.ConnectionFactory"/>
+    <context:component-scan base-package="org.ogorodnik.shop"/>
+
+<!--    <bean id="dataSource" class="org.ogorodnik.shop.dao.jdbc.ConnectionFactory"/>-->
 
     <!-- config dao -->
     <bean id="itemDao" class="org.ogorodnik.shop.dao.jdbc.JdbcItemDao">
@@ -43,7 +45,7 @@
     <bean id="contextHandler" class="org.eclipse.jetty.servlet.ServletContextHandler"/>
 
     <!-- config pagegenerator -->
-    <bean id="pageGenerator" class="org.ogorodnik.shop.web.templater.PageGenerator"/>
+<!--    <bean id="pageGenerator" class="org.ogorodnik.shop.web.templater.PageGenerator"/>-->
 
     <!-- config servlets -->
     <bean id="itemsServlet" class="org.ogorodnik.shop.web.servlet.ItemsServlet">

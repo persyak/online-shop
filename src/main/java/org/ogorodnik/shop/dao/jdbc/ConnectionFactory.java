@@ -1,12 +1,14 @@
 package org.ogorodnik.shop.dao.jdbc;
 
 import lombok.SneakyThrows;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.util.logging.Logger;
 
+@Component("dataSource")
 public class ConnectionFactory implements DataSource {
 
     @Override

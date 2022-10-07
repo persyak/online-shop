@@ -3,12 +3,14 @@ package org.ogorodnik.shop.web.templater;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Map;
 
+@Component
 public final class PageGenerator {
     private static PageGenerator pageGenerator;
 
