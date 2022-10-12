@@ -3,6 +3,8 @@ package org.ogorodnik.shop.dao.jdbc;
 import org.ogorodnik.shop.dao.ItemDao;
 import org.ogorodnik.shop.dao.jdbc.mapper.ItemRowMapper;
 import org.ogorodnik.shop.entity.Item;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -10,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class JdbcItemDao implements ItemDao {
     private final String GET_ALL_SQL = "SELECT id, name, price, creationDate, description FROM item";
     private final String insertSql = "INSERT INTO item (name, price, creationdate, description) values (?, ?, ?,?)";
@@ -21,6 +24,7 @@ public class JdbcItemDao implements ItemDao {
 
     private final DataSource dataSource;
 
+    @Autowired
     public JdbcItemDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }

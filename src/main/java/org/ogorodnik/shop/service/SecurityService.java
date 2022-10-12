@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
 import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.entity.Session;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
@@ -12,9 +14,12 @@ import java.util.*;
 
 @Slf4j
 @AllArgsConstructor
+@Component
 public class SecurityService {
     private final List<Session> sessionList = Collections.synchronizedList(new ArrayList<>());
+    @Autowired
     private final UserService userService;
+    @Autowired
     private ItemService itemService;
 
     public Session allowLogin(String userName, String password) throws SQLException {

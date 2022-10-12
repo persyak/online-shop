@@ -1,22 +1,27 @@
 package org.ogorodnik.shop.web.servlet;
 
 import jakarta.servlet.http.*;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.entity.Session;
 import org.ogorodnik.shop.service.SecurityService;
 import org.ogorodnik.shop.web.templater.PageGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Optional;
 
-@Setter
+@AllArgsConstructor
 @Slf4j
+@Component
 public class LoginServlet extends HttpServlet {
     private final int COOKIE_MAX_AGE = 14400;
 
+    @Autowired
     private SecurityService securityService;
+    @Autowired
     private PageGenerator pageGenerator;
 
     @Override

@@ -3,23 +3,28 @@ package org.ogorodnik.shop.web.servlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.service.ItemService;
 import org.ogorodnik.shop.web.templater.PageGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-@Setter
+@AllArgsConstructor
 @Slf4j
+@Component
 public class AddItemServlet extends HttpServlet {
 
+    @Autowired
     private ItemService itemService;
+    @Autowired
     private PageGenerator pageGenerator;
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

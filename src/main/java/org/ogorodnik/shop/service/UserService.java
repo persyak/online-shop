@@ -1,13 +1,18 @@
 package org.ogorodnik.shop.service;
 
-import lombok.Setter;
+import lombok.AllArgsConstructor;
 import org.ogorodnik.shop.dao.UserDao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
 import java.util.List;
 
-@Setter
+@AllArgsConstructor
+@Component
 public class UserService {
+
+    @Autowired
     private UserDao userDao;
 
     public List<String> getUserPassword(String name) throws SQLException {

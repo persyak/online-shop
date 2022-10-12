@@ -1,6 +1,8 @@
 package org.ogorodnik.shop.dao.jdbc;
 
 import org.ogorodnik.shop.dao.UserDao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -10,12 +12,14 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class JdbcUserDao implements UserDao {
     private final String GET_PASSWORD_SQL = "select password, salt from users where login = ?";
     private final String UPDATE_PASSWORD_AND_SALT = "UPDATE users SET password=?, salt=? WHERE login=?";
 
     private final DataSource dataSource;
 
+    @Autowired
     public JdbcUserDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }

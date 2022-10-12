@@ -1,14 +1,19 @@
 package org.ogorodnik.shop.service;
 
-import lombok.Setter;
+import lombok.AllArgsConstructor;
 import org.ogorodnik.shop.dao.ItemDao;
 import org.ogorodnik.shop.entity.Item;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.sql.SQLException;
 import java.util.List;
 
-@Setter
+@AllArgsConstructor
+@Component
 public class ItemService {
+
+    @Autowired
     private ItemDao itemDao;
 
     public List<Item> getAll() throws SQLException {

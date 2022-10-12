@@ -17,7 +17,7 @@ public class Starter {
 
     public static void main(String[] args) throws Exception {
         try (ClassPathXmlApplicationContext context =
-                 new ClassPathXmlApplicationContext("context/applicationContext.xml")) {
+                     new ClassPathXmlApplicationContext("context/applicationContext.xml")) {
 
             //insert password with random salt into database (password == login)
             PasswordManager passwordManager = context.getBean("passwordManager", PasswordManager.class);

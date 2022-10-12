@@ -4,24 +4,23 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.service.SecurityService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
+@AllArgsConstructor
 public class SecurityFilter implements Filter {
 
+    @Autowired
     private final SecurityService securityService;
     private List<String> excludedUrls;
-    String excludePattern;
-
-    public SecurityFilter(SecurityService securityService, String excludePattern) {
-        this.securityService = securityService;
-        this.excludePattern = excludePattern;
-    }
+    private final String excludePattern;
 
     @Override
     public void init(FilterConfig filterConfig) {
