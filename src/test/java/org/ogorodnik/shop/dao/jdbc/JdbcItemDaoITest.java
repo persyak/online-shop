@@ -13,7 +13,7 @@ public class JdbcItemDaoITest {
     @Test
     public void testGetAll() throws SQLException {
 
-        ConnectionFactory testConnectionFactory = new ConnectionFactory();
+        ConnectionFactory testConnectionFactory = ConnectionFactory.getInstance();
 
         JdbcItemDao jdbcItemDao = new JdbcItemDao(testConnectionFactory);
         List<Item> items = jdbcItemDao.getAll();

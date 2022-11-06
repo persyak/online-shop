@@ -6,6 +6,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.entity.Session;
 import org.ogorodnik.shop.service.SecurityService;
+import org.ogorodnik.shop.service.ServiceLocator;
 import org.ogorodnik.shop.web.templater.PageGenerator;
 
 import java.io.IOException;
@@ -16,8 +17,8 @@ import java.util.Optional;
 public class LoginServlet extends HttpServlet {
     private final int COOKIE_MAX_AGE = 14400;
 
-    private SecurityService securityService;
-    private PageGenerator pageGenerator;
+    private SecurityService securityService = ServiceLocator.getService(SecurityService.class);
+    private PageGenerator pageGenerator = ServiceLocator.getService(PageGenerator.class);
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

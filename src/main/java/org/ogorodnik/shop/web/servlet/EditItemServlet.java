@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.StringEscapeUtils;
 import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.service.ItemService;
+import org.ogorodnik.shop.service.ServiceLocator;
 import org.ogorodnik.shop.web.templater.PageGenerator;
 
 import java.io.IOException;
@@ -20,8 +21,9 @@ import java.util.Map;
 @Slf4j
 public class EditItemServlet extends HttpServlet {
 
-    private ItemService itemService;
-    private PageGenerator pageGenerator;
+    private ItemService itemService = ServiceLocator.getService(ItemService.class);
+    private PageGenerator pageGenerator =
+            ServiceLocator.getService(PageGenerator.class);
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Map<String, Object> paramsMap = new HashMap<>();

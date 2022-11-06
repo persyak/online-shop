@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.service.SecurityService;
+import org.ogorodnik.shop.service.ServiceLocator;
 import org.ogorodnik.shop.web.templater.PageGenerator;
 
 import java.io.IOException;
@@ -15,8 +16,8 @@ import java.io.IOException;
 @Slf4j
 public class LogoutServlet extends HttpServlet {
 
-    private SecurityService securityService;
-    private PageGenerator pageGenerator;
+    private SecurityService securityService = ServiceLocator.getService(SecurityService.class);
+    private PageGenerator pageGenerator = ServiceLocator.getService(PageGenerator.class);
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

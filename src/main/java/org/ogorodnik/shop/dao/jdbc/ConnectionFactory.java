@@ -8,6 +8,17 @@ import java.sql.Connection;
 import java.util.logging.Logger;
 
 public class ConnectionFactory implements DataSource {
+    private static ConnectionFactory instance = null;
+
+    private ConnectionFactory() {
+    }
+
+    public static ConnectionFactory getInstance() {
+        if (instance == null) {
+            instance = new ConnectionFactory();
+        }
+        return instance;
+    }
 
     @Override
     @SneakyThrows

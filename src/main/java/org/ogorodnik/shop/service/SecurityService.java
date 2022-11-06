@@ -12,7 +12,7 @@ import java.util.*;
 @Slf4j
 public class SecurityService {
     private final List<Session> sessionList = Collections.synchronizedList(new ArrayList<>());
-    private ItemService itemService;
+    private final ItemService itemService;
     private final UserService userService;
 
     public SecurityService(UserService userService, ItemService itemService) {
