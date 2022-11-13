@@ -2,7 +2,7 @@ package org.ogorodnik.shop.dao.jdbc;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.ogorodnik.shop.utility.PropertyHandler;
+import org.ogorodnik.shop.utility.PropertiesHandler;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -12,9 +12,9 @@ public class HikariConnectionPool {
 
     private static final HikariConfig config = new HikariConfig();
     private static final HikariDataSource ds;
-    private static final String databaseConfiguration = "conf/applicationProperties.properties";
+    private static final String databaseConfiguration = "conf/application.properties";
 
-    private static final Properties properties = PropertyHandler.readConfigPropery(databaseConfiguration);
+    private static final Properties properties = PropertiesHandler.getProperties(databaseConfiguration);
 
     static {
         config.setJdbcUrl(properties.getProperty("jdbc.url"));

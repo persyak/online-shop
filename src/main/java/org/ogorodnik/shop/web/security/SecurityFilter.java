@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.service.SecurityService;
 import org.ogorodnik.shop.service.ServiceLocator;
-import org.ogorodnik.shop.utility.PropertyHandler;
+import org.ogorodnik.shop.utility.PropertiesHandler;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -19,9 +19,9 @@ public class SecurityFilter implements Filter {
 
     private final SecurityService securityService = ServiceLocator.getService(SecurityService.class);
     private List<String> excludedUrls;
-    private final String filtersConfiguration = "conf/applicationProperties.properties";
+    private final String filtersConfiguration = "conf/application.properties";
 
-    private final Properties properties = PropertyHandler.readConfigPropery(filtersConfiguration);
+    private final Properties properties = PropertiesHandler.getProperties(filtersConfiguration);
 
     @Override
     public void init(FilterConfig filterConfig) {
