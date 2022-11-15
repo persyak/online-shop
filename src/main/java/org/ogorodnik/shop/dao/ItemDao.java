@@ -2,19 +2,18 @@ package org.ogorodnik.shop.dao;
 
 import org.ogorodnik.shop.entity.Item;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public interface ItemDao {
-    List<Item> getAll() throws SQLException;
+    List<Item> getAll();
 
-    void insertItem(Item item) throws SQLException;
+    void insertItem(Item item);
 
-    void deleteItem(long id) throws SQLException;
+    void deleteItem(long id);
 
-    void updateItem(Item item, long id) throws SQLException;
+    void updateItem(Item item, long id);
 
-    List<Item> search(String searchItem) throws SQLException;
+    List<Item> search(String searchItem);
 
-    List<Item> getCard(List<Long> idList) throws SQLException;
+    List<Item> getCard(List<Long> idList);
 }

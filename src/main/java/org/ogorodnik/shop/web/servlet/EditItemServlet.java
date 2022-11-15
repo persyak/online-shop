@@ -12,7 +12,6 @@ import org.ogorodnik.shop.service.ServiceLocator;
 import org.ogorodnik.shop.web.templater.PageGenerator;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -62,11 +61,7 @@ public class EditItemServlet extends HttpServlet {
         item.setCreationDate(creationDate);
         item.setDescription(description);
 
-        try {
-            itemService.updateItem(item, id);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        itemService.updateItem(item, id);
 
         paramsMap.put("name", StringEscapeUtils.escapeHtml4(name));
         paramsMap.put("price", price);

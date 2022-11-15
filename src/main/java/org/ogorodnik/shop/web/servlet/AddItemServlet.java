@@ -12,7 +12,6 @@ import org.ogorodnik.shop.service.ServiceLocator;
 import org.ogorodnik.shop.web.templater.PageGenerator;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -44,11 +43,7 @@ public class AddItemServlet extends HttpServlet {
         item.setCreationDate(creationDate);
         item.setDescription(description);
 
-        try {
-            itemService.insertItem(item);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        itemService.insertItem(item);
         log.info("item " + name + " added");
         response.sendRedirect("/items");
     }

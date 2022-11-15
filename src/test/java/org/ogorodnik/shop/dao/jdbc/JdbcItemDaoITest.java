@@ -2,20 +2,23 @@ package org.ogorodnik.shop.dao.jdbc;
 
 import org.junit.jupiter.api.Test;
 import org.ogorodnik.shop.entity.Item;
+import org.ogorodnik.shop.service.ServiceLocator;
 
-import java.sql.*;
+import javax.sql.DataSource;
 import java.util.List;
+import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class JdbcItemDaoITest {
 
     @Test
-    public void testGetAll() throws SQLException {
+    public void testGetAll() {
 
-        ConnectionFactory testConnectionFactory = ConnectionFactory.getInstance();
+        Properties properties = ServiceLocator.getProperties();
+        DataSource testDataSource = HikariDataSourceFactory.create(properties);
 
-        JdbcItemDao jdbcItemDao = new JdbcItemDao(testConnectionFactory);
+        JdbcItemDao jdbcItemDao = new JdbcItemDao(testDataSource);
         List<Item> items = jdbcItemDao.getAll();
 
         assertFalse(items.isEmpty());

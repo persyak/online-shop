@@ -12,7 +12,6 @@ import java.util.List;
 
 public class JdbcUserDao implements UserDao {
     private final String GET_PASSWORD_SQL = "select password, salt from users where login = ?";
-    private final String UPDATE_PASSWORD_AND_SALT = "UPDATE users SET password=?, salt=? WHERE login=?";
 
     private final DataSource dataSource;
 
@@ -21,7 +20,7 @@ public class JdbcUserDao implements UserDao {
     }
 
     @Override
-    public List<String> getUserPassword(String name) throws SQLException {
+    public List<String> getUserPassword(String name) {
         List<String> credentialsList = new ArrayList<>(2);
 
         try (Connection connection = dataSource.getConnection();
@@ -33,18 +32,9 @@ public class JdbcUserDao implements UserDao {
                 credentialsList.add(resultSet.getString("password"));
                 credentialsList.add(resultSet.getString("salt"));
             }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
         return credentialsList;
-    }
-
-    @Override
-    public void updatePasswordAndSalt(String encryptedPassword, String salt, String login) throws SQLException {
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement updatePasswordAndSalt = connection.prepareStatement(UPDATE_PASSWORD_AND_SALT)) {
-            updatePasswordAndSalt.setString(1, encryptedPassword);
-            updatePasswordAndSalt.setString(2, salt);
-            updatePasswordAndSalt.setString(3, login);
-            updatePasswordAndSalt.executeUpdate();
-        }
     }
 }

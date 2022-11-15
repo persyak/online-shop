@@ -1,13 +1,14 @@
 package org.ogorodnik.shop.service;
 
 import org.ogorodnik.shop.dao.ItemDao;
-import org.ogorodnik.shop.dao.jdbc.ConnectionFactory;
+import org.ogorodnik.shop.dao.UserDao;
+import org.ogorodnik.shop.dao.jdbc.HikariDataSourceFactory;
 import org.ogorodnik.shop.dao.jdbc.JdbcItemDao;
+import org.ogorodnik.shop.dao.jdbc.JdbcUserDao;
 import org.ogorodnik.shop.utility.PropertiesHandler;
-import org.ogorodnik.shop.web.security.PasswordManager;
 import org.ogorodnik.shop.web.templater.PageGenerator;
 
-import java.sql.SQLException;
+import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -18,25 +19,17 @@ public class ServiceLocator {
 
     static {
         properties = PropertiesHandler.getProperties();
-        SERVICES.put(ItemDao.class, new JdbcItemDao(ConnectionFactory.getInstance()));
-        SERVICES.put(ItemService.class, new ItemService());
+        DataSource dataSource = HikariDataSourceFactory.create(properties);
+        ItemDao itemDao = new JdbcItemDao(dataSource);
+        UserDao userDao = new JdbcUserDao(dataSource);
+        UserService userService = new UserService(userDao);
+        ItemService itemService = new ItemService(itemDao);
+        SecurityService securityService = new SecurityService(userService, itemService);
+        SERVICES.put(ItemDao.class, itemDao);
+        SERVICES.put(ItemService.class, itemService);
         SERVICES.put(PageGenerator.class, new PageGenerator());
-        SERVICES.put(UserService.class, new UserService());
-        SERVICES.put(SecurityService.class, new SecurityService(
-                getService(UserService.class), getService(ItemService.class)));
-
-        PasswordManager passwordManager = new PasswordManager(getService(UserService.class));
-        try {
-            passwordManager.setPasswordAndSalt("atrubin");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        try {
-            passwordManager.setPasswordAndSalt("oohorodnik");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
+        SERVICES.put(SecurityService.class, securityService);
+        SERVICES.put(UserService.class, userService);
     }
 
     public static <T> T getService(Class<T> clazz) {

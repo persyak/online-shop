@@ -25,7 +25,7 @@ public class JdbcItemDao implements ItemDao {
         this.dataSource = dataSource;
     }
 
-    public List<Item> getAll() throws SQLException {
+    public List<Item> getAll() {
         List<Item> items = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement();
@@ -36,11 +36,13 @@ public class JdbcItemDao implements ItemDao {
                 Item item = itemRowMapper.mapRow(resultSet);
                 items.add(item);
             }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
         return items;
     }
 
-    public void insertItem(Item item) throws SQLException {
+    public void insertItem(Item item) {
         String name = item.getName();
         double price = item.getPrice();
         LocalDateTime creationDate = item.getCreationDate();
@@ -57,19 +59,23 @@ public class JdbcItemDao implements ItemDao {
             insertPreparedSql.setString(4, description);
 
             insertPreparedSql.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 
-    public void deleteItem(long id) throws SQLException {
+    public void deleteItem(long id) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement deletePreparedSql = connection.prepareStatement(DELETE_SQL)) {
             deletePreparedSql.setLong(1, id);
 
             deletePreparedSql.execute();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 
-    public void updateItem(Item item, long id) throws SQLException {
+    public void updateItem(Item item, long id) {
         String name = item.getName();
         double price = item.getPrice();
         LocalDateTime creationDate = item.getCreationDate();
@@ -86,11 +92,13 @@ public class JdbcItemDao implements ItemDao {
             updatePreparedSql.setLong(5, id);
 
             updatePreparedSql.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
     }
 
     @Override
-    public List<Item> search(String searchItem) throws SQLException {
+    public List<Item> search(String searchItem) {
         List<Item> items = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
              PreparedStatement searchPreparedSql = connection.prepareStatement(SEARCHITEM_SQL)) {
@@ -104,11 +112,13 @@ public class JdbcItemDao implements ItemDao {
                 Item item = itemRowMapper.mapRow(resultSet);
                 items.add(item);
             }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
         return items;
     }
 
-    public List<Item> getCard(List<Long> idList) throws SQLException {
+    public List<Item> getCard(List<Long> idList) {
         List<Item> items = new ArrayList<>();
         ItemRowMapper itemRowMapper = new ItemRowMapper();
 
@@ -127,6 +137,8 @@ public class JdbcItemDao implements ItemDao {
                 Item item = itemRowMapper.mapRow(resultSet);
                 items.add(item);
             }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
         return items;
     }

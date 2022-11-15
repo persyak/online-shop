@@ -10,7 +10,6 @@ import org.ogorodnik.shop.service.ServiceLocator;
 import org.ogorodnik.shop.web.templater.PageGenerator;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,17 +28,9 @@ public class ItemsServlet extends HttpServlet {
         Map<String, Object> paramsMap = new HashMap<>();
         if (null == searchItem || searchItem.isBlank()) {
             log.info("Getting all items from database");
-            try {
-                paramsMap.put("items", itemService.getAll());
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            paramsMap.put("items", itemService.getAll());
         } else {
-            try {
-                paramsMap.put("items", itemService.search(searchItem));
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            paramsMap.put("items", itemService.search(searchItem));
         }
         String page = pageGenerator.getPage("items.html", paramsMap);
 
@@ -56,11 +47,7 @@ public class ItemsServlet extends HttpServlet {
             long id = request.getParameter("id") == null ? 0 : Long.parseLong(request.getParameter("id"));
             if (0 != id) {
                 log.info("Deleting item " + request.getParameter("name"));
-                try {
-                    itemService.deleteItem(id);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                itemService.deleteItem(id);
                 doGet(request, response);
             } else {
                 doGet(request, response);
