@@ -1,11 +1,11 @@
 package org.ogorodnik.shop.service;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.ogorodnik.shop.dao.UserDao;
 
 import java.util.List;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserService {
     private final UserDao userDao;
 

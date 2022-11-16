@@ -11,14 +11,15 @@ import org.ogorodnik.shop.web.templater.PageGenerator;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.Properties;
 
 @Setter
 @Slf4j
 public class LoginServlet extends HttpServlet {
-    private final int COOKIE_MAX_AGE = 14400;
 
     private SecurityService securityService = ServiceLocator.getService(SecurityService.class);
     private PageGenerator pageGenerator = ServiceLocator.getService(PageGenerator.class);
+    Properties properties = ServiceLocator.getProperties();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -33,11 +34,19 @@ public class LoginServlet extends HttpServlet {
         String name = request.getParameter("name");
         String password = request.getParameter("password");
 
-        Optional<Session> session = Optional.ofNullable(securityService.allowLogin(name, password));
-        if (session.isPresent()) {
+        Optional<Session> sessionOptional = Optional.ofNullable(securityService.allowLogin(name, password));
+        if (sessionOptional.isPresent()) {
             log.info("login user and redirect to main page");
-            Cookie cookie = new Cookie("user-token", session.get().getUuid());
-            cookie.setMaxAge(COOKIE_MAX_AGE);
+            Cookie cookie = new Cookie("user-token", sessionOptional.get().getUserToken());
+
+            //TODO: is it a good practice to throw RuntimeException in the case below?
+            //TODO: I'd make default param value in case of exception and wrote error to log.
+            try {
+                cookie.setMaxAge(Integer.parseInt(properties.getProperty("session.cookie.max.age")));
+            } catch (NumberFormatException e) {
+                log.error("Invalid session.cookie.max.age number format", e);
+                throw new RuntimeException("Invalid session.cookie.max.age number format", e);
+            }
             response.addCookie(cookie);
             response.sendRedirect("/items");
         } else {

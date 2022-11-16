@@ -5,7 +5,6 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.entity.Session;
 
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -20,7 +19,7 @@ public class SecurityService {
         this.itemService = itemService;
     }
 
-    public Session allowLogin(String userName, String password) throws SQLException {
+    public Session allowLogin(String userName, String password) {
         log.info("Check if user password is correct and user can login");
         List<String> credentialsList = userService.getUserPassword(userName);
         if (credentialsList.size() == 2) {
@@ -44,7 +43,7 @@ public class SecurityService {
         Iterator<Session> iterator = sessionList.iterator();
         while (iterator.hasNext()) {
             Session session = iterator.next();
-            if (uuid.equals(session.getUuid())) {
+            if (uuid.equals(session.getUserToken())) {
                 iterator.remove();
                 log.info("user has been logged out successfully");
                 return true;
@@ -59,7 +58,7 @@ public class SecurityService {
         Iterator<Session> iterator = sessionList.iterator();
         while (iterator.hasNext()) {
             Session session = iterator.next();
-            if (uuid.equals(session.getUuid())) {
+            if (uuid.equals(session.getUserToken())) {
                 if (session.getExpireDate().isBefore(LocalDateTime.now())) {
                     iterator.remove();
                     return false;
@@ -75,12 +74,12 @@ public class SecurityService {
     // for sure and if has been already checked and there is no null value
     public Session getSession(String uuid) {
         return sessionList.stream()
-                .filter(session -> uuid.equals(session.getUuid()))
+                .filter(session -> uuid.equals(session.getUserToken()))
                 .findAny()
                 .orElse(null);
     }
 
-    public List<Item> getCard(List<Long> card) throws SQLException {
+    public List<Item> getCard(List<Long> card) {
         return itemService.getCard(card);
     }
 }

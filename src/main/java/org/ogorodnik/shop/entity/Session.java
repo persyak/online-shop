@@ -8,16 +8,16 @@ import java.util.List;
 
 @Getter
 public class Session {
-    private String uuid;
-    private LocalDateTime expireDate;
-    private final List<Long> card = new ArrayList<>();
+    private final String userToken;
+    private final LocalDateTime expireDate;
+    private final List<Long> itemIds = new ArrayList<>();
 
     public Session(String uuid, LocalDateTime expireDate) {
-        this.uuid = uuid;
+        this.userToken = uuid;
         this.expireDate = expireDate;
     }
 
     public void addItemToTheCard(long id) {
-        card.add(id);
+        itemIds.add(id);
     }
 }

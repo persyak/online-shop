@@ -25,7 +25,6 @@ public class ServiceLocator {
         UserService userService = new UserService(userDao);
         ItemService itemService = new ItemService(itemDao);
         SecurityService securityService = new SecurityService(userService, itemService);
-        SERVICES.put(ItemDao.class, itemDao);
         SERVICES.put(ItemService.class, itemService);
         SERVICES.put(PageGenerator.class, new PageGenerator());
         SERVICES.put(SecurityService.class, securityService);

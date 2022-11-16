@@ -12,7 +12,6 @@ import org.ogorodnik.shop.service.ServiceLocator;
 import org.ogorodnik.shop.web.templater.PageGenerator;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,14 +36,10 @@ public class ProcessUserCardServlet extends HttpServlet {
         if (null != uuid) {
             log.info("got user session. processing user card");
             Session session = securityService.getSession(uuid);
-            List<Long> card = session.getCard();
+            List<Long> card = session.getItemIds();
             if (card.size() > 0) {
                 Map<String, Object> paramsMap = new HashMap<>();
-                try {
-                    paramsMap.put("items", securityService.getCard(card));
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
+                paramsMap.put("items", securityService.getCard(card));
                 String page = pageGenerator.getPage("usercard.html", paramsMap);
                 response.getWriter().write(page);
             } else {

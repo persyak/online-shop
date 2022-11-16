@@ -7,10 +7,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.service.SecurityService;
 import org.ogorodnik.shop.service.ServiceLocator;
+import org.ogorodnik.shop.web.util.WebUtil;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 
 @Slf4j
@@ -32,26 +34,25 @@ public class SecurityFilter implements Filter {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
         String path = (httpServletRequest).getServletPath();
-        if (!excludedUrls.contains(path)) {
-            log.info("Check if user is authorised");
-            Cookie[] cookies = httpServletRequest.getCookies();
-            if (null == cookies) {
-                log.info("Unauthorised access");
-                httpServletResponse.sendRedirect("/login");
-            } else {
-                for (Cookie cookie : cookies) {
-                    if ("user-token".equals(cookie.getName())) {
-                        if (!securityService.validateIfLoggedIn(cookie.getValue())) {
-                            log.info("Unauthorised access");
-                            httpServletResponse.sendRedirect("/login");
-                        } else {
-                            log.info("Authorised access");
-                            filterChain.doFilter(servletRequest, servletResponse);
-                        }
-                    }
-                }
-            }
+
+        //TODO: move to methods
+        if (excludedUrls.contains(path)) {
+            filterChain.doFilter(servletRequest, servletResponse);
+            return;
+        }
+        log.info("Check if user is authorised");
+
+        Optional<String> tokenOptional = WebUtil.extractCookieValue(httpServletRequest, "user-token");
+        if (tokenOptional.isEmpty()) {
+            log.info("Unauthorised access");
+            httpServletResponse.sendRedirect("/login");
+            return;
+        }
+        if (!securityService.validateIfLoggedIn(tokenOptional.get())) {
+            log.info("Unauthorised access");
+            httpServletResponse.sendRedirect("/login");
         } else {
+            log.info("Authorised access");
             filterChain.doFilter(servletRequest, servletResponse);
         }
     }
