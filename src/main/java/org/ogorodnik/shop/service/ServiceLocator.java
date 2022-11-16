@@ -5,6 +5,7 @@ import org.ogorodnik.shop.dao.UserDao;
 import org.ogorodnik.shop.dao.jdbc.HikariDataSourceFactory;
 import org.ogorodnik.shop.dao.jdbc.JdbcItemDao;
 import org.ogorodnik.shop.dao.jdbc.JdbcUserDao;
+import org.ogorodnik.shop.security.SecurityService;
 import org.ogorodnik.shop.utility.PropertiesHandler;
 import org.ogorodnik.shop.web.templater.PageGenerator;
 

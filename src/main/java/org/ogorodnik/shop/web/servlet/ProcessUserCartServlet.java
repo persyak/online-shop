@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.entity.Item;
-import org.ogorodnik.shop.entity.Session;
+import org.ogorodnik.shop.security.Session;
 import org.ogorodnik.shop.service.CartService;
 import org.ogorodnik.shop.service.ServiceLocator;
 import org.ogorodnik.shop.web.templater.PageGenerator;

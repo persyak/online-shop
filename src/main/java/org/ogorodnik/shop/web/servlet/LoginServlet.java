@@ -4,8 +4,8 @@ import jakarta.servlet.http.*;
 import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.ogorodnik.shop.entity.Session;
-import org.ogorodnik.shop.service.SecurityService;
+import org.ogorodnik.shop.security.Session;
+import org.ogorodnik.shop.security.SecurityService;
 import org.ogorodnik.shop.service.ServiceLocator;
 import org.ogorodnik.shop.web.templater.PageGenerator;
 

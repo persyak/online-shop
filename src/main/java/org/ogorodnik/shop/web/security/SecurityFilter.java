@@ -4,8 +4,8 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.ogorodnik.shop.entity.Session;
-import org.ogorodnik.shop.service.SecurityService;
+import org.ogorodnik.shop.security.Session;
+import org.ogorodnik.shop.security.SecurityService;
 import org.ogorodnik.shop.service.ServiceLocator;
 import org.ogorodnik.shop.web.util.WebUtil;
 

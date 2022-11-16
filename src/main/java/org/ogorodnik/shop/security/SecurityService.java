@@ -1,8 +1,8 @@
-package org.ogorodnik.shop.service;
+package org.ogorodnik.shop.security;
 
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
-import org.ogorodnik.shop.entity.Session;
+import org.ogorodnik.shop.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.*;

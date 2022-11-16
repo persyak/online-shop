@@ -1,6 +1,7 @@
-package org.ogorodnik.shop.entity;
+package org.ogorodnik.shop.security;
 
 import lombok.Getter;
+import org.ogorodnik.shop.entity.Item;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
