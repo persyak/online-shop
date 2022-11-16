@@ -15,5 +15,5 @@ public interface ItemDao {
 
     List<Item> search(String searchItem);
 
-    List<Item> getCard(List<Long> idList);
+    Item getItemById(long id);
 }

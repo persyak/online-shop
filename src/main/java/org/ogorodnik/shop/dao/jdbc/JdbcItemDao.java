@@ -12,12 +12,13 @@ import java.util.List;
 
 public class JdbcItemDao implements ItemDao {
     private final String GET_ALL_SQL = "SELECT id, name, price, creationDate, description FROM item";
-    private final String insertSql = "INSERT INTO item (name, price, creationdate, description) values (?, ?, ?,?)";
+    private final String INSERT_SQL = "INSERT INTO item (name, price, creationdate, description) values (?, ?, ?,?)";
     private final String DELETE_SQL = "DELETE FROM item WHERE id = ?";
     private final String UPDATE_SQL = "UPDATE item SET name=?, price=?, creationDate=?, description=? WHERE id=?";
     private final String SEARCHITEM_SQL =
             "SELECT id, name, price, creationDate, description FROM item where name like ? or description like ?";
-    private final String GET_CARD_SQL = "SELECT id, name, price, creationDate, description FROM item where id in";
+    private final String GET_ITEM_BY_ID_SQL =
+            "SELECT id, name, price, creationDate, description FROM item WHERE id = ?";
 
     private final DataSource dataSource;
 
@@ -49,7 +50,7 @@ public class JdbcItemDao implements ItemDao {
         String description = item.getDescription();
 
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement insertPreparedSql = connection.prepareStatement(insertSql)) {
+             PreparedStatement insertPreparedSql = connection.prepareStatement(INSERT_SQL)) {
             insertPreparedSql.setString(1, name);
             insertPreparedSql.setDouble(2, price);
 
@@ -118,28 +119,20 @@ public class JdbcItemDao implements ItemDao {
         return items;
     }
 
-    public List<Item> getCard(List<Long> idList) {
-        List<Item> items = new ArrayList<>();
-        ItemRowMapper itemRowMapper = new ItemRowMapper();
-
-        StringBuilder builder = new StringBuilder();
-        builder.append("?,".repeat(idList.size()));
-        String placeHolders = builder.deleteCharAt(builder.length() - 1).toString();
-        String getCardSql = GET_CARD_SQL + "(" + placeHolders + ")";
-
+    @Override
+    public Item getItemById(long itemId) {
+        Item item = null;
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement getCardSqlStatement = connection.prepareStatement(getCardSql)) {
-            for (int i = 1; i <= idList.size(); i++) {
-                getCardSqlStatement.setLong(i, idList.get(i - 1));
-            }
-            ResultSet resultSet = getCardSqlStatement.executeQuery();
+             PreparedStatement getItemByIdSql = connection.prepareStatement(GET_ITEM_BY_ID_SQL)) {
+            getItemByIdSql.setLong(1, itemId);
+            ResultSet resultSet = getItemByIdSql.executeQuery();
+            ItemRowMapper itemRowMapper = new ItemRowMapper();
             while (resultSet.next()) {
-                Item item = itemRowMapper.mapRow(resultSet);
-                items.add(item);
+                item = itemRowMapper.mapRow(resultSet);
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return items;
+        return item;
     }
 }

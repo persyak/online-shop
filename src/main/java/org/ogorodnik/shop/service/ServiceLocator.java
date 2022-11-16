@@ -24,11 +24,13 @@ public class ServiceLocator {
         UserDao userDao = new JdbcUserDao(dataSource);
         UserService userService = new UserService(userDao);
         ItemService itemService = new ItemService(itemDao);
-        SecurityService securityService = new SecurityService(userService, itemService);
+        SecurityService securityService = new SecurityService(userService);
+        CartService cartService = new CartService(itemService);
         SERVICES.put(ItemService.class, itemService);
         SERVICES.put(PageGenerator.class, new PageGenerator());
         SERVICES.put(SecurityService.class, securityService);
         SERVICES.put(UserService.class, userService);
+        SERVICES.put(CartService.class, cartService);
     }
 
     public static <T> T getService(Class<T> clazz) {

@@ -10,14 +10,10 @@ import java.util.List;
 public class Session {
     private final String userToken;
     private final LocalDateTime expireDate;
-    private final List<Long> itemIds = new ArrayList<>();
+    private final List<Item> cart = new ArrayList<>();
 
-    public Session(String uuid, LocalDateTime expireDate) {
-        this.userToken = uuid;
+    public Session(String userToken, LocalDateTime expireDate) {
+        this.userToken = userToken;
         this.expireDate = expireDate;
-    }
-
-    public void addItemToTheCard(long id) {
-        itemIds.add(id);
     }
 }

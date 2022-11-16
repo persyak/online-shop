@@ -2,7 +2,6 @@ package org.ogorodnik.shop.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
-import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.entity.Session;
 
 import java.time.LocalDateTime;
@@ -11,12 +10,10 @@ import java.util.*;
 @Slf4j
 public class SecurityService {
     private final List<Session> sessionList = Collections.synchronizedList(new ArrayList<>());
-    private final ItemService itemService;
     private final UserService userService;
 
-    public SecurityService(UserService userService, ItemService itemService) {
+    public SecurityService(UserService userService) {
         this.userService = userService;
-        this.itemService = itemService;
     }
 
     public Session allowLogin(String userName, String password) {
@@ -53,33 +50,20 @@ public class SecurityService {
         return false;
     }
 
-    public boolean validateIfLoggedIn(String uuid) {
+    public Session getSession(String userToken) {
         log.info("validate if user is logged in");
         Iterator<Session> iterator = sessionList.iterator();
         while (iterator.hasNext()) {
             Session session = iterator.next();
-            if (uuid.equals(session.getUserToken())) {
+            if (userToken.equals(session.getUserToken())) {
                 if (session.getExpireDate().isBefore(LocalDateTime.now())) {
                     iterator.remove();
-                    return false;
+                    return null;
                 } else {
-                    return true;
+                    return session;
                 }
             }
         }
-        return false;
-    }
-
-    //TODO: how to avoid using if when we know that session is available
-    // for sure and if has been already checked and there is no null value
-    public Session getSession(String uuid) {
-        return sessionList.stream()
-                .filter(session -> uuid.equals(session.getUserToken()))
-                .findAny()
-                .orElse(null);
-    }
-
-    public List<Item> getCard(List<Long> card) {
-        return itemService.getCard(card);
+        return null;
     }
 }

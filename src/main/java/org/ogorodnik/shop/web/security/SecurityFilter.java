@@ -1,10 +1,10 @@
 package org.ogorodnik.shop.web.security;
 
 import jakarta.servlet.*;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.ogorodnik.shop.entity.Session;
 import org.ogorodnik.shop.service.SecurityService;
 import org.ogorodnik.shop.service.ServiceLocator;
 import org.ogorodnik.shop.web.util.WebUtil;
@@ -48,10 +48,14 @@ public class SecurityFilter implements Filter {
             httpServletResponse.sendRedirect("/login");
             return;
         }
-        if (!securityService.validateIfLoggedIn(tokenOptional.get())) {
+
+        Session session = securityService.getSession(tokenOptional.get());
+        //TODO: make session optional
+        if (session == null) {
             log.info("Unauthorised access");
             httpServletResponse.sendRedirect("/login");
         } else {
+            httpServletRequest.setAttribute("session", session);
             log.info("Authorised access");
             filterChain.doFilter(servletRequest, servletResponse);
         }

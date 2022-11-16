@@ -30,7 +30,7 @@ public class ItemService {
         return itemDao.search(searchItem);
     }
 
-    public List<Item> getCard(List<Long> card) {
-        return itemDao.getCard(card);
+    public Item getItemById(long itemId) {
+        return itemDao.getItemById(itemId);
     }
 }

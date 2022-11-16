@@ -47,7 +47,7 @@
 
     <servlet>
         <servlet-name>processUserCardServlet</servlet-name>
-        <servlet-class>org.ogorodnik.shop.web.servlet.ProcessUserCardServlet</servlet-class>
+        <servlet-class>org.ogorodnik.shop.web.servlet.ProcessUserCartServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>processUserCardServlet</servlet-name>
