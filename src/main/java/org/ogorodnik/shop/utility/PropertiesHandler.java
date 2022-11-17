@@ -14,16 +14,9 @@ public class PropertiesHandler {
     private static final Map<String, Properties> cachedProperties = new ConcurrentHashMap<>();
     private static final String DEFAULT_PROPERTIES_PATH = "conf/application.properties";
 
-    public static Properties getProperties() {
+    public static Properties getDefaultProperties() {
         cachedProperties.putIfAbsent(DEFAULT_PROPERTIES_PATH, readProperties(DEFAULT_PROPERTIES_PATH));
         return new Properties(cachedProperties.get(DEFAULT_PROPERTIES_PATH));
-    }
-
-    public static Properties getProperties(String path) {
-        if (!cachedProperties.containsKey(path)) {
-            cachedProperties.put(path, readProperties(path));
-        }
-        return new Properties(cachedProperties.get(path));
     }
 
     private static Properties readProperties(String path) {

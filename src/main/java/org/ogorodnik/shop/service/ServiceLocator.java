@@ -19,7 +19,8 @@ public class ServiceLocator {
     private static final Properties properties;
 
     static {
-        properties = PropertiesHandler.getProperties();
+        properties = PropertiesHandler.getDefaultProperties();
+
         DataSource dataSource = HikariDataSourceFactory.create(properties);
         ItemDao itemDao = new JdbcItemDao(dataSource);
         UserDao userDao = new JdbcUserDao(dataSource);
@@ -27,6 +28,7 @@ public class ServiceLocator {
         ItemService itemService = new ItemService(itemDao);
         SecurityService securityService = new SecurityService(userService);
         CartService cartService = new CartService(itemService);
+
         SERVICES.put(ItemService.class, itemService);
         SERVICES.put(PageGenerator.class, new PageGenerator());
         SERVICES.put(SecurityService.class, securityService);

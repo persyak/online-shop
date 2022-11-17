@@ -9,12 +9,11 @@ import java.util.stream.Stream;
 public class WebUtil {
 
     //TODO: write a test
-    public static Optional<String> extractCookieValue(HttpServletRequest request, String cookieName){
+    public static Optional<String> extractCookieValue(HttpServletRequest request, String cookieName) {
         Cookie[] cookies = request.getCookies();
-        if (cookies == null){
+        if (cookies == null) {
             return Optional.empty();
         }
-
         return Stream.of(cookies)
                 .filter(cookie -> cookie.getName().equalsIgnoreCase(cookieName))
                 .map(Cookie::getValue)
