@@ -9,7 +9,6 @@ import java.util.List;
 public class CartService {
     private final ItemService itemService;
 
-    //TODO: write a test
     public void addToCart(List<Item> cart, long itemId) {
         Item item = itemService.getItemById(itemId);
         cart.add(item);
