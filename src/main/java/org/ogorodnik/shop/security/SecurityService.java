@@ -50,7 +50,7 @@ public class SecurityService {
         return false;
     }
 
-    public Session getSession(String userToken) {
+    public Optional<Session> getSession(String userToken) {
         log.info("validate if user is logged in");
         Iterator<Session> iterator = sessionList.iterator();
         while (iterator.hasNext()) {
@@ -58,12 +58,12 @@ public class SecurityService {
             if (userToken.equals(session.getUserToken())) {
                 if (session.getExpireDate().isBefore(LocalDateTime.now())) {
                     iterator.remove();
-                    return null;
+                    return Optional.empty();
                 } else {
-                    return session;
+                    return  Optional.of(session);
                 }
             }
         }
-        return null;
+        return Optional.empty();
     }
 }

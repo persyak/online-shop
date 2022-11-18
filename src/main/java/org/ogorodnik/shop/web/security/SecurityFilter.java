@@ -35,7 +35,6 @@ public class SecurityFilter implements Filter {
         HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
         String path = (httpServletRequest).getServletPath();
 
-        //TODO: move to methods
         if (excludedUrls.contains(path)) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
@@ -49,13 +48,12 @@ public class SecurityFilter implements Filter {
             return;
         }
 
-        Session session = securityService.getSession(tokenOptional.get());
-        //TODO: make session optional
-        if (session == null) {
+        Optional<Session> sessionOptional = securityService.getSession(tokenOptional.get());
+        if (sessionOptional.isEmpty()) {
             log.info("Unauthorised access");
             httpServletResponse.sendRedirect("/login");
         } else {
-            httpServletRequest.setAttribute("session", session);
+            httpServletRequest.setAttribute("session", sessionOptional.get());
             log.info("Authorised access");
             filterChain.doFilter(servletRequest, servletResponse);
         }
