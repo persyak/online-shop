@@ -8,7 +8,6 @@ import java.util.stream.Stream;
 
 public class WebUtil {
 
-    //TODO: write a test
     public static Optional<String> extractCookieValue(HttpServletRequest request, String cookieName) {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) {
