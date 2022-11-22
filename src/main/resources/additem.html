@@ -12,11 +12,11 @@
     <h1 class="text-center">ADD ITEM</h1>
 
     <form action="/additem" method="POST">
-        <label for="name">Name:</label><br>
+        <label for="name"><b>Name</b></label><br>
         <input type="text" pattern="[A-Za-z0-9 ]{3,}" id="name" name="name"><br>
-        <label for="price">Price:</label><br>
+        <label for="price"><b>Price</b></label><br>
         <input type="number" step="any" id="price" name="price"><br>
-        <label for="description">Description:</label><br>
+        <label for="description"><b>Description</b></label><br>
         <input type="text" id="description" name="description"><br>
         <input type="submit" value="Insert to DB">
     </form>

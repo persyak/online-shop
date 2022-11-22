@@ -1,5 +1,6 @@
 package org.ogorodnik.shop.dao.jdbc;
 
+import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.dao.ItemDao;
 import org.ogorodnik.shop.dao.jdbc.mapper.ItemRowMapper;
 import org.ogorodnik.shop.entity.Item;
@@ -10,6 +11,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.ogorodnik.shop.dao.jdbc.util.JdbcUtil.handleSqlException;
+
+@Slf4j
 public class JdbcItemDao implements ItemDao {
     private final String GET_ALL_SQL = "SELECT id, name, price, creationDate, description FROM item";
     private final String INSERT_SQL = "INSERT INTO item (name, price, creationdate, description) values (?, ?, ?,?)";
@@ -37,8 +41,8 @@ public class JdbcItemDao implements ItemDao {
                 Item item = itemRowMapper.mapRow(resultSet);
                 items.add(item);
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException throwable) {
+            handleSqlException(throwable, log);
         }
         return items;
     }
@@ -60,8 +64,8 @@ public class JdbcItemDao implements ItemDao {
             insertPreparedSql.setString(4, description);
 
             insertPreparedSql.executeUpdate();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException throwable) {
+            handleSqlException(throwable, log);
         }
     }
 
@@ -71,8 +75,8 @@ public class JdbcItemDao implements ItemDao {
             deletePreparedSql.setLong(1, id);
 
             deletePreparedSql.execute();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException throwable) {
+            handleSqlException(throwable, log);
         }
     }
 
@@ -93,8 +97,8 @@ public class JdbcItemDao implements ItemDao {
             updatePreparedSql.setLong(5, id);
 
             updatePreparedSql.executeUpdate();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException throwable) {
+            handleSqlException(throwable, log);
         }
     }
 
@@ -113,8 +117,8 @@ public class JdbcItemDao implements ItemDao {
                 Item item = itemRowMapper.mapRow(resultSet);
                 items.add(item);
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException throwable) {
+            handleSqlException(throwable, log);
         }
         return items;
     }
@@ -130,8 +134,8 @@ public class JdbcItemDao implements ItemDao {
             while (resultSet.next()) {
                 item = itemRowMapper.mapRow(resultSet);
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException throwable) {
+            handleSqlException(throwable, log);
         }
         return item;
     }
