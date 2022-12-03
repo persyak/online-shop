@@ -2,6 +2,7 @@ package org.ogorodnik.shop.security;
 
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
+import org.ogorodnik.shop.service.ServiceLocator;
 import org.ogorodnik.shop.service.UserService;
 
 import java.time.LocalDateTime;
@@ -11,9 +12,11 @@ import java.util.*;
 public class SecurityService {
     private final List<Session> sessionList = Collections.synchronizedList(new ArrayList<>());
     private final UserService userService;
+    private final Properties properties;
 
     public SecurityService(UserService userService) {
         this.userService = userService;
+        properties = ServiceLocator.getProperties();
     }
 
     public Session allowLogin(String userName, String password) {
@@ -22,7 +25,9 @@ public class SecurityService {
         if (credentialsList.size() == 2) {
             String hashPasswordFromUi = BCrypt.hashpw(password, credentialsList.get(1));
             if (hashPasswordFromUi.equals(credentialsList.get(0))) {
-                Session session = new Session(UUID.randomUUID().toString(), LocalDateTime.now().plusHours(4));
+                LocalDateTime expireDate =
+                        LocalDateTime.now().plusSeconds(Long.parseLong(properties.getProperty("session.cookie.max.age")));
+                Session session = new Session(UUID.randomUUID().toString(), expireDate);
                 sessionList.add(session);
                 log.info("login is successful");
                 return session;
@@ -60,7 +65,7 @@ public class SecurityService {
                     iterator.remove();
                     return Optional.empty();
                 } else {
-                    return  Optional.of(session);
+                    return Optional.of(session);
                 }
             }
         }
