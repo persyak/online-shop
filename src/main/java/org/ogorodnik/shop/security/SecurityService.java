@@ -2,8 +2,8 @@ package org.ogorodnik.shop.security;
 
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
-import org.ogorodnik.shop.service.ServiceLocator;
 import org.ogorodnik.shop.service.UserService;
+import org.ogorodnik.shop.utility.PropertiesHandler;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -11,12 +11,13 @@ import java.util.*;
 @Slf4j
 public class SecurityService {
     private final List<Session> sessionList = Collections.synchronizedList(new ArrayList<>());
+
+    private final Properties properties = PropertiesHandler.getDefaultProperties();
+
     private final UserService userService;
-    private final Properties properties;
 
     public SecurityService(UserService userService) {
         this.userService = userService;
-        properties = ServiceLocator.getProperties();
     }
 
     public Session allowLogin(String userName, String password) {

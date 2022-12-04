@@ -7,7 +7,7 @@ import java.util.List;
 public interface ItemDao {
     List<Item> getAll();
 
-    void insertItem(Item item);
+    void addItem(Item item);
 
     void deleteItem(long id);
 

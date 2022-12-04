@@ -14,8 +14,8 @@ public class ItemService {
         return itemDao.getAll();
     }
 
-    public void insertItem(Item item) {
-        itemDao.insertItem(item);
+    public void addItem(Item item) {
+        itemDao.addItem(item);
     }
 
     public void deleteItem(long id) {

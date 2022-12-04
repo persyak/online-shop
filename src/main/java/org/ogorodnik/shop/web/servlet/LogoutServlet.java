@@ -37,7 +37,7 @@ public class LogoutServlet extends HttpServlet {
             response.getWriter().write(pageGenerator.getPage("logout.html"));
         } else {
             log.info("user is not logged in so no logout made");
-            response.getWriter().write(pageGenerator.getPage("notloggedin.html"));
+            response.getWriter().write(pageGenerator.getPage("notLoggedIn.html"));
         }
     }
 }

@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.security.Session;
 import org.ogorodnik.shop.security.SecurityService;
 import org.ogorodnik.shop.service.ServiceLocator;
+import org.ogorodnik.shop.utility.PropertiesHandler;
 import org.ogorodnik.shop.web.templater.PageGenerator;
 
 import java.io.IOException;
@@ -19,7 +20,7 @@ public class LoginServlet extends HttpServlet {
 
     private SecurityService securityService = ServiceLocator.getService(SecurityService.class);
     private PageGenerator pageGenerator = ServiceLocator.getService(PageGenerator.class);
-    Properties properties = ServiceLocator.getProperties();
+    Properties properties = PropertiesHandler.getDefaultProperties();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -51,7 +52,7 @@ public class LoginServlet extends HttpServlet {
             response.sendRedirect("/items");
         } else {
             log.info("failing to login. There is no session for user");
-            String page = pageGenerator.getPage("failedlogin.html");
+            String page = pageGenerator.getPage("failedLogin.html");
             response.getWriter().write(page);
         }
     }

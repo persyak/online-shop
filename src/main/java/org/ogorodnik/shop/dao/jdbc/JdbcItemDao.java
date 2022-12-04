@@ -47,7 +47,7 @@ public class JdbcItemDao implements ItemDao {
         return items;
     }
 
-    public void insertItem(Item item) {
+    public void addItem(Item item) {
         String name = item.getName();
         double price = item.getPrice();
         LocalDateTime creationDate = item.getCreationDate();

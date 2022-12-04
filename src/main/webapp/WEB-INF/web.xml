@@ -15,7 +15,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>addItemServlet</servlet-name>
-        <url-pattern>/additem</url-pattern>
+        <url-pattern>/addItem</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -24,7 +24,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>editItemServlet</servlet-name>
-        <url-pattern>/edititem</url-pattern>
+        <url-pattern>/editItem</url-pattern>
     </servlet-mapping>
 
     <servlet>
@@ -46,13 +46,13 @@
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>processUserCardServlet</servlet-name>
+        <servlet-name>processUserCartServlet</servlet-name>
         <servlet-class>org.ogorodnik.shop.web.servlet.ProcessUserCartServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>processUserCardServlet</servlet-name>
-        <url-pattern>/usercard</url-pattern>
-        <url-pattern>/usercard/*</url-pattern>
+        <servlet-name>processUserCartServlet</servlet-name>
+        <url-pattern>/userCart</url-pattern>
+        <url-pattern>/userCart/*</url-pattern>
     </servlet-mapping>
 
     <filter>

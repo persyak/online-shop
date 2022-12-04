@@ -41,7 +41,7 @@
             <td>${item.creationDate}</td>
             <td>${item.description}</td>
             <td>
-                <form action="/edititem" class="inline">
+                <form action="/editItem" class="inline">
                     <input type="hidden" name="id" value=${item.id}>
                     <input type="hidden" name="name" value=${item.name}>
                     <input type="hidden" name="price" value=${item.price}>
@@ -54,7 +54,7 @@
                     <input type="hidden" name="name" value=${item.name}>
                     <button class="btn btn-primary" role="button">Delete</button>
                 </form>
-                <form action="/usercard/${item.id}" method="POST">
+                <form action="/userCart/${item.id}" method="POST">
                     <button class="btn btn-primary" role="button">Add to basket</button>
                 </form>
             </td>

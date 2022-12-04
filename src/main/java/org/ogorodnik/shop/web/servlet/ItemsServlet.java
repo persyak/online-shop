@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.ogorodnik.shop.service.ItemService;
 import org.ogorodnik.shop.service.ServiceLocator;
 import org.ogorodnik.shop.web.templater.PageGenerator;
@@ -40,8 +41,8 @@ public class ItemsServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response) throws IOException {
         String searchItem = request.getParameter("search");
-        if (!(null == searchItem) && !searchItem.isBlank()) {
-            log.info("Searching items from database");
+        if (!StringUtils.isBlank(searchItem)) {
+            log.info("Searching items");
             doGet(request, response);
         } else {
             long id = request.getParameter("id") == null ? 0 : Long.parseLong(request.getParameter("id"));

@@ -41,7 +41,7 @@ public class EditItemServlet extends HttpServlet {
         paramsMap.put("id", id);
 
         log.info("Editing item");
-        String page = pageGenerator.getPage("edititem.html", paramsMap);
+        String page = pageGenerator.getPage("editItem.html", paramsMap);
         response.getWriter().write(page);
     }
 
@@ -52,14 +52,15 @@ public class EditItemServlet extends HttpServlet {
         long id = Long.parseLong(request.getParameter("id"));
         String name = request.getParameter("name");
         double price = Double.parseDouble(request.getParameter("price"));
-        LocalDateTime creationDate = LocalDateTime.parse(request.getParameter("creationday"));
+        LocalDateTime creationDate = LocalDateTime.parse(request.getParameter("creationdate"));
         String description = request.getParameter("description");
 
-        Item item = new Item();
-        item.setName(name);
-        item.setPrice(price);
-        item.setCreationDate(creationDate);
-        item.setDescription(description);
+        Item item = Item.builder()
+                .name(name)
+                .price(price)
+                .creationDate(creationDate)
+                .description(description)
+                .build();
 
         itemService.updateItem(item, id);
 
@@ -68,8 +69,8 @@ public class EditItemServlet extends HttpServlet {
         paramsMap.put("creationdate", creationDate);
         paramsMap.put("description", StringEscapeUtils.escapeHtml4(description));
 
-        log.info("item " + StringEscapeUtils.escapeHtml4(name) + " edited");
-        String page = pageGenerator.getPage("editeditem.html", paramsMap);
+        log.info("item {} edited", name);
+        String page = pageGenerator.getPage("editedItem.html", paramsMap);
         response.getWriter().write(page);
     }
 }

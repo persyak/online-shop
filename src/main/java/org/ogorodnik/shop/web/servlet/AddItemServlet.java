@@ -25,7 +25,7 @@ public class AddItemServlet extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         log.info("Accessing add item page");
-        response.getWriter().write(pageGenerator.getPage("additem.html"));
+        response.getWriter().write(pageGenerator.getPage("addItem.html"));
     }
 
     @SneakyThrows
@@ -37,14 +37,15 @@ public class AddItemServlet extends HttpServlet {
         LocalDateTime creationDate = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
         String description = request.getParameter("description");
 
-        Item item = new Item();
-        item.setName(name);
-        item.setPrice(price);
-        item.setCreationDate(creationDate);
-        item.setDescription(description);
+        Item item = Item.builder()
+                .name(name)
+                .price(price)
+                .creationDate(creationDate)
+                .description(description)
+                .build();
 
-        itemService.insertItem(item);
-        log.info("item " + name + " added");
+        itemService.addItem(item);
+        log.info("item {} added", name);
         response.sendRedirect("/items");
     }
 }

@@ -12,16 +12,13 @@ import org.ogorodnik.shop.web.templater.PageGenerator;
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 public class ServiceLocator {
     private static final Map<Class, Object> SERVICES = new HashMap<>();
-    private static final Properties properties;
 
     static {
-        properties = PropertiesHandler.getDefaultProperties();
-
-        DataSource dataSource = HikariDataSourceFactory.create(properties);
+        DataSource dataSource =
+                HikariDataSourceFactory.create(PropertiesHandler.getDefaultProperties());
         ItemDao itemDao = new JdbcItemDao(dataSource);
         UserDao userDao = new JdbcUserDao(dataSource);
         UserService userService = new UserService(userDao);
@@ -38,9 +35,5 @@ public class ServiceLocator {
 
     public static <T> T getService(Class<T> clazz) {
         return clazz.cast(SERVICES.get(clazz));
-    }
-
-    public static Properties getProperties() {
-        return properties;
     }
 }

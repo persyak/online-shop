@@ -29,9 +29,9 @@ public class ProcessUserCartServlet extends HttpServlet {
         List<Item> cart = session.getCart();
         String page;
         if (cart.size() > 0) {
-            page = pageGenerator.getPage("usercard.html", Map.of("items", cart));
+            page = pageGenerator.getPage("userCart.html", Map.of("items", cart));
         } else {
-            page = pageGenerator.getPage("usercardisempty.html");
+            page = pageGenerator.getPage("userCartIsEmpty.html");
         }
         response.getWriter().write(page);
     }

@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.security.Session;
 import org.ogorodnik.shop.security.SecurityService;
 import org.ogorodnik.shop.service.ServiceLocator;
+import org.ogorodnik.shop.utility.PropertiesHandler;
 import org.ogorodnik.shop.web.util.WebUtil;
 
 import java.io.IOException;
@@ -21,7 +22,7 @@ public class SecurityFilter implements Filter {
     private final SecurityService securityService = ServiceLocator.getService(SecurityService.class);
     private List<String> excludedUrls;
 
-    private final Properties properties = ServiceLocator.getProperties();
+    private final Properties properties = PropertiesHandler.getDefaultProperties();
 
     @Override
     public void init(FilterConfig filterConfig) {
