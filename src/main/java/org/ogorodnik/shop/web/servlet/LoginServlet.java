@@ -36,7 +36,7 @@ public class LoginServlet extends HttpServlet {
                 .password(request.getParameter("password"))
                 .build();
 
-        Optional<Session> sessionOptional = Optional.ofNullable(securityService.login(credentials));
+        Optional<Session> sessionOptional = securityService.login(credentials);
         if (sessionOptional.isPresent()) {
             log.info("login user and redirect to main page");
             Cookie cookie = new Cookie("user-token", sessionOptional.get().getUserToken());

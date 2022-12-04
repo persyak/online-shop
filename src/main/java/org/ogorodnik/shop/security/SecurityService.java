@@ -20,7 +20,7 @@ public class SecurityService {
         this.userService = userService;
     }
 
-    public Session login(Credentials credentials) {
+    public Optional<Session> login(Credentials credentials) {
         log.info("Check if user password is correct and user can login");
         EncryptedPassword encryptedPassword = userService.getUserPassword(credentials.getUserName());
         String hashPasswordFromUi = BCrypt.hashpw(credentials.getPassword(), encryptedPassword.getSalt());
@@ -30,10 +30,10 @@ public class SecurityService {
             Session session = new Session(UUID.randomUUID().toString(), expireDate);
             sessionList.add(session);
             log.info("login is successful");
-            return session;
+            return Optional.of(session);
         } else {
             log.info("Login failed. Password is incorrect or user was not found");
-            return null;
+            return Optional.empty();
         }
     }
 
