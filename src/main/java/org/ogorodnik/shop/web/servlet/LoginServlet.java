@@ -3,6 +3,7 @@ package org.ogorodnik.shop.web.servlet;
 import jakarta.servlet.http.*;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.ogorodnik.shop.security.Credentials;
 import org.ogorodnik.shop.security.Session;
 import org.ogorodnik.shop.security.SecurityService;
 import org.ogorodnik.shop.service.ServiceLocator;
@@ -11,14 +12,14 @@ import org.ogorodnik.shop.web.templater.PageGenerator;
 
 import java.io.IOException;
 import java.util.Optional;
-import java.util.Properties;
 
 @Slf4j
 public class LoginServlet extends HttpServlet {
 
     private final SecurityService securityService = ServiceLocator.getService(SecurityService.class);
     private final PageGenerator pageGenerator = ServiceLocator.getService(PageGenerator.class);
-    Properties properties = PropertiesHandler.getDefaultProperties();
+    int sessionMaxAge =
+            Integer.parseInt(PropertiesHandler.getDefaultProperties().getProperty("session.cookie.max.age"));
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -30,22 +31,18 @@ public class LoginServlet extends HttpServlet {
     @SneakyThrows
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
-        String name = request.getParameter("name");
-        String password = request.getParameter("password");
+        Credentials credentials = Credentials.builder()
+                .userName(request.getParameter("name"))
+                .password(request.getParameter("password"))
+                .build();
 
-        Optional<Session> sessionOptional = Optional.ofNullable(securityService.allowLogin(name, password));
+        Optional<Session> sessionOptional = Optional.ofNullable(securityService.login(credentials));
         if (sessionOptional.isPresent()) {
             log.info("login user and redirect to main page");
             Cookie cookie = new Cookie("user-token", sessionOptional.get().getUserToken());
 
-            //TODO: is it a good practice to throw RuntimeException in the case below?
-            //TODO: I'd make default param value in case of exception and wrote error to log.
-            try {
-                cookie.setMaxAge(Integer.parseInt(properties.getProperty("session.cookie.max.age")));
-            } catch (NumberFormatException e) {
-                log.error("Invalid session.cookie.max.age number format", e);
-                throw new RuntimeException("Invalid session.cookie.max.age number format", e);
-            }
+            cookie.setMaxAge(sessionMaxAge);
+
             response.addCookie(cookie);
             response.sendRedirect("/items");
         } else {

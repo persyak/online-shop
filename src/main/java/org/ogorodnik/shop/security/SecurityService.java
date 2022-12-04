@@ -11,8 +11,8 @@ import java.util.*;
 @Slf4j
 public class SecurityService {
     private final List<Session> sessionList = Collections.synchronizedList(new ArrayList<>());
-
-    private final Properties properties = PropertiesHandler.getDefaultProperties();
+    int sessionMaxAge =
+            Integer.parseInt(PropertiesHandler.getDefaultProperties().getProperty("session.cookie.max.age"));
 
     private final UserService userService;
 
@@ -20,24 +20,19 @@ public class SecurityService {
         this.userService = userService;
     }
 
-    public Session allowLogin(String userName, String password) {
+    public Session login(Credentials credentials) {
         log.info("Check if user password is correct and user can login");
-        List<String> credentialsList = userService.getUserPassword(userName);
-        if (credentialsList.size() == 2) {
-            String hashPasswordFromUi = BCrypt.hashpw(password, credentialsList.get(1));
-            if (hashPasswordFromUi.equals(credentialsList.get(0))) {
-                LocalDateTime expireDate =
-                        LocalDateTime.now().plusSeconds(Long.parseLong(properties.getProperty("session.cookie.max.age")));
-                Session session = new Session(UUID.randomUUID().toString(), expireDate);
-                sessionList.add(session);
-                log.info("login is successful");
-                return session;
-            } else {
-                log.info("Login failed. Password is incorrect");
-                return null;
-            }
+        EncryptedPassword encryptedPassword = userService.getUserPassword(credentials.getUserName());
+        String hashPasswordFromUi = BCrypt.hashpw(credentials.getPassword(), encryptedPassword.getSalt());
+        if (hashPasswordFromUi.equals(encryptedPassword.getPassword())) {
+            LocalDateTime expireDate =
+                    LocalDateTime.now().plusSeconds(sessionMaxAge);
+            Session session = new Session(UUID.randomUUID().toString(), expireDate);
+            sessionList.add(session);
+            log.info("login is successful");
+            return session;
         } else {
-            log.info("login failed. User does not exist");
+            log.info("Login failed. Password is incorrect or user was not found");
             return null;
         }
     }
