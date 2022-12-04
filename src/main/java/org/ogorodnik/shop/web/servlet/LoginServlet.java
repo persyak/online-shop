@@ -1,7 +1,6 @@
 package org.ogorodnik.shop.web.servlet;
 
 import jakarta.servlet.http.*;
-import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.security.Session;
@@ -14,12 +13,11 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.Properties;
 
-@Setter
 @Slf4j
 public class LoginServlet extends HttpServlet {
 
-    private SecurityService securityService = ServiceLocator.getService(SecurityService.class);
-    private PageGenerator pageGenerator = ServiceLocator.getService(PageGenerator.class);
+    private final SecurityService securityService = ServiceLocator.getService(SecurityService.class);
+    private final PageGenerator pageGenerator = ServiceLocator.getService(PageGenerator.class);
     Properties properties = PropertiesHandler.getDefaultProperties();
 
     @Override

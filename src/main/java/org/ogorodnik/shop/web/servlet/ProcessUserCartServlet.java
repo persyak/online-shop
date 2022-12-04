@@ -3,7 +3,6 @@ package org.ogorodnik.shop.web.servlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.security.Session;
@@ -15,12 +14,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-@Setter
 @Slf4j
 public class ProcessUserCartServlet extends HttpServlet {
 
-    private CartService cartService = ServiceLocator.getService(CartService.class);
-    private PageGenerator pageGenerator = ServiceLocator.getService(PageGenerator.class);
+    private final CartService cartService = ServiceLocator.getService(CartService.class);
+    private final PageGenerator pageGenerator = ServiceLocator.getService(PageGenerator.class);
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

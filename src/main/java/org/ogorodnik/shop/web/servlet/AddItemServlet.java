@@ -15,12 +15,11 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-@Setter
 @Slf4j
 public class AddItemServlet extends HttpServlet {
 
-    private ItemService itemService = ServiceLocator.getService(ItemService.class);
-    private PageGenerator pageGenerator =
+    private final ItemService itemService = ServiceLocator.getService(ItemService.class);
+    private final PageGenerator pageGenerator =
             ServiceLocator.getService(PageGenerator.class);
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
