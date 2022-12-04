@@ -10,6 +10,24 @@
     </servlet-mapping>
 
     <servlet>
+        <servlet-name>searchItemsServlet</servlet-name>
+        <servlet-class>org.ogorodnik.shop.web.servlet.SearchItemsServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>searchItemsServlet</servlet-name>
+        <url-pattern>/search</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>deleteItemServlet</servlet-name>
+        <servlet-class>org.ogorodnik.shop.web.servlet.DeleteItemServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>deleteItemServlet</servlet-name>
+        <url-pattern>/delete</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>addItemServlet</servlet-name>
         <servlet-class>org.ogorodnik.shop.web.servlet.AddItemServlet</servlet-class>
     </servlet>
