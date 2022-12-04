@@ -1,11 +1,9 @@
 package org.ogorodnik.shop.web.servlet;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.ogorodnik.shop.service.ItemService;
 import org.ogorodnik.shop.service.ServiceLocator;
 import org.ogorodnik.shop.web.templater.PageGenerator;
@@ -30,15 +28,5 @@ public class ItemsServlet extends HttpServlet {
         String page = pageGenerator.getPage("items.html", paramsMap);
 
         response.getWriter().write(page);
-    }
-
-    protected void doPost(HttpServletRequest request,
-                          HttpServletResponse response) throws IOException, ServletException {
-        String searchItem = request.getParameter("search");
-        if (!StringUtils.isBlank(searchItem)) {
-            log.info("Searching items");
-            request.getRequestDispatcher("/search").forward(request, response);
-        }
-        request.getRequestDispatcher("/delete").include(request, response);
     }
 }
