@@ -50,7 +50,6 @@ public class SecurityService {
         return false;
     }
 
-    //TODO: write a test for this method and maybe for previous
     public Optional<Session> getSession(String userToken) {
         log.info("validate if user is logged in");
         for (Session session : sessionList) {
