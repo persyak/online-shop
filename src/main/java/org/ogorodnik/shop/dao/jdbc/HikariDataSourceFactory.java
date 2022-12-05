@@ -2,13 +2,16 @@ package org.ogorodnik.shop.dao.jdbc;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.RequiredArgsConstructor;
 
 import javax.sql.DataSource;
 import java.util.Properties;
 
+@RequiredArgsConstructor
 public class HikariDataSourceFactory {
+    private final Properties properties;
 
-    public static DataSource create(Properties properties) {
+    public DataSource create() {
         HikariConfig config = new HikariConfig();
 
         config.setJdbcUrl(properties.getProperty("jdbc.url"));

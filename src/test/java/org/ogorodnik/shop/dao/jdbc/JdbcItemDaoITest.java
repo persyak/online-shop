@@ -14,7 +14,9 @@ public class JdbcItemDaoITest {
     @Test
     public void testGetAll() {
 
-        DataSource testDataSource = HikariDataSourceFactory.create(PropertiesHandler.getDefaultProperties());
+        HikariDataSourceFactory defaultDataSourceFactory =
+                new HikariDataSourceFactory(PropertiesHandler.getDefaultProperties());
+        DataSource testDataSource = defaultDataSourceFactory.create();
 
         JdbcItemDao jdbcItemDao = new JdbcItemDao(testDataSource);
         List<Item> items = jdbcItemDao.getAll();

@@ -12,13 +12,16 @@ import org.ogorodnik.shop.web.templater.PageGenerator;
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 public class ServiceLocator {
     private static final Map<Class, Object> SERVICES = new HashMap<>();
 
     static {
+        HikariDataSourceFactory defaultDataSourceFactory =
+                new HikariDataSourceFactory(PropertiesHandler.getDefaultProperties());
         DataSource dataSource =
-                HikariDataSourceFactory.create(PropertiesHandler.getDefaultProperties());
+                defaultDataSourceFactory.create();
         ItemDao itemDao = new JdbcItemDao(dataSource);
         UserDao userDao = new JdbcUserDao(dataSource);
         UserService userService = new UserService(userDao);
