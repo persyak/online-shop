@@ -7,10 +7,11 @@ import org.ogorodnik.shop.utility.PropertiesHandler;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Slf4j
 public class SecurityService {
-    private final List<Session> sessionList = Collections.synchronizedList(new ArrayList<>());
+    private final List<Session> sessionList = new CopyOnWriteArrayList<>();
     int sessionMaxAge =
             Integer.parseInt(PropertiesHandler.getDefaultProperties().getProperty("session.cookie.max.age"));
 
@@ -38,11 +39,9 @@ public class SecurityService {
     }
 
     public boolean logout(String uuid) {
-        Iterator<Session> iterator = sessionList.iterator();
-        while (iterator.hasNext()) {
-            Session session = iterator.next();
+        for (Session session : sessionList) {
             if (uuid.equals(session.getUserToken())) {
-                iterator.remove();
+                sessionList.remove(session);
                 log.info("user has been logged out successfully");
                 return true;
             }
@@ -51,14 +50,13 @@ public class SecurityService {
         return false;
     }
 
+    //TODO: write a test for this method and maybe for previous
     public Optional<Session> getSession(String userToken) {
         log.info("validate if user is logged in");
-        Iterator<Session> iterator = sessionList.iterator();
-        while (iterator.hasNext()) {
-            Session session = iterator.next();
+        for (Session session : sessionList) {
             if (userToken.equals(session.getUserToken())) {
                 if (session.getExpireDate().isBefore(LocalDateTime.now())) {
-                    iterator.remove();
+                    sessionList.remove(session);
                     return Optional.empty();
                 } else {
                     return Optional.of(session);
