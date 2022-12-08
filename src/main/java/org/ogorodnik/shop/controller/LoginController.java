@@ -1,35 +1,48 @@
-package org.ogorodnik.shop.web.servlet;
+package org.ogorodnik.shop.controller;
 
-import jakarta.servlet.http.*;
-import lombok.SneakyThrows;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.security.Credentials;
-import org.ogorodnik.shop.security.Session;
 import org.ogorodnik.shop.security.SecurityService;
-import org.ogorodnik.shop.service.ServiceLocator;
+import org.ogorodnik.shop.security.Session;
 import org.ogorodnik.shop.utility.PropertiesHandler;
 import org.ogorodnik.shop.web.templater.PageGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.io.IOException;
 import java.util.Optional;
 
 @Slf4j
-public class LoginServlet extends HttpServlet {
+@Controller
+public class LoginController {
 
-    private final SecurityService securityService = ServiceLocator.getService(SecurityService.class);
-    private final PageGenerator pageGenerator = ServiceLocator.getService(PageGenerator.class);
+    //TODO: it bother me but I'm still thinking how to improve
     int sessionMaxAge =
             Integer.parseInt(PropertiesHandler.getDefaultProperties().getProperty("session.cookie.max.age"));
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private final SecurityService securityService;
+    private final PageGenerator pageGenerator;
+
+    @Autowired
+    public LoginController(SecurityService securityService, final PageGenerator pageGenerator){
+        this.securityService = securityService;
+        this.pageGenerator = pageGenerator;
+    }
+
+    @RequestMapping(path = "/login", method = RequestMethod.GET)
+    protected void getLoginPage(HttpServletResponse response) throws IOException {
         log.info("redirecting to login page");
         String page = pageGenerator.getPage("login.html");
         response.getWriter().write(page);
     }
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @RequestMapping(path = "/login", method = RequestMethod.POST)
+    protected void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Credentials credentials = Credentials.builder()
                 .userName(request.getParameter("name"))
                 .password(request.getParameter("password"))

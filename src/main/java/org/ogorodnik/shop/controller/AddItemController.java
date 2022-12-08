@@ -1,35 +1,41 @@
-package org.ogorodnik.shop.web.servlet;
+package org.ogorodnik.shop.controller;
 
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.Setter;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.service.ItemService;
-import org.ogorodnik.shop.service.ServiceLocator;
 import org.ogorodnik.shop.web.templater.PageGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 @Slf4j
-public class AddItemServlet extends HttpServlet {
+@Controller
+public class AddItemController {
 
-    private final ItemService itemService = ServiceLocator.getService(ItemService.class);
-    private final PageGenerator pageGenerator =
-            ServiceLocator.getService(PageGenerator.class);
+    private final ItemService itemService;
+    private final PageGenerator pageGenerator;
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @Autowired
+    public AddItemController(final ItemService itemService, final PageGenerator pageGenerator){
+        this.itemService = itemService;
+        this.pageGenerator = pageGenerator;
+    }
+
+    @RequestMapping(path = "/addItem", method = RequestMethod.GET)
+    protected void getAddItemPage(HttpServletResponse response) throws IOException {
         log.info("Accessing add item page");
         response.getWriter().write(pageGenerator.getPage("addItem.html"));
     }
 
-    protected void doPost(HttpServletRequest request,
-                          HttpServletResponse response) throws IOException {
-
+    @RequestMapping(path = "/addItem", method = RequestMethod.POST)
+    protected void addItem(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String name = request.getParameter("name");
         double price = Double.parseDouble(request.getParameter("price"));
         LocalDateTime creationDate = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
