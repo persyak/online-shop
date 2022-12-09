@@ -46,6 +46,10 @@
         <constructor-arg ref="userService"/>
     </bean>
 
+    <bean id="cartService" class="org.ogorodnik.shop.service.CartService">
+        <constructor-arg ref="itemService"/>
+    </bean>
+
     <bean id="pageGenerator" class="org.ogorodnik.shop.web.templater.PageGenerator"/>
 
 </beans>
