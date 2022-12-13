@@ -1,7 +1,6 @@
 package org.ogorodnik.shop.controller;
 
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.security.Credentials;
@@ -13,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
@@ -43,10 +43,13 @@ public class LoginController {
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)
-    protected void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void login(
+            @RequestParam("name") String name,
+            @RequestParam("password") String password,
+            HttpServletResponse response) throws IOException {
         Credentials credentials = Credentials.builder()
-                .userName(request.getParameter("name"))
-                .password(request.getParameter("password"))
+                .userName(name)
+                .password(password)
                 .build();
 
         Optional<Session> sessionOptional = securityService.login(credentials);

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalDateTime;
@@ -31,18 +32,16 @@ public class EditItemController {
 
     @RequestMapping(path = "/editItem", method = RequestMethod.GET)
     @ResponseBody
-    protected String getEditItemPage(HttpServletRequest request) {
+    protected String getEditItemPage(
+            @RequestParam("name") String name,
+            @RequestParam("price") String rowPrice,
+            @RequestParam("creationDate") LocalDateTime creationDate,
+            @RequestParam("description") String description,
+            @RequestParam("id") long id) {
         Map<String, Object> paramsMap = new HashMap<>();
 
-        String name = request.getParameter("name");
-        String rowPrice = request.getParameter("price");
-        String priceWithoutComma = rowPrice.replaceAll(",", "");
-        LocalDateTime creationDate = LocalDateTime.parse(request.getParameter("creationDate"));
-        String description = request.getParameter("description");
-        long id = Long.parseLong(request.getParameter("id"));
-
         paramsMap.put("name", StringEscapeUtils.escapeHtml4(name));
-        paramsMap.put("price", StringEscapeUtils.escapeHtml4(priceWithoutComma));
+        paramsMap.put("price", StringEscapeUtils.escapeHtml4(rowPrice.replaceAll(",", "")));
         paramsMap.put("creationdate", creationDate);
         paramsMap.put("description", StringEscapeUtils.escapeHtml4(description));
         paramsMap.put("id", id);
