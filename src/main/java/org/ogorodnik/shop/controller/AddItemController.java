@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -29,9 +30,10 @@ public class AddItemController {
     }
 
     @RequestMapping(path = "/addItem", method = RequestMethod.GET)
-    protected void getAddItemPage(HttpServletResponse response) throws IOException {
+    @ResponseBody
+    protected String getAddItemPage() {
         log.info("Accessing add item page");
-        response.getWriter().write(pageGenerator.getPage("addItem.html"));
+        return pageGenerator.getPage("addItem.html");
     }
 
     @RequestMapping(path = "/addItem", method = RequestMethod.POST)

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -22,7 +23,7 @@ import java.util.Optional;
 public class LoginController {
 
     //TODO: it bother me but I'm still thinking how to improve
-    int sessionMaxAge =
+    private final int sessionMaxAge =
             Integer.parseInt(PropertiesHandler.getDefaultProperties().getProperty("session.cookie.max.age"));
 
     private final SecurityService securityService;
@@ -35,10 +36,10 @@ public class LoginController {
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.GET)
-    protected void getLoginPage(HttpServletResponse response) throws IOException {
+    @ResponseBody
+    protected String getLoginPage() {
         log.info("redirecting to login page");
-        String page = pageGenerator.getPage("login.html");
-        response.getWriter().write(page);
+        return pageGenerator.getPage("login.html");
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)

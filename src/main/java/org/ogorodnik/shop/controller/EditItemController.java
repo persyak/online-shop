@@ -1,7 +1,6 @@
 package org.ogorodnik.shop.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.StringEscapeUtils;
 import org.ogorodnik.shop.entity.Item;
@@ -11,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,13 +24,14 @@ public class EditItemController {
     private final PageGenerator pageGenerator;
 
     @Autowired
-    public EditItemController(final ItemService itemService, final PageGenerator pageGenerator){
+    public EditItemController(final ItemService itemService, final PageGenerator pageGenerator) {
         this.itemService = itemService;
         this.pageGenerator = pageGenerator;
     }
 
     @RequestMapping(path = "/editItem", method = RequestMethod.GET)
-    protected void getEditItemPage(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @ResponseBody
+    protected String getEditItemPage(HttpServletRequest request) {
         Map<String, Object> paramsMap = new HashMap<>();
 
         String name = request.getParameter("name");
@@ -48,12 +48,12 @@ public class EditItemController {
         paramsMap.put("id", id);
 
         log.info("Editing item");
-        String page = pageGenerator.getPage("editItem.html", paramsMap);
-        response.getWriter().write(page);
+        return pageGenerator.getPage("editItem.html", paramsMap);
     }
 
     @RequestMapping(path = "/editItem", method = RequestMethod.POST)
-    protected void editItem(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @ResponseBody
+    protected String editItem(HttpServletRequest request) {
         Map<String, Object> paramsMap = new HashMap<>();
 
         long id = Long.parseLong(request.getParameter("id"));
@@ -77,7 +77,6 @@ public class EditItemController {
         paramsMap.put("description", StringEscapeUtils.escapeHtml4(description));
 
         log.info("item {} edited", name);
-        String page = pageGenerator.getPage("editedItem.html", paramsMap);
-        response.getWriter().write(page);
+        return pageGenerator.getPage("editedItem.html", paramsMap);
     }
 }

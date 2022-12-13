@@ -6,12 +6,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.security.Session;
 import org.ogorodnik.shop.service.CartService;
-import org.ogorodnik.shop.service.ItemService;
 import org.ogorodnik.shop.web.templater.PageGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,23 +25,21 @@ public class ProcessUserCartController {
     private final PageGenerator pageGenerator;
 
     @Autowired
-    public ProcessUserCartController(final CartService cartService, final PageGenerator pageGenerator){
+    public ProcessUserCartController(final CartService cartService, final PageGenerator pageGenerator) {
         this.cartService = cartService;
         this.pageGenerator = pageGenerator;
     }
 
     @RequestMapping(path = {"/userCart", "/userCart/*"}, method = RequestMethod.GET)
-    protected void getUserCart(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @ResponseBody
+    protected String getUserCart(HttpServletRequest request) {
         log.info("got user session. processing user card");
         Session session = (Session) request.getAttribute("session");
         List<Item> cart = session.getCart();
-        String page;
         if (cart.size() > 0) {
-            page = pageGenerator.getPage("userCart.html", Map.of("items", cart));
-        } else {
-            page = pageGenerator.getPage("userCartIsEmpty.html");
+            return pageGenerator.getPage("userCart.html", Map.of("items", cart));
         }
-        response.getWriter().write(page);
+        return pageGenerator.getPage("userCartIsEmpty.html");
     }
 
     @RequestMapping(path = {"/userCart", "/userCart/*"}, method = RequestMethod.POST)
