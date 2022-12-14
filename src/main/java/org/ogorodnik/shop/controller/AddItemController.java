@@ -1,6 +1,5 @@
 package org.ogorodnik.shop.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.entity.Item;
@@ -10,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.io.IOException;
@@ -24,7 +24,7 @@ public class AddItemController {
     private final PageGenerator pageGenerator;
 
     @Autowired
-    public AddItemController(final ItemService itemService, final PageGenerator pageGenerator){
+    public AddItemController(final ItemService itemService, final PageGenerator pageGenerator) {
         this.itemService = itemService;
         this.pageGenerator = pageGenerator;
     }
@@ -37,11 +37,12 @@ public class AddItemController {
     }
 
     @RequestMapping(path = "/addItem", method = RequestMethod.POST)
-    protected void addItem(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String name = request.getParameter("name");
-        double price = Double.parseDouble(request.getParameter("price"));
+    protected void addItem(
+            @RequestParam("name") String name,
+            @RequestParam("price") double price,
+            @RequestParam("description") String description,
+            HttpServletResponse response) throws IOException {
         LocalDateTime creationDate = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
-        String description = request.getParameter("description");
 
         Item item = Item.builder()
                 .name(name)

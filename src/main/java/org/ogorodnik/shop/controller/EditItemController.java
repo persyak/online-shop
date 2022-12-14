@@ -1,6 +1,5 @@
 package org.ogorodnik.shop.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.StringEscapeUtils;
 import org.ogorodnik.shop.entity.Item;
@@ -42,7 +41,7 @@ public class EditItemController {
 
         paramsMap.put("name", StringEscapeUtils.escapeHtml4(name));
         paramsMap.put("price", StringEscapeUtils.escapeHtml4(rowPrice.replaceAll(",", "")));
-        paramsMap.put("creationdate", creationDate);
+        paramsMap.put("creationDate", creationDate);
         paramsMap.put("description", StringEscapeUtils.escapeHtml4(description));
         paramsMap.put("id", id);
 
@@ -52,15 +51,14 @@ public class EditItemController {
 
     @RequestMapping(path = "/editItem", method = RequestMethod.POST)
     @ResponseBody
-    protected String editItem(HttpServletRequest request) {
+    protected String editItem(
+            @RequestParam("id") long id,
+            @RequestParam("name") String name,
+            @RequestParam("price") double price,
+            @RequestParam("creationDate") LocalDateTime creationDate,
+            @RequestParam("description") String description) {
+
         Map<String, Object> paramsMap = new HashMap<>();
-
-        long id = Long.parseLong(request.getParameter("id"));
-        String name = request.getParameter("name");
-        double price = Double.parseDouble(request.getParameter("price"));
-        LocalDateTime creationDate = LocalDateTime.parse(request.getParameter("creationdate"));
-        String description = request.getParameter("description");
-
         Item item = Item.builder()
                 .name(name)
                 .price(price)
