@@ -26,7 +26,7 @@ public class LogoutController {
         this.pageGenerator = pageGenerator;
     }
 
-    @RequestMapping(path = "/logout", method = RequestMethod.GET)
+    @RequestMapping(path = "/logout", method = RequestMethod.POST)
     @ResponseBody
     protected String logout(HttpServletRequest request) throws IOException {
         boolean isLoggedOut = false;
