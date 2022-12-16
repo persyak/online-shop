@@ -30,7 +30,7 @@ public class LoginController {
     private final PageGenerator pageGenerator;
 
     @Autowired
-    public LoginController(final SecurityService securityService, final PageGenerator pageGenerator){
+    public LoginController(final SecurityService securityService, final PageGenerator pageGenerator) {
         this.securityService = securityService;
         this.pageGenerator = pageGenerator;
     }

@@ -9,6 +9,7 @@ import org.ogorodnik.shop.service.CartService;
 import org.ogorodnik.shop.web.templater.PageGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -32,9 +33,8 @@ public class ProcessUserCartController {
 
     @RequestMapping(path = {"/userCart", "/userCart/*"}, method = RequestMethod.GET)
     @ResponseBody
-    protected String getUserCart(HttpServletRequest request) {
+    protected String getUserCart(@RequestAttribute("session") Session session) {
         log.info("got user session. processing user card");
-        Session session = (Session) request.getAttribute("session");
         List<Item> cart = session.getCart();
         if (cart.size() > 0) {
             return pageGenerator.getPage("userCart.html", Map.of("items", cart));
@@ -43,7 +43,8 @@ public class ProcessUserCartController {
     }
 
     @RequestMapping(path = {"/userCart", "/userCart/*"}, method = RequestMethod.POST)
-    protected void addToUserCart(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void addToUserCart(
+            HttpServletRequest request, HttpServletResponse response) throws IOException {
         String uri = request.getRequestURI();
         String stringId = uri.substring(10);
         long productId = Long.parseLong(stringId);

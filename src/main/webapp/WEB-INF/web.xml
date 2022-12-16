@@ -1,5 +1,14 @@
 <web-app>
 
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/root-context.xml</param-value>
+    </context-param>
+
     <servlet>
         <servlet-name>dispatcherServlet</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
@@ -10,87 +19,18 @@
         <url-pattern>/</url-pattern>
     </servlet-mapping>
 
-<!--    <servlet>-->
-<!--        <servlet-name>itemsServlet</servlet-name>-->
-<!--        <servlet-class>org.ogorodnik.shop.web.servlet.ItemsServlet</servlet-class>-->
-<!--    </servlet>-->
-<!--    <servlet-mapping>-->
-<!--        <servlet-name>itemsServlet</servlet-name>-->
-<!--        <url-pattern>/items</url-pattern>-->
-<!--    </servlet-mapping>-->
-
-<!--    <servlet>-->
-<!--        <servlet-name>searchItemsServlet</servlet-name>-->
-<!--        <servlet-class>org.ogorodnik.shop.web.servlet.SearchItemsServlet</servlet-class>-->
-<!--    </servlet>-->
-<!--    <servlet-mapping>-->
-<!--        <servlet-name>searchItemsServlet</servlet-name>-->
-<!--        <url-pattern>/search</url-pattern>-->
-<!--    </servlet-mapping>-->
-
-<!--    <servlet>-->
-<!--        <servlet-name>deleteItemServlet</servlet-name>-->
-<!--        <servlet-class>org.ogorodnik.shop.web.servlet.DeleteItemServlet</servlet-class>-->
-<!--    </servlet>-->
-<!--    <servlet-mapping>-->
-<!--        <servlet-name>deleteItemServlet</servlet-name>-->
-<!--        <url-pattern>/delete</url-pattern>-->
-<!--    </servlet-mapping>-->
-
-<!--    <servlet>-->
-<!--        <servlet-name>addItemServlet</servlet-name>-->
-<!--        <servlet-class>org.ogorodnik.shop.web.servlet.AddItemServlet</servlet-class>-->
-<!--    </servlet>-->
-<!--    <servlet-mapping>-->
-<!--        <servlet-name>addItemServlet</servlet-name>-->
-<!--        <url-pattern>/addItem</url-pattern>-->
-<!--    </servlet-mapping>-->
-
-<!--    <servlet>-->
-<!--        <servlet-name>editItemServlet</servlet-name>-->
-<!--        <servlet-class>org.ogorodnik.shop.web.servlet.EditItemServlet</servlet-class>-->
-<!--    </servlet>-->
-<!--    <servlet-mapping>-->
-<!--        <servlet-name>editItemServlet</servlet-name>-->
-<!--        <url-pattern>/editItem</url-pattern>-->
-<!--    </servlet-mapping>-->
-
-<!--    <servlet>-->
-<!--        <servlet-name>loginServlet</servlet-name>-->
-<!--        <servlet-class>org.ogorodnik.shop.web.servlet.LoginServlet</servlet-class>-->
-<!--    </servlet>-->
-<!--    <servlet-mapping>-->
-<!--        <servlet-name>loginServlet</servlet-name>-->
-<!--        <url-pattern>/login</url-pattern>-->
-<!--    </servlet-mapping>-->
-
-<!--    <servlet>-->
-<!--        <servlet-name>logoutServlet</servlet-name>-->
-<!--        <servlet-class>org.ogorodnik.shop.web.servlet.LogoutServlet</servlet-class>-->
-<!--    </servlet>-->
-<!--    <servlet-mapping>-->
-<!--        <servlet-name>logoutServlet</servlet-name>-->
-<!--        <url-pattern>/logout</url-pattern>-->
-<!--    </servlet-mapping>-->
-
-<!--    <servlet>-->
-<!--        <servlet-name>processUserCartServlet</servlet-name>-->
-<!--        <servlet-class>org.ogorodnik.shop.web.servlet.ProcessUserCartServlet</servlet-class>-->
-<!--    </servlet>-->
-<!--    <servlet-mapping>-->
-<!--        <servlet-name>processUserCartServlet</servlet-name>-->
-<!--        <url-pattern>/userCart</url-pattern>-->
-<!--        <url-pattern>/userCart/*</url-pattern>-->
-<!--    </servlet-mapping>-->
-
-<!--    <filter>-->
-<!--        <filter-name>securityFilter</filter-name>-->
-<!--        <filter-class>org.ogorodnik.shop.web.security.SecurityFilter</filter-class>-->
-<!--    </filter>-->
-<!--    <filter-mapping>-->
-<!--        <filter-name>securityFilter</filter-name>-->
-<!--        <url-pattern>/*</url-pattern>-->
-<!--        <dispatcher>REQUEST</dispatcher>-->
-<!--    </filter-mapping>-->
+    <filter>
+        <filter-name>securityFilter</filter-name>
+        <filter-class>org.ogorodnik.shop.web.security.SecurityFilter</filter-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>/WEB-INF/dispatcherServlet-servlet.xml</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>securityFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
 
 </web-app>

@@ -9,46 +9,10 @@
         http://www.springframework.org/schema/mvc/spring-mvc.xsd
         http://www.springframework.org/schema/context
         https://www.springframework.org/schema/context/spring-context.xsd">
-    
+
     <context:component-scan base-package="org.ogorodnik.shop"/>
 
     <mvc:annotation-driven/>
-
-    <bean id="properties"
-          class="org.ogorodnik.shop.utility.PropertiesHandler"
-          factory-method="getDefaultProperties"/>
-
-    <bean id="defaultDataSourceFactory" class="org.ogorodnik.shop.dao.jdbc.HikariDataSourceFactory">
-        <constructor-arg ref="properties"/>
-    </bean>
-
-    <bean id="dataSource"
-          factory-bean="defaultDataSourceFactory"
-          factory-method="create"/>
-
-    <bean id="itemDao" class="org.ogorodnik.shop.dao.jdbc.JdbcItemDao">
-        <constructor-arg ref="dataSource"/>
-    </bean>
-
-    <bean id="userDao" class="org.ogorodnik.shop.dao.jdbc.JdbcUserDao">
-        <constructor-arg ref="dataSource"/>
-    </bean>
-
-    <bean id="itemService" class="org.ogorodnik.shop.service.ItemService">
-        <constructor-arg ref="itemDao"/>
-    </bean>
-
-    <bean id="userService" class="org.ogorodnik.shop.service.UserService">
-        <constructor-arg ref="userDao"/>
-    </bean>
-
-    <bean id="securityService" class="org.ogorodnik.shop.security.SecurityService">
-        <constructor-arg ref="userService"/>
-    </bean>
-
-    <bean id="cartService" class="org.ogorodnik.shop.service.CartService">
-        <constructor-arg ref="itemService"/>
-    </bean>
 
     <bean id="pageGenerator" class="org.ogorodnik.shop.web.templater.PageGenerator"/>
 

@@ -6,27 +6,34 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.security.Session;
 import org.ogorodnik.shop.security.SecurityService;
-import org.ogorodnik.shop.service.ServiceLocator;
 import org.ogorodnik.shop.utility.PropertiesHandler;
 import org.ogorodnik.shop.web.util.WebUtil;
+import org.springframework.web.context.ContextLoader;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 
 @Slf4j
 public class SecurityFilter implements Filter {
 
-    private final SecurityService securityService = ServiceLocator.getService(SecurityService.class);
+    WebApplicationContext context = ContextLoader.getCurrentWebApplicationContext();
+
+    String excludePattern =
+            PropertiesHandler.getDefaultProperties().getProperty("web.filter.url.exclude");
     private List<String> excludedUrls;
 
-    private final Properties properties = PropertiesHandler.getDefaultProperties();
+    private final SecurityService securityService;
+
+    {
+        assert context != null;
+        securityService = context.getBean("securityService", SecurityService.class);
+    }
 
     @Override
     public void init(FilterConfig filterConfig) {
-        String excludePattern = properties.getProperty("web.filter.url.exclude");
         excludedUrls = Arrays.asList(excludePattern.split(","));
     }
 

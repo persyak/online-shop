@@ -20,7 +20,7 @@ public class ItemsController {
     private final PageGenerator pageGenerator;
 
     @Autowired
-    protected ItemsController(final ItemService itemService, final PageGenerator pageGenerator){
+    protected ItemsController(final ItemService itemService, final PageGenerator pageGenerator) {
         this.itemService = itemService;
         this.pageGenerator = pageGenerator;
     }
