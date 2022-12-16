@@ -46,6 +46,7 @@ public class ProcessUserCartController {
     protected void addToUserCart(
             HttpServletRequest request, HttpServletResponse response) throws IOException {
         String uri = request.getRequestURI();
+        //TODO: not sure it's the best option to use substring to get item id and parse it.
         String stringId = uri.substring(10);
         long productId = Long.parseLong(stringId);
 
