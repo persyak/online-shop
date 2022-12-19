@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.io.IOException;
-
 @Slf4j
 @Controller
 public class LogoutController {
@@ -28,8 +26,9 @@ public class LogoutController {
 
     @RequestMapping(path = "/logout", method = RequestMethod.POST)
     @ResponseBody
-    protected String logout(HttpServletRequest request) throws IOException {
+    protected String logout(HttpServletRequest request) {
         boolean isLoggedOut = false;
+        //TODO: how to get cookies from request to not use request in method?
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {

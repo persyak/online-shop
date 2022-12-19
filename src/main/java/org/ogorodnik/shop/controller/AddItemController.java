@@ -1,6 +1,5 @@
 package org.ogorodnik.shop.controller;
 
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.service.ItemService;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -37,11 +35,10 @@ public class AddItemController {
     }
 
     @RequestMapping(path = "/addItem", method = RequestMethod.POST)
-    protected void addItem(
+    protected String addItem(
             @RequestParam("name") String name,
             @RequestParam("price") double price,
-            @RequestParam("description") String description,
-            HttpServletResponse response) throws IOException {
+            @RequestParam("description") String description) {
         LocalDateTime creationDate = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
 
         Item item = Item.builder()
@@ -53,6 +50,6 @@ public class AddItemController {
 
         itemService.addItem(item);
         log.info("item {} added", name);
-        response.sendRedirect("/items");
+        return "redirect:/items";
     }
 }

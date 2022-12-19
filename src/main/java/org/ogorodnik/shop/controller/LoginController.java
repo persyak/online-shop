@@ -43,7 +43,7 @@ public class LoginController {
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)
-    protected void login(
+    protected String login(
             @RequestParam("name") String name,
             @RequestParam("password") String password,
             HttpServletResponse response) throws IOException {
@@ -59,12 +59,12 @@ public class LoginController {
 
             cookie.setMaxAge(sessionMaxAge);
 
+            //TODO: how to replace addCookie to response so do not pass response to method args?
             response.addCookie(cookie);
-            response.sendRedirect("/items");
+            return "redirect:/items";
         } else {
             log.info("failing to login. There is no session for user");
-            String page = pageGenerator.getPage("failedLogin.html");
-            response.getWriter().write(page);
+            return pageGenerator.getPage("failedLogin.html");
         }
     }
 }

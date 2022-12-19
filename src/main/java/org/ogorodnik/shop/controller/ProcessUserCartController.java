@@ -1,7 +1,6 @@
 package org.ogorodnik.shop.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.security.Session;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -43,8 +41,7 @@ public class ProcessUserCartController {
     }
 
     @RequestMapping(path = {"/userCart", "/userCart/*"}, method = RequestMethod.POST)
-    protected void addToUserCart(
-            HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected String addToUserCart(HttpServletRequest request) {
         String uri = request.getRequestURI();
         //TODO: not sure it's the best option to use substring to get item id and parse it.
         String stringId = uri.substring(10);
@@ -54,6 +51,6 @@ public class ProcessUserCartController {
         List<Item> cart = session.getCart();
         cartService.addToCart(cart, productId);
         log.info("item with id " + productId + " has been added to the card");
-        response.sendRedirect("/items");
+        return "redirect:/items";
     }
 }

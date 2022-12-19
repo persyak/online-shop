@@ -1,6 +1,5 @@
 package org.ogorodnik.shop.controller;
 
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +7,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.io.IOException;
 
 @Slf4j
 @Controller
@@ -23,12 +20,11 @@ public class DeleteItemController {
     }
 
     @RequestMapping(path = "/delete", method = RequestMethod.POST)
-    protected void deleteItem(
+    protected String deleteItem(
             @RequestParam("id") long id,
-            @RequestParam("name") String name,
-            HttpServletResponse response) throws IOException {
+            @RequestParam("name") String name) {
         log.info("Deleting item {}", name);
         itemService.deleteItem(id);
-        response.sendRedirect("/items");
+        return "redirect:/items";
     }
 }
