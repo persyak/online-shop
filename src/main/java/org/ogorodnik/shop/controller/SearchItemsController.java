@@ -28,9 +28,9 @@ public class SearchItemsController {
 
     @RequestMapping(path = {"/search"}, method = RequestMethod.GET)
     @ResponseBody
-    protected String searchItems(@RequestParam("search") String searchItem) {
+    protected String searchItems(@RequestParam String search) {
         Map<String, Object> paramsMap = new HashMap<>();
-        paramsMap.put("items", itemService.search(searchItem));
+        paramsMap.put("items", itemService.search(search));
         return pageGenerator.getPage("items.html", paramsMap);
     }
 }

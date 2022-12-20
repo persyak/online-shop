@@ -21,8 +21,8 @@ public class DeleteItemController {
 
     @RequestMapping(path = "/delete", method = RequestMethod.POST)
     protected String deleteItem(
-            @RequestParam("id") long id,
-            @RequestParam("name") String name) {
+            @RequestParam long id,
+            @RequestParam String name) {
         log.info("Deleting item {}", name);
         itemService.deleteItem(id);
         return "redirect:/items";

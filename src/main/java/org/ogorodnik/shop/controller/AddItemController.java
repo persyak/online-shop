@@ -36,15 +36,14 @@ public class AddItemController {
 
     @RequestMapping(path = "/addItem", method = RequestMethod.POST)
     protected String addItem(
-            @RequestParam("name") String name,
-            @RequestParam("price") double price,
-            @RequestParam("description") String description) {
-        LocalDateTime creationDate = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
+            @RequestParam String name,
+            @RequestParam double price,
+            @RequestParam String description) {
 
         Item item = Item.builder()
                 .name(name)
                 .price(price)
-                .creationDate(creationDate)
+                .creationDate(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES))
                 .description(description)
                 .build();
 

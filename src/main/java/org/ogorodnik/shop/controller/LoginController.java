@@ -44,8 +44,8 @@ public class LoginController {
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)
     protected String login(
-            @RequestParam("name") String name,
-            @RequestParam("password") String password,
+            @RequestParam String name,
+            @RequestParam String password,
             HttpServletResponse response) throws IOException {
         Credentials credentials = Credentials.builder()
                 .userName(name)

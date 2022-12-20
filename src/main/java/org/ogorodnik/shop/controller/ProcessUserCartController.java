@@ -31,7 +31,7 @@ public class ProcessUserCartController {
 
     @RequestMapping(path = {"/userCart", "/userCart/*"}, method = RequestMethod.GET)
     @ResponseBody
-    protected String getUserCart(@RequestAttribute("session") Session session) {
+    protected String getUserCart(@RequestAttribute Session session) {
         log.info("got user session. processing user card");
         List<Item> cart = session.getCart();
         if (cart.size() > 0) {

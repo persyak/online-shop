@@ -32,15 +32,15 @@ public class EditItemController {
     @RequestMapping(path = "/editItem", method = RequestMethod.GET)
     @ResponseBody
     protected String getEditItemPage(
-            @RequestParam("name") String name,
-            @RequestParam("price") String rowPrice,
-            @RequestParam("creationDate") LocalDateTime creationDate,
-            @RequestParam("description") String description,
-            @RequestParam("id") long id) {
+            @RequestParam String name,
+            @RequestParam String price,
+            @RequestParam LocalDateTime creationDate,
+            @RequestParam String description,
+            @RequestParam long id) {
         Map<String, Object> paramsMap = new HashMap<>();
 
         paramsMap.put("name", StringEscapeUtils.escapeHtml4(name));
-        paramsMap.put("price", StringEscapeUtils.escapeHtml4(rowPrice.replaceAll(",", "")));
+        paramsMap.put("price", StringEscapeUtils.escapeHtml4(price.replaceAll(",", "")));
         paramsMap.put("creationDate", creationDate);
         paramsMap.put("description", StringEscapeUtils.escapeHtml4(description));
         paramsMap.put("id", id);
@@ -52,11 +52,11 @@ public class EditItemController {
     @RequestMapping(path = "/editItem", method = RequestMethod.POST)
     @ResponseBody
     protected String editItem(
-            @RequestParam("id") long id,
-            @RequestParam("name") String name,
-            @RequestParam("price") double price,
-            @RequestParam("creationDate") LocalDateTime creationDate,
-            @RequestParam("description") String description) {
+            @RequestParam long id,
+            @RequestParam String name,
+            @RequestParam double price,
+            @RequestParam LocalDateTime creationDate,
+            @RequestParam String description) {
 
         Map<String, Object> paramsMap = new HashMap<>();
         Item item = Item.builder()
