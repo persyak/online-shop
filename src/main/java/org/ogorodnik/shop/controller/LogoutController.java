@@ -1,12 +1,11 @@
 package org.ogorodnik.shop.controller;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.security.SecurityService;
 import org.ogorodnik.shop.web.templater.PageGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -19,24 +18,18 @@ public class LogoutController {
     private final PageGenerator pageGenerator;
 
     @Autowired
-    public LogoutController(final SecurityService securityService, final PageGenerator pageGenerator){
+    public LogoutController(final SecurityService securityService, final PageGenerator pageGenerator) {
         this.securityService = securityService;
         this.pageGenerator = pageGenerator;
     }
 
     @RequestMapping(path = "/logout", method = RequestMethod.POST)
     @ResponseBody
-    protected String logout(HttpServletRequest request) {
+    protected String logout(@CookieValue(name = "user-token") String cookie) {
         boolean isLoggedOut = false;
-        //TODO: how to get cookies from request to not use request in method?
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("user-token".equals(cookie.getName())) {
-                    log.info("logging out user");
-                    isLoggedOut = securityService.logout(cookie.getValue());
-                }
-            }
+        if (! cookie.isEmpty()) {
+            log.info("logging out user");
+            isLoggedOut = securityService.logout(cookie);
         }
 
         if (isLoggedOut) {
