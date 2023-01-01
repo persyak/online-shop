@@ -3,7 +3,6 @@ package org.ogorodnik.shop.security;
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
 import org.ogorodnik.shop.service.UserService;
-import org.ogorodnik.shop.utility.PropertiesHandler;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -12,13 +11,13 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Slf4j
 public class SecurityService {
     private final List<Session> sessionList = new CopyOnWriteArrayList<>();
-    int sessionMaxAge =
-            Integer.parseInt(PropertiesHandler.getDefaultProperties().getProperty("session.cookie.max.age"));
 
+    private final int sessionMaxAge;
     private final UserService userService;
 
-    public SecurityService(UserService userService) {
+    public SecurityService(UserService userService, int sessionMaxAge) {
         this.userService = userService;
+        this.sessionMaxAge = sessionMaxAge;
     }
 
     public Optional<Session> login(Credentials credentials) {

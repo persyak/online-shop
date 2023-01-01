@@ -6,9 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.security.Credentials;
 import org.ogorodnik.shop.security.SecurityService;
 import org.ogorodnik.shop.security.Session;
-import org.ogorodnik.shop.utility.PropertiesHandler;
 import org.ogorodnik.shop.web.templater.PageGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,11 +18,11 @@ import java.util.Optional;
 
 @Slf4j
 @Controller
+@PropertySource(value = {"classpath:conf/application.properties"})
 public class LoginController {
 
-    //TODO: it bother me but I'm still thinking how to improve
-    private final int sessionMaxAge =
-            Integer.parseInt(PropertiesHandler.getDefaultProperties().getProperty("session.cookie.max.age"));
+    @Value("${session.cookie.max.age}")
+    private int sessionMaxAge;
 
     private final SecurityService securityService;
     private final PageGenerator pageGenerator;
@@ -55,8 +56,6 @@ public class LoginController {
             Cookie cookie = new Cookie("user-token", sessionOptional.get().getUserToken());
 
             cookie.setMaxAge(sessionMaxAge);
-
-            //TODO: how to replace addCookie to response so do not pass response to method args?
             response.addCookie(cookie);
             return "redirect:/items";
         } else {

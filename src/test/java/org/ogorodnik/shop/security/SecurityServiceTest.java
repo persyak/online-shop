@@ -10,8 +10,9 @@ class SecurityServiceTest {
     @Test
     public void getSession() {
         String testUserToken = "XXXYYY";
+        int sessionMaxAge = 14400;
         UserService mockUserService = mock(UserService.class);
-        SecurityService testSecurityService = new SecurityService(mockUserService);
+        SecurityService testSecurityService = new SecurityService(mockUserService, sessionMaxAge);
         assert (testSecurityService.getSession(testUserToken).isEmpty());
     }
 }

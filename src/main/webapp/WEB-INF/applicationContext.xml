@@ -7,17 +7,31 @@
         http://www.springframework.org/schema/context
         https://www.springframework.org/schema/context/spring-context.xsd">
 
-    <bean id="properties"
-          class="org.ogorodnik.shop.utility.PropertiesHandler"
-          factory-method="getDefaultProperties"/>
+    <context:property-placeholder location="classpath:conf/application.properties"/>
 
-    <bean id="defaultDataSourceFactory" class="org.ogorodnik.shop.dao.jdbc.HikariDataSourceFactory">
-        <constructor-arg ref="properties"/>
+    <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+        <property name="poolName" value="springHikariCP"/>
+        <property name="connectionTestQuery" value="SELECT 1"/>
+        <property name="dataSourceClassName" value="${jdbc.dataSourceClassName}"/>
+        <property name="maximumPoolSize" value="${jdbc.hikari.maximumPoolSize}"/>
+        <property name="idleTimeout" value="${jdbc.hikari.idleTimeout}"/>
+
+        <property name="dataSourceProperties">
+            <props>
+                <prop key="url">${jdbc.url}</prop>
+                <prop key="user">${jdbc.username}</prop>
+                <prop key="password">${jdbc.password}</prop>
+            </props>
+        </property>
     </bean>
 
-    <bean id="dataSource"
-          factory-bean="defaultDataSourceFactory"
-          factory-method="create"/>
+    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+        <constructor-arg ref="hikariConfig"/>
+    </bean>
+
+    <bean id="applicationConfiguration" class="org.ogorodnik.shop.utility.ApplicationConfiguration">
+        <property name="excludePattern" value="${web.filter.url.exclude}"/>
+    </bean>
 
     <bean id="itemDao" class="org.ogorodnik.shop.dao.jdbc.JdbcItemDao">
         <constructor-arg ref="dataSource"/>
@@ -37,6 +51,7 @@
 
     <bean id="securityService" class="org.ogorodnik.shop.security.SecurityService">
         <constructor-arg ref="userService"/>
+        <constructor-arg value="${session.cookie.max.age}"/>
     </bean>
 
     <bean id="cartService" class="org.ogorodnik.shop.service.CartService">
