@@ -5,10 +5,7 @@ import org.ogorodnik.shop.service.ItemService;
 import org.ogorodnik.shop.web.templater.PageGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +23,7 @@ public class SearchItemsController {
         this.pageGenerator = pageGenerator;
     }
 
-    @RequestMapping(path = {"/search"}, method = RequestMethod.GET)
+    @GetMapping("/search")
     @ResponseBody
     protected String searchItems(@RequestParam String search) {
         Map<String, Object> paramsMap = new HashMap<>();

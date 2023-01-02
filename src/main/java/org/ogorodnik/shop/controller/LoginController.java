@@ -2,12 +2,12 @@ package org.ogorodnik.shop.controller;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.security.Credentials;
 import org.ogorodnik.shop.security.SecurityService;
 import org.ogorodnik.shop.security.Session;
 import org.ogorodnik.shop.web.templater.PageGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
@@ -18,22 +18,17 @@ import java.util.Optional;
 
 @Slf4j
 @Controller
+@RequiredArgsConstructor
 @PropertySource(value = {"classpath:conf/application.properties"})
 public class LoginController {
-
-    @Value("${session.cookie.max.age}")
-    private int sessionMaxAge;
 
     private final SecurityService securityService;
     private final PageGenerator pageGenerator;
 
-    @Autowired
-    public LoginController(final SecurityService securityService, final PageGenerator pageGenerator) {
-        this.securityService = securityService;
-        this.pageGenerator = pageGenerator;
-    }
+    @Value("${session.cookie.max.age}")
+    private int sessionMaxAge;
 
-    @RequestMapping(path = "/login", method = RequestMethod.GET)
+    @GetMapping("/login")
     @ResponseBody
     protected String getLoginPage() {
         log.info("redirecting to login page");

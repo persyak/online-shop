@@ -8,10 +8,7 @@ import org.ogorodnik.shop.service.CartService;
 import org.ogorodnik.shop.web.templater.PageGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -29,7 +26,7 @@ public class ProcessUserCartController {
         this.pageGenerator = pageGenerator;
     }
 
-    @RequestMapping(path = {"/userCart", "/userCart/*"}, method = RequestMethod.GET)
+    @GetMapping({"/userCart", "/userCart/*"})
     @ResponseBody
     protected String getUserCart(@RequestAttribute Session session) {
         log.info("got user session. processing user card");

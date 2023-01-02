@@ -6,10 +6,7 @@ import org.ogorodnik.shop.service.ItemService;
 import org.ogorodnik.shop.web.templater.PageGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -27,7 +24,7 @@ public class AddItemController {
         this.pageGenerator = pageGenerator;
     }
 
-    @RequestMapping(path = "/addItem", method = RequestMethod.GET)
+    @GetMapping("/addItem")
     @ResponseBody
     protected String getAddItemPage() {
         log.info("Accessing add item page");
