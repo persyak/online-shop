@@ -14,6 +14,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -25,7 +26,7 @@ public class SecurityFilter implements Filter {
     @Override
     public void init(FilterConfig filterConfig) {
         WebApplicationContext context = ContextLoader.getCurrentWebApplicationContext();
-        securityService = context.getBean(SecurityService.class);
+        securityService = Objects.requireNonNull(context).getBean(SecurityService.class);
         ApplicationConfiguration applicationConfiguration =
                 context.getBean(ApplicationConfiguration.class);
         excludedUrls =
