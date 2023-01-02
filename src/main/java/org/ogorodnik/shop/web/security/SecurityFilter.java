@@ -19,16 +19,15 @@ import java.util.Optional;
 @Slf4j
 public class SecurityFilter implements Filter {
 
-    private final WebApplicationContext context = ContextLoader.getCurrentWebApplicationContext();
     private List<String> excludedUrls;
-
-    private final SecurityService securityService =
-            context.getBean("securityService", SecurityService.class);
-    private final ApplicationConfiguration applicationConfiguration =
-            context.getBean("applicationConfiguration", ApplicationConfiguration.class);
+    private SecurityService securityService;
 
     @Override
     public void init(FilterConfig filterConfig) {
+        WebApplicationContext context = ContextLoader.getCurrentWebApplicationContext();
+        securityService = context.getBean(SecurityService.class);
+        ApplicationConfiguration applicationConfiguration =
+                context.getBean(ApplicationConfiguration.class);
         excludedUrls =
                 Arrays.asList(applicationConfiguration.getExcludePattern().split(","));
     }
@@ -37,7 +36,7 @@ public class SecurityFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
-        String path = (httpServletRequest).getServletPath();
+        String path = httpServletRequest.getServletPath();
 
         if (excludedUrls.contains(path)) {
             filterChain.doFilter(servletRequest, servletResponse);
