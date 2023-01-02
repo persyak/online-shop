@@ -36,6 +36,7 @@ public class LoginController {
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)
+    @ResponseBody
     protected String login(
             @ModelAttribute("credentials") Credentials credentials,
             HttpServletResponse response) throws IOException {
