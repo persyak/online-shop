@@ -37,13 +37,8 @@ public class LoginController {
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)
     protected String login(
-            @RequestParam String name,
-            @RequestParam String password,
+            @ModelAttribute("credentials") Credentials credentials,
             HttpServletResponse response) throws IOException {
-        Credentials credentials = Credentials.builder()
-                .userName(name)
-                .password(password)
-                .build();
 
         Optional<Session> sessionOptional = securityService.login(credentials);
         if (sessionOptional.isPresent()) {
