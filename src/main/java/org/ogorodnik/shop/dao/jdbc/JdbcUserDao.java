@@ -37,7 +37,7 @@ public class JdbcUserDao implements UserDao {
                         .build();
             }
         } catch (SQLException throwable) {
-            handleSqlException(throwable, log);
+            handleSqlException(throwable);
         }
         return null;
     }

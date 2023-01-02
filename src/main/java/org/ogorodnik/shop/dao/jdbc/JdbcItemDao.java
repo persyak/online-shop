@@ -42,7 +42,7 @@ public class JdbcItemDao implements ItemDao {
                 items.add(item);
             }
         } catch (SQLException throwable) {
-            handleSqlException(throwable, log);
+            handleSqlException(throwable);
         }
         return items;
     }
@@ -65,7 +65,7 @@ public class JdbcItemDao implements ItemDao {
 
             insertPreparedSql.executeUpdate();
         } catch (SQLException throwable) {
-            handleSqlException(throwable, log);
+            handleSqlException(throwable);
         }
     }
 
@@ -76,7 +76,7 @@ public class JdbcItemDao implements ItemDao {
 
             deletePreparedSql.execute();
         } catch (SQLException throwable) {
-            handleSqlException(throwable, log);
+            handleSqlException(throwable);
         }
     }
 
@@ -98,7 +98,7 @@ public class JdbcItemDao implements ItemDao {
 
             updatePreparedSql.executeUpdate();
         } catch (SQLException throwable) {
-            handleSqlException(throwable, log);
+            handleSqlException(throwable);
         }
     }
 
@@ -118,7 +118,7 @@ public class JdbcItemDao implements ItemDao {
                 items.add(item);
             }
         } catch (SQLException throwable) {
-            handleSqlException(throwable, log);
+            handleSqlException(throwable);
         }
         return items;
     }
@@ -135,7 +135,7 @@ public class JdbcItemDao implements ItemDao {
                 item = itemRowMapper.mapRow(resultSet);
             }
         } catch (SQLException throwable) {
-            handleSqlException(throwable, log);
+            handleSqlException(throwable);
         }
         return item;
     }

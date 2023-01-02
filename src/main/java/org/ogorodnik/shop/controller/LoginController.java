@@ -48,10 +48,9 @@ public class LoginController {
 
             cookie.setMaxAge(sessionMaxAge);
             response.addCookie(cookie);
-            return "redirect:/items";
-        } else {
-            log.info("failing to login. There is no session for user");
-            return pageGenerator.getPage("failedLogin.html");
+            response.sendRedirect("/items");
         }
+        log.info("failing to login. There is no session for user");
+        return pageGenerator.getPage("failedLogin.html");
     }
 }

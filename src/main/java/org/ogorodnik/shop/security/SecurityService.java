@@ -31,10 +31,9 @@ public class SecurityService {
             sessionList.add(session);
             log.info("login is successful");
             return Optional.of(session);
-        } else {
-            log.info("Login failed. Password is incorrect or user was not found");
-            return Optional.empty();
         }
+        log.info("Login failed. Password is incorrect or user was not found");
+        return Optional.empty();
     }
 
     public boolean logout(String uuid) {
@@ -56,9 +55,8 @@ public class SecurityService {
                 if (session.getExpireDate().isBefore(LocalDateTime.now())) {
                     sessionList.remove(session);
                     return Optional.empty();
-                } else {
-                    return Optional.of(session);
                 }
+                return Optional.of(session);
             }
         }
         return Optional.empty();
