@@ -22,7 +22,7 @@ public class SecurityService {
 
     public Optional<Session> login(Credentials credentials) {
         log.info("Check if user password is correct and user can login");
-        EncryptedPassword encryptedPassword = userService.getUserPassword(credentials.getUserName());
+        EncryptedPassword encryptedPassword = userService.getUserPassword(credentials.getName());
         String hashPasswordFromUi = BCrypt.hashpw(credentials.getPassword(), encryptedPassword.getSalt());
         if (hashPasswordFromUi.equals(encryptedPassword.getPassword())) {
             LocalDateTime expireDate =
