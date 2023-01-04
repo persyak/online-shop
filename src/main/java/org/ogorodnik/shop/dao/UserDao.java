@@ -1,10 +1,7 @@
 package org.ogorodnik.shop.dao;
 
-import java.sql.SQLException;
-import java.util.List;
+import org.ogorodnik.shop.security.EncryptedPassword;
 
 public interface UserDao {
-    List<String> getUserPassword(String name) throws SQLException;
-
-    void updatePasswordAndSalt(String encryptedPassword, String salt, String login) throws SQLException;
+    EncryptedPassword getUserPassword(String name);
 }

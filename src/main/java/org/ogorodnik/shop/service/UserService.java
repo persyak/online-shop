@@ -1,22 +1,14 @@
 package org.ogorodnik.shop.service;
 
+import lombok.RequiredArgsConstructor;
 import org.ogorodnik.shop.dao.UserDao;
+import org.ogorodnik.shop.security.EncryptedPassword;
 
-import java.sql.SQLException;
-import java.util.List;
-
+@RequiredArgsConstructor
 public class UserService {
-    private UserDao userDao;
+    private final UserDao userDao;
 
-    public List<String> getUserPassword(String name) throws SQLException {
+    public EncryptedPassword getUserPassword(String name) {
         return userDao.getUserPassword(name);
-    }
-
-    public void setUserDao(UserDao userDao) {
-        this.userDao = userDao;
-    }
-
-    public void updatePasswordAndSalt(String encryptedPassword, String salt, String login) throws SQLException {
-        userDao.updatePasswordAndSalt(encryptedPassword, salt, login);
     }
 }

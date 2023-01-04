@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <#include "templates/parts/header.html">
+    <title>Edited item</title>
+</head>
+<body>
+
+<#include "templates/parts/navbar_items_edit.html">
+
+<div class="container">
+    <h1 class="text-center">Item edited in DB</h1>
+
+    <h3 class="text-left">Item updated values:</h3>
+    <table class="table table-striped table-hover">
+        <tr>
+            <th scope="col">Name</th>
+            <td scope="col">${name}</td>
+        </tr>
+        <tr>
+            <th>Price</th>
+            <td>${price}</td>
+        </tr>
+        <tr>
+            <th>Creation Date</th>
+            <td>${creationdate}</td>
+        </tr>
+        <tr>
+            <th>Description</th>
+            <td>${description}</td>
+        </tr>
+    </table>
+
+    <div class="float-left">
+        <a href="/items" class="submit-button">
+            Show all items
+        </a>
+    </div>
+</div>
+<#include "templates/parts/footer.html">
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <#include "templates/parts/header.html">
+    <title>Edit item</title>
+</head>
+<body>
+
+<#include "templates/parts/navbar_items_edit.html">
+
+<div class="container">
+    <h1 class="text-center">EDIT ITEM</h1>
+    <h3 class="text-left">Please put values into the form you want to update:</h3>
+
+    <form action="/editItem" method="POST">
+        <input type="hidden" name="id" value=${id}>
+
+        <label for="name"><b>Name</b></label><br>
+        <input type="text" pattern="[A-Za-z0-9 ]{3,}" id="name" name="name" value="${name}"><br>
+        <label for="price"><b>Price</b></label><br>
+        <input type="number" step="any" id="price" min="1" name="price" value="${price}" required><br>
+        <label for="daytime"><b>Creation Date (date and time)</b></label><br>
+        <input type="datetime-local" id="daytime" name="creationDate" value="${creationDate}"><br>
+        <label for="description"><b>Description</b></label><br>
+        <input type="text" id="description" name="description" value="${description}"><br>
+
+        <input type="submit" value="Update">
+    </form>
+</div>
+<#include "templates/parts/footer.html">
+</body>
+</html>

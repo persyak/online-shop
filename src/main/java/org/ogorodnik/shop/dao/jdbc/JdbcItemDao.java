@@ -1,5 +1,6 @@
 package org.ogorodnik.shop.dao.jdbc;
 
+import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.dao.ItemDao;
 import org.ogorodnik.shop.dao.jdbc.mapper.ItemRowMapper;
 import org.ogorodnik.shop.entity.Item;
@@ -10,14 +11,18 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.ogorodnik.shop.dao.jdbc.util.JdbcUtil.handleSqlException;
+
+@Slf4j
 public class JdbcItemDao implements ItemDao {
     private final String GET_ALL_SQL = "SELECT id, name, price, creationDate, description FROM item";
-    private final String insertSql = "INSERT INTO item (name, price, creationdate, description) values (?, ?, ?,?)";
+    private final String INSERT_SQL = "INSERT INTO item (name, price, creationdate, description) values (?, ?, ?,?)";
     private final String DELETE_SQL = "DELETE FROM item WHERE id = ?";
     private final String UPDATE_SQL = "UPDATE item SET name=?, price=?, creationDate=?, description=? WHERE id=?";
     private final String SEARCHITEM_SQL =
             "SELECT id, name, price, creationDate, description FROM item where name like ? or description like ?";
-    private final String GET_CARD_SQL = "SELECT id, name, price, creationDate, description FROM item where id in";
+    private final String GET_ITEM_BY_ID_SQL =
+            "SELECT id, name, price, creationDate, description FROM item WHERE id = ?";
 
     private final DataSource dataSource;
 
@@ -25,7 +30,7 @@ public class JdbcItemDao implements ItemDao {
         this.dataSource = dataSource;
     }
 
-    public List<Item> getAll() throws SQLException {
+    public List<Item> getAll() {
         List<Item> items = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement();
@@ -36,18 +41,20 @@ public class JdbcItemDao implements ItemDao {
                 Item item = itemRowMapper.mapRow(resultSet);
                 items.add(item);
             }
+        } catch (SQLException throwable) {
+            handleSqlException(throwable);
         }
         return items;
     }
 
-    public void insertItem(Item item) throws SQLException {
+    public void addItem(Item item) {
         String name = item.getName();
         double price = item.getPrice();
         LocalDateTime creationDate = item.getCreationDate();
         String description = item.getDescription();
 
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement insertPreparedSql = connection.prepareStatement(insertSql)) {
+             PreparedStatement insertPreparedSql = connection.prepareStatement(INSERT_SQL)) {
             insertPreparedSql.setString(1, name);
             insertPreparedSql.setDouble(2, price);
 
@@ -57,19 +64,23 @@ public class JdbcItemDao implements ItemDao {
             insertPreparedSql.setString(4, description);
 
             insertPreparedSql.executeUpdate();
+        } catch (SQLException throwable) {
+            handleSqlException(throwable);
         }
     }
 
-    public void deleteItem(long id) throws SQLException {
+    public void deleteItem(long id) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement deletePreparedSql = connection.prepareStatement(DELETE_SQL)) {
             deletePreparedSql.setLong(1, id);
 
             deletePreparedSql.execute();
+        } catch (SQLException throwable) {
+            handleSqlException(throwable);
         }
     }
 
-    public void updateItem(Item item, long id) throws SQLException {
+    public void updateItem(Item item, long id) {
         String name = item.getName();
         double price = item.getPrice();
         LocalDateTime creationDate = item.getCreationDate();
@@ -86,11 +97,13 @@ public class JdbcItemDao implements ItemDao {
             updatePreparedSql.setLong(5, id);
 
             updatePreparedSql.executeUpdate();
+        } catch (SQLException throwable) {
+            handleSqlException(throwable);
         }
     }
 
     @Override
-    public List<Item> search(String searchItem) throws SQLException {
+    public List<Item> search(String searchItem) {
         List<Item> items = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
              PreparedStatement searchPreparedSql = connection.prepareStatement(SEARCHITEM_SQL)) {
@@ -104,30 +117,26 @@ public class JdbcItemDao implements ItemDao {
                 Item item = itemRowMapper.mapRow(resultSet);
                 items.add(item);
             }
+        } catch (SQLException throwable) {
+            handleSqlException(throwable);
         }
         return items;
     }
 
-    public List<Item> getCard(List<Long> idList) throws SQLException {
-        List<Item> items = new ArrayList<>();
-        ItemRowMapper itemRowMapper = new ItemRowMapper();
-
-        StringBuilder builder = new StringBuilder();
-        builder.append("?,".repeat(idList.size()));
-        String placeHolders = builder.deleteCharAt(builder.length() - 1).toString();
-        String getCardSql = GET_CARD_SQL + "(" + placeHolders + ")";
-
+    @Override
+    public Item getItemById(long itemId) {
+        Item item = null;
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement getCardSqlStatement = connection.prepareStatement(getCardSql)) {
-            for (int i = 1; i <= idList.size(); i++) {
-                getCardSqlStatement.setLong(i, idList.get(i - 1));
-            }
-            ResultSet resultSet = getCardSqlStatement.executeQuery();
+             PreparedStatement getItemByIdSql = connection.prepareStatement(GET_ITEM_BY_ID_SQL)) {
+            getItemByIdSql.setLong(1, itemId);
+            ResultSet resultSet = getItemByIdSql.executeQuery();
+            ItemRowMapper itemRowMapper = new ItemRowMapper();
             while (resultSet.next()) {
-                Item item = itemRowMapper.mapRow(resultSet);
-                items.add(item);
+                item = itemRowMapper.mapRow(resultSet);
             }
+        } catch (SQLException throwable) {
+            handleSqlException(throwable);
         }
-        return items;
+        return item;
     }
 }

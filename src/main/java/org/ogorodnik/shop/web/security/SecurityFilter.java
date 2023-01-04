@@ -1,62 +1,64 @@
 package org.ogorodnik.shop.web.security;
 
 import jakarta.servlet.*;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import org.ogorodnik.shop.service.SecurityService;
-import org.ogorodnik.shop.utility.PropertyHandler;
+import org.ogorodnik.shop.security.Session;
+import org.ogorodnik.shop.security.SecurityService;
+import org.ogorodnik.shop.utility.ApplicationConfiguration;
+import org.ogorodnik.shop.web.util.WebUtil;
+import org.springframework.web.context.ContextLoader;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Properties;
+import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 public class SecurityFilter implements Filter {
 
-    private final SecurityService securityService;
     private List<String> excludedUrls;
-    private final String filtersConfiguration = "conf/applicationProperties.properties";
-
-    private final Properties properties = PropertyHandler.readConfigPropery(filtersConfiguration);
-
-    public SecurityFilter(SecurityService securityService) {
-        this.securityService = securityService;
-    }
+    private SecurityService securityService;
 
     @Override
     public void init(FilterConfig filterConfig) {
-        String excludePattern = properties.getProperty("web.filter.url.exclude");
-        excludedUrls = Arrays.asList(excludePattern.split(","));
+        WebApplicationContext context = ContextLoader.getCurrentWebApplicationContext();
+        securityService = Objects.requireNonNull(context).getBean(SecurityService.class);
+        ApplicationConfiguration applicationConfiguration =
+                context.getBean(ApplicationConfiguration.class);
+        excludedUrls =
+                Arrays.asList(applicationConfiguration.getExcludePattern().split(","));
     }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
-        String path = (httpServletRequest).getServletPath();
-        if (!excludedUrls.contains(path)) {
-            log.info("Check if user is authorised");
-            Cookie[] cookies = httpServletRequest.getCookies();
-            if (null == cookies) {
-                log.info("Unauthorised access");
-                httpServletResponse.sendRedirect("/login");
-            } else {
-                for (Cookie cookie : cookies) {
-                    if ("user-token".equals(cookie.getName())) {
-                        if (!securityService.validateIfLoggedIn(cookie.getValue())) {
-                            log.info("Unauthorised access");
-                            httpServletResponse.sendRedirect("/login");
-                        } else {
-                            log.info("Authorised access");
-                            filterChain.doFilter(servletRequest, servletResponse);
-                        }
-                    }
-                }
-            }
+        String path = httpServletRequest.getServletPath();
+
+        if (excludedUrls.contains(path)) {
+            filterChain.doFilter(servletRequest, servletResponse);
+            return;
+        }
+        log.info("Check if user is authorised");
+
+        Optional<String> tokenOptional = WebUtil.extractCookieValue(httpServletRequest, "user-token");
+        if (tokenOptional.isEmpty()) {
+            log.info("Unauthorised access");
+            httpServletResponse.sendRedirect("/login");
+            return;
+        }
+
+        Optional<Session> sessionOptional = securityService.getSession(tokenOptional.get());
+        if (sessionOptional.isEmpty()) {
+            log.info("Unauthorised access");
+            httpServletResponse.sendRedirect("/login");
         } else {
+            httpServletRequest.setAttribute("session", sessionOptional.get());
+            log.info("Authorised access");
             filterChain.doFilter(servletRequest, servletResponse);
         }
     }
