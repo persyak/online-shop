@@ -26,7 +26,7 @@ public class ProcessUserCartController {
         this.pageGenerator = pageGenerator;
     }
 
-    @GetMapping({"/userCart", "/userCart/*"})
+    @GetMapping({"/userCart", "/userCart/{productId}"})
     @ResponseBody
     protected String getUserCart(@RequestAttribute Session session) {
         log.info("got user session. processing user card");
@@ -37,13 +37,8 @@ public class ProcessUserCartController {
         return pageGenerator.getPage("userCartIsEmpty.html");
     }
 
-    @RequestMapping(path = {"/userCart", "/userCart/*"}, method = RequestMethod.POST)
-    protected String addToUserCart(HttpServletRequest request) {
-        String uri = request.getRequestURI();
-        //TODO: not sure it's the best option to use substring to get item id and parse it.
-        String stringId = uri.substring(10);
-        long productId = Long.parseLong(stringId);
-
+    @RequestMapping(path = {"/userCart", "/userCart/{productId}"}, method = RequestMethod.POST)
+    protected String addToUserCart(@PathVariable long productId, HttpServletRequest request) {
         Session session = (Session) request.getAttribute("session");
         List<Item> cart = session.getCart();
         cartService.addToCart(cart, productId);
