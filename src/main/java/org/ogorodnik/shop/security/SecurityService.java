@@ -1,24 +1,27 @@
 package org.ogorodnik.shop.security;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
 import org.ogorodnik.shop.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Slf4j
+@Component
+@RequiredArgsConstructor
 public class SecurityService {
     private final List<Session> sessionList = new CopyOnWriteArrayList<>();
 
-    private final int sessionMaxAge;
+    @Value("${session.cookie.max.age}")
+    private int sessionMaxAge;
+    @Autowired
     private final UserService userService;
-
-    public SecurityService(UserService userService, int sessionMaxAge) {
-        this.userService = userService;
-        this.sessionMaxAge = sessionMaxAge;
-    }
 
     public Optional<Session> login(Credentials credentials) {
         log.info("Check if user password is correct and user can login");

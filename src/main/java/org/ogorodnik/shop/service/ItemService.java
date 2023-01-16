@@ -3,11 +3,14 @@ package org.ogorodnik.shop.service;
 import lombok.RequiredArgsConstructor;
 import org.ogorodnik.shop.dao.ItemDao;
 import org.ogorodnik.shop.entity.Item;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @RequiredArgsConstructor
 public class ItemService {
+
     private final ItemDao itemDao;
 
     public List<Item> getAll() {

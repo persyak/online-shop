@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.dao.ItemDao;
 import org.ogorodnik.shop.dao.jdbc.mapper.ItemRowMapper;
 import org.ogorodnik.shop.entity.Item;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -14,6 +16,7 @@ import java.util.List;
 import static org.ogorodnik.shop.dao.jdbc.util.JdbcUtil.handleSqlException;
 
 @Slf4j
+
 public class JdbcItemDao implements ItemDao {
     private final String GET_ALL_SQL = "SELECT id, name, price, creationDate, description FROM item";
     private final String INSERT_SQL = "INSERT INTO item (name, price, creationdate, description) values (?, ?, ?,?)";
@@ -25,6 +28,7 @@ public class JdbcItemDao implements ItemDao {
             "SELECT id, name, price, creationDate, description FROM item WHERE id = ?";
 
     private final DataSource dataSource;
+
 
     public JdbcItemDao(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -41,8 +45,8 @@ public class JdbcItemDao implements ItemDao {
                 Item item = itemRowMapper.mapRow(resultSet);
                 items.add(item);
             }
-        } catch (SQLException throwable) {
-            handleSqlException(throwable);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
         }
         return items;
     }
