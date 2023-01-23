@@ -6,6 +6,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.ogorodnik.shop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 @Slf4j
 @Component
+@PropertySource({"classpath:conf/application.properties"})
 @RequiredArgsConstructor
 public class SecurityService {
     private final List<Session> sessionList = new CopyOnWriteArrayList<>();

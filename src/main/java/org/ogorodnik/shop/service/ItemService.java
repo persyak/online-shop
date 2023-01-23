@@ -9,8 +9,10 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @RequiredArgsConstructor
+@Component
 public class ItemService {
 
+    @Autowired
     private final ItemDao itemDao;
 
     public List<Item> getAll() {

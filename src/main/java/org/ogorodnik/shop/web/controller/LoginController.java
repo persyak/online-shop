@@ -1,4 +1,4 @@
-package org.ogorodnik.shop.controller;
+package org.ogorodnik.shop.web.controller;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,7 +19,7 @@ import java.util.Optional;
 @Slf4j
 @Controller
 @RequiredArgsConstructor
-@PropertySource(value = {"classpath:conf/application.properties"})
+@PropertySource({"classpath:conf/application.properties"})
 public class LoginController {
 
     private final SecurityService securityService;

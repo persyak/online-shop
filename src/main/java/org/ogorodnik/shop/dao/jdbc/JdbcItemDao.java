@@ -16,7 +16,7 @@ import java.util.List;
 import static org.ogorodnik.shop.dao.jdbc.util.JdbcUtil.handleSqlException;
 
 @Slf4j
-
+@Component
 public class JdbcItemDao implements ItemDao {
     private final String GET_ALL_SQL = "SELECT id, name, price, creationDate, description FROM item";
     private final String INSERT_SQL = "INSERT INTO item (name, price, creationdate, description) values (?, ?, ?,?)";
@@ -29,7 +29,7 @@ public class JdbcItemDao implements ItemDao {
 
     private final DataSource dataSource;
 
-
+    @Autowired
     public JdbcItemDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }

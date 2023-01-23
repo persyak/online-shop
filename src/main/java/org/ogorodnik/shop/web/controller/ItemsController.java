@@ -1,33 +1,35 @@
-package org.ogorodnik.shop.controller;
+package org.ogorodnik.shop.web.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.service.ItemService;
 import org.ogorodnik.shop.web.templater.PageGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
 @Controller
-public class SearchItemsController {
+public class ItemsController {
 
     private final ItemService itemService;
     private final PageGenerator pageGenerator;
 
     @Autowired
-    protected SearchItemsController(final ItemService itemService, final PageGenerator pageGenerator) {
+    protected ItemsController(final ItemService itemService, final PageGenerator pageGenerator) {
         this.itemService = itemService;
         this.pageGenerator = pageGenerator;
     }
 
-    @GetMapping("/search")
+    @GetMapping("/items")
     @ResponseBody
-    protected String searchItems(@RequestParam String search) {
+    public String getAll() {
         Map<String, Object> paramsMap = new HashMap<>();
-        paramsMap.put("items", itemService.search(search));
+        log.info("Getting all items from database");
+        paramsMap.put("items", itemService.getAll());
         return pageGenerator.getPage("items.html", paramsMap);
     }
 }

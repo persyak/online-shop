@@ -1,4 +1,4 @@
-package org.ogorodnik.shop.controller;
+package org.ogorodnik.shop.web.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.entity.Item;

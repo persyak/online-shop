@@ -1,6 +1,7 @@
 package org.ogorodnik.shop.web.security;
 
 import jakarta.servlet.*;
+import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
+@WebFilter(urlPatterns = "/*", dispatcherTypes = {DispatcherType.REQUEST})
 public class SecurityFilter implements Filter {
 
     private List<String> excludedUrls;
