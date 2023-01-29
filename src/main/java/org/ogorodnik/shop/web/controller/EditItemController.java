@@ -7,55 +7,50 @@ import org.ogorodnik.shop.service.ItemService;
 import org.ogorodnik.shop.web.templater.PageGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @Controller
 public class EditItemController {
 
     private final ItemService itemService;
-    private final PageGenerator pageGenerator;
 
     @Autowired
     public EditItemController(final ItemService itemService, final PageGenerator pageGenerator) {
         this.itemService = itemService;
-        this.pageGenerator = pageGenerator;
     }
 
     @GetMapping("/editItem")
-    @ResponseBody
     protected String getEditItemPage(
             @RequestParam String name,
             @RequestParam String price,
             @RequestParam LocalDateTime creationDate,
             @RequestParam String description,
-            @RequestParam long id) {
-        Map<String, Object> paramsMap = new HashMap<>();
+            @RequestParam long id,
+            Model model) {
 
-        paramsMap.put("name", StringEscapeUtils.escapeHtml4(name));
-        paramsMap.put("price", StringEscapeUtils.escapeHtml4(price.replaceAll(",", "")));
-        paramsMap.put("creationDate", creationDate);
-        paramsMap.put("description", StringEscapeUtils.escapeHtml4(description));
-        paramsMap.put("id", id);
+        model.addAttribute("name", StringEscapeUtils.escapeHtml4(name));
+        model.addAttribute("price", StringEscapeUtils.escapeHtml4(price.replaceAll(",", "")));
+        model.addAttribute("creationDate", creationDate);
+        model.addAttribute("description", StringEscapeUtils.escapeHtml4(description));
+        model.addAttribute("id", id);
 
         log.info("Editing item");
-        return pageGenerator.getPage("editItem.html", paramsMap);
+        return "editItem";
     }
 
     @RequestMapping(path = "/editItem", method = RequestMethod.POST)
-    @ResponseBody
     protected String editItem(
             @RequestParam long id,
             @RequestParam String name,
             @RequestParam double price,
             @RequestParam LocalDateTime creationDate,
-            @RequestParam String description) {
+            @RequestParam String description,
+            Model model) {
 
-        Map<String, Object> paramsMap = new HashMap<>();
         Item item = Item.builder()
                 .name(name)
                 .price(price)
@@ -65,12 +60,12 @@ public class EditItemController {
 
         itemService.updateItem(item, id);
 
-        paramsMap.put("name", StringEscapeUtils.escapeHtml4(name));
-        paramsMap.put("price", price);
-        paramsMap.put("creationdate", creationDate);
-        paramsMap.put("description", StringEscapeUtils.escapeHtml4(description));
+        model.addAttribute("name", StringEscapeUtils.escapeHtml4(name));
+        model.addAttribute("price", price);
+        model.addAttribute("creationdate", creationDate);
+        model.addAttribute("description", StringEscapeUtils.escapeHtml4(description));
 
         log.info("item {} edited", name);
-        return pageGenerator.getPage("editedItem.html", paramsMap);
+        return "editedItem";
     }
 }

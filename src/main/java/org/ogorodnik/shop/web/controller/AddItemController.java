@@ -16,19 +16,16 @@ import java.time.temporal.ChronoUnit;
 public class AddItemController {
 
     private final ItemService itemService;
-    private final PageGenerator pageGenerator;
 
     @Autowired
     public AddItemController(final ItemService itemService, final PageGenerator pageGenerator) {
         this.itemService = itemService;
-        this.pageGenerator = pageGenerator;
     }
 
     @GetMapping("/addItem")
-    @ResponseBody
     protected String getAddItemPage() {
         log.info("Accessing add item page");
-        return pageGenerator.getPage("addItem.html");
+        return "addItem";
     }
 
     @RequestMapping(path = "/addItem", method = RequestMethod.POST)
