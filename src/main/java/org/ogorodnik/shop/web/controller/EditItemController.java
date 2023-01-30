@@ -1,11 +1,10 @@
 package org.ogorodnik.shop.web.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.StringEscapeUtils;
 import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.service.ItemService;
-import org.ogorodnik.shop.web.templater.PageGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -14,14 +13,10 @@ import java.time.LocalDateTime;
 
 @Slf4j
 @Controller
+@RequiredArgsConstructor
 public class EditItemController {
 
     private final ItemService itemService;
-
-    @Autowired
-    public EditItemController(final ItemService itemService, final PageGenerator pageGenerator) {
-        this.itemService = itemService;
-    }
 
     @GetMapping("/editItem")
     protected String getEditItemPage(
