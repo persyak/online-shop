@@ -10,13 +10,12 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 @EnableWebMvc
 @Configuration
 @ComponentScan("org.ogorodnik.shop.web")
-public class SpringConfiguration {
+public class WebConfiguration {
 
     @Bean
     public FreeMarkerViewResolver freeMarkerViewResolver() {
         FreeMarkerViewResolver freeMarkerViewResolver = new FreeMarkerViewResolver();
         freeMarkerViewResolver.setOrder(1);
-        freeMarkerViewResolver.setPrefix("");
         freeMarkerViewResolver.setSuffix(".html");
         freeMarkerViewResolver.setCache(false);
         return freeMarkerViewResolver;

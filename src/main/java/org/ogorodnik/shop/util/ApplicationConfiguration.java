@@ -1,4 +1,4 @@
-package org.ogorodnik.shop.utility;
+package org.ogorodnik.shop.util;
 
 import lombok.Data;
 

@@ -2,7 +2,7 @@ package org.ogorodnik.shop.configuration;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
-import org.ogorodnik.shop.utility.ApplicationConfiguration;
+import org.ogorodnik.shop.util.ApplicationConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 
@@ -14,43 +14,24 @@ import javax.sql.DataSource;
         "org.ogorodnik.shop.service"})
 public class RootConfiguration {
 
-    @Value("${jdbc.hikari.maximumPoolSize}")
-    private int maximumPoolSize;
-
-    @Value("${jdbc.hikari.idleTimeout}")
-    private long idleTimeOut;
-
-//    @Value("${jdbc.dataSourceClassName}")
-//    private String dataSourceClassName;
-
-    @Value("${jdbc.url}")
-    private String jdbcUrl;
-
-    @Value("${jdbc.username}")
-    private String userName;
-
-    @Value("${jdbc.password}")
-    private String password;
-
-    @Value("${web.filter.url.exclude}")
-    private String excludePattern;
-
     @Bean
-    public DataSource dataSource() {
+    public DataSource dataSource(
+            @Value("${jdbc.hikari.maximumPoolSize}") int maximumPoolSize,
+            @Value("${jdbc.url}") String jdbcUrl,
+            @Value("${jdbc.username}") String userName,
+            @Value("${jdbc.password}") String password) {
         HikariConfig config = new HikariConfig();
         config.setMaximumPoolSize(maximumPoolSize);
         config.setJdbcUrl(jdbcUrl);
         config.setUsername(userName);
         config.setPassword(password);
 
-        //TODO: clarify why doesn't this parameter work
-//        config.setDataSourceClassName(dataSourceClassName);
-
         return new HikariDataSource(config);
     }
 
     @Bean
-    public ApplicationConfiguration applicationConfiguration() {
+    public ApplicationConfiguration applicationConfiguration(
+            @Value("${web.filter.url.exclude}") String excludePattern) {
         ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
         applicationConfiguration.setExcludePattern(excludePattern);
         return applicationConfiguration;

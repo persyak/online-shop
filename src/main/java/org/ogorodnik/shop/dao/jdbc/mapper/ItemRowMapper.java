@@ -15,7 +15,7 @@ public class ItemRowMapper {
                 .price(resultSet.getDouble("price"))
                 .creationDate(resultSet.getTimestamp("creationDate").toLocalDateTime())
                 .description(resultSet.getString("description") == null ? "" :
-                        StringEscapeUtils.escapeHtml4(resultSet.getString("description")))
+                        resultSet.getString("description"))
                 .build();
     }
 }

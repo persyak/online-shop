@@ -1,4 +1,4 @@
-<!doctype html>
+<#ftl output_format="HTML" auto_esc=false>
 <html lang="en">
 <head>
     <#include "templates/header.html">
@@ -29,14 +29,18 @@
             <td>${item.name}</td>
             <td>${item.price}</td>
             <td>${item.creationDate}</td>
+            <#autoesc>
             <td>${item.description}</td>
+            </#autoesc>
             <td>
                 <form action="/editItem" class="inline">
                     <input type="hidden" name="id" value=${item.id}>
                     <input type="hidden" name="name" value=${item.name}>
                     <input type="hidden" name="price" value=${item.price}>
                     <input type="hidden" name="creationDate" value=${item.creationDate}>
+                    <#autoesc>
                     <input type="hidden" name="description" value=${item.description}>
+                    </#autoesc>
                 </form>
             </td>
         </tr>
