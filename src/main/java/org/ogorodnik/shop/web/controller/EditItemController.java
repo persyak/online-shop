@@ -2,7 +2,6 @@ package org.ogorodnik.shop.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.text.StringEscapeUtils;
 import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.service.ItemService;
 import org.springframework.stereotype.Controller;
@@ -27,10 +26,10 @@ public class EditItemController {
             @RequestParam long id,
             Model model) {
 
-        model.addAttribute("name", StringEscapeUtils.escapeHtml4(name));
-        model.addAttribute("price", StringEscapeUtils.escapeHtml4(price.replaceAll(",", "")));
+        model.addAttribute("name", name);
+        model.addAttribute("price", price.replaceAll(",", ""));
         model.addAttribute("creationDate", creationDate);
-        model.addAttribute("description", StringEscapeUtils.escapeHtml4(description));
+        model.addAttribute("description", description);
         model.addAttribute("id", id);
 
         log.info("Editing item");
@@ -55,10 +54,10 @@ public class EditItemController {
 
         itemService.updateItem(item, id);
 
-        model.addAttribute("name", StringEscapeUtils.escapeHtml4(name));
+        model.addAttribute("name", name);
         model.addAttribute("price", price);
         model.addAttribute("creationdate", creationDate);
-        model.addAttribute("description", StringEscapeUtils.escapeHtml4(description));
+        model.addAttribute("description", description);
 
         log.info("item {} edited", name);
         return "editedItem";
