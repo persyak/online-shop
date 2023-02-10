@@ -25,6 +25,7 @@ public class SecurityService {
     public Optional<Session> login(Credentials credentials) {
         log.info("Check if user password is correct and user can login");
         Optional<EncryptedPassword> encryptedPassword = userService.getUserPassword(credentials.getName());
+
         if (encryptedPassword.isPresent() &&
                 BCrypt.hashpw(credentials.getPassword(), encryptedPassword.get().getSalt())
                         .equals(encryptedPassword.get().getPassword())) {
@@ -35,6 +36,7 @@ public class SecurityService {
             log.info("login is successful");
             return Optional.of(session);
         }
+        
         log.info("Login failed. Password is incorrect or user was not found");
         return Optional.empty();
     }

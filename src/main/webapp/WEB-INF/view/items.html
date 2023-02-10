@@ -43,7 +43,7 @@
             <td>${item.description}</td>
             </#autoesc>
             <td>
-                <form action="/editItem" class="inline">
+                <form action="/item/edit" class="inline">
                     <input type="hidden" name="id" value=${item.id}>
                     <input type="hidden" name="name" value=${item.name}>
                     <input type="hidden" name="price" value=${item.price}>
@@ -53,7 +53,7 @@
                     </#autoesc>
                     <button class="btn btn-primary" role="button">Edit</button>
                 </form>
-                <form action="/delete" method="POST">
+                <form action="/item/delete" method="POST">
                     <input type="hidden" name="id" value=${item.id}>
                     <input type="hidden" name="name" value=${item.name}>
                     <button class="btn btn-primary" role="button">Delete</button>

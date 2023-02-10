@@ -79,7 +79,8 @@ public class JdbcItemDao implements ItemDao {
     }
 
     @SneakyThrows
-    public void updateItem(Item item, long id) {
+    public int updateItem(Item item) {
+        long id = item.getId();
         String name = item.getName();
         double price = item.getPrice();
         LocalDateTime creationDate = item.getCreationDate();
@@ -95,7 +96,13 @@ public class JdbcItemDao implements ItemDao {
             updatePreparedSql.setString(4, description);
             updatePreparedSql.setLong(5, id);
 
-            updatePreparedSql.executeUpdate();
+            int updateItemCount = updatePreparedSql.executeUpdate();
+            if (updateItemCount > 0) {
+                log.info("item {} was update in database", item.getName());
+            } else {
+                log.info("item {} was not update in database", item.getName());
+            }
+            return updateItemCount;
         }
     }
 
