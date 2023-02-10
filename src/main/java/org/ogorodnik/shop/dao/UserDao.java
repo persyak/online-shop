@@ -2,6 +2,8 @@ package org.ogorodnik.shop.dao;
 
 import org.ogorodnik.shop.security.EncryptedPassword;
 
+import java.util.Optional;
+
 public interface UserDao {
-    EncryptedPassword getUserPassword(String name);
+    Optional<EncryptedPassword> getUserPassword(String name);
 }

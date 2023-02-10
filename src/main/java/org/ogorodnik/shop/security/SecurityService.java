@@ -4,32 +4,30 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
 import org.ogorodnik.shop.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Slf4j
-@Component
-@PropertySource({"classpath:conf/application.properties"})
+@Service
 @RequiredArgsConstructor
 public class SecurityService {
     private final List<Session> sessionList = new CopyOnWriteArrayList<>();
 
     @Value("${session.cookie.max.age}")
     private int sessionMaxAge;
-    @Autowired
+
     private final UserService userService;
 
     public Optional<Session> login(Credentials credentials) {
         log.info("Check if user password is correct and user can login");
-        EncryptedPassword encryptedPassword = userService.getUserPassword(credentials.getName());
-        String hashPasswordFromUi = BCrypt.hashpw(credentials.getPassword(), encryptedPassword.getSalt());
-        if (hashPasswordFromUi.equals(encryptedPassword.getPassword())) {
+        Optional<EncryptedPassword> encryptedPassword = userService.getUserPassword(credentials.getName());
+        if (encryptedPassword.isPresent() &&
+                BCrypt.hashpw(credentials.getPassword(), encryptedPassword.get().getSalt())
+                        .equals(encryptedPassword.get().getPassword())) {
             LocalDateTime expireDate =
                     LocalDateTime.now().plusSeconds(sessionMaxAge);
             Session session = new Session(UUID.randomUUID().toString(), expireDate);

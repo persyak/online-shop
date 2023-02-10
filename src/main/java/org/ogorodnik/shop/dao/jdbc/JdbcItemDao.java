@@ -1,11 +1,11 @@
 package org.ogorodnik.shop.dao.jdbc;
 
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.dao.ItemDao;
 import org.ogorodnik.shop.dao.jdbc.mapper.ItemRowMapper;
 import org.ogorodnik.shop.entity.Item;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -13,44 +13,41 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.ogorodnik.shop.dao.jdbc.util.JdbcUtil.handleSqlException;
-
 @Slf4j
-@Component
+@Repository
 public class JdbcItemDao implements ItemDao {
     private final String GET_ALL_SQL = "SELECT id, name, price, creationDate, description FROM item";
     private final String INSERT_SQL = "INSERT INTO item (name, price, creationdate, description) values (?, ?, ?,?)";
     private final String DELETE_SQL = "DELETE FROM item WHERE id = ?";
     private final String UPDATE_SQL = "UPDATE item SET name=?, price=?, creationDate=?, description=? WHERE id=?";
-    private final String SEARCHITEM_SQL =
+    private final String SEARCH_ITEM_SQL =
             "SELECT id, name, price, creationDate, description FROM item where name like ? or description like ?";
     private final String GET_ITEM_BY_ID_SQL =
             "SELECT id, name, price, creationDate, description FROM item WHERE id = ?";
+    private final static ItemRowMapper itemRowMapper = new ItemRowMapper();
 
     private final DataSource dataSource;
 
-    @Autowired
     public JdbcItemDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
+    @SneakyThrows
     public List<Item> getAll() {
-        List<Item> items = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(GET_ALL_SQL)) {
-            ItemRowMapper itemRowMapper = new ItemRowMapper();
 
+            List<Item> items = new ArrayList<>();
             while (resultSet.next()) {
                 Item item = itemRowMapper.mapRow(resultSet);
                 items.add(item);
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            return items;
         }
-        return items;
     }
 
+    @SneakyThrows
     public void addItem(Item item) {
         String name = item.getName();
         double price = item.getPrice();
@@ -68,22 +65,20 @@ public class JdbcItemDao implements ItemDao {
             insertPreparedSql.setString(4, description);
 
             insertPreparedSql.executeUpdate();
-        } catch (SQLException throwable) {
-            handleSqlException(throwable);
         }
     }
 
+    @SneakyThrows
     public void deleteItem(long id) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement deletePreparedSql = connection.prepareStatement(DELETE_SQL)) {
             deletePreparedSql.setLong(1, id);
 
             deletePreparedSql.execute();
-        } catch (SQLException throwable) {
-            handleSqlException(throwable);
         }
     }
 
+    @SneakyThrows
     public void updateItem(Item item, long id) {
         String name = item.getName();
         double price = item.getPrice();
@@ -101,46 +96,40 @@ public class JdbcItemDao implements ItemDao {
             updatePreparedSql.setLong(5, id);
 
             updatePreparedSql.executeUpdate();
-        } catch (SQLException throwable) {
-            handleSqlException(throwable);
         }
     }
 
-    @Override
+    @SneakyThrows
     public List<Item> search(String searchItem) {
-        List<Item> items = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement searchPreparedSql = connection.prepareStatement(SEARCHITEM_SQL)) {
+             PreparedStatement searchPreparedSql = connection.prepareStatement(SEARCH_ITEM_SQL)) {
+
+            List<Item> items = new ArrayList<>();
             String searchCriteria = "%" + searchItem + "%";
             searchPreparedSql.setString(1, searchCriteria);
             searchPreparedSql.setString(2, searchCriteria);
-            ResultSet resultSet = searchPreparedSql.executeQuery();
-            ItemRowMapper itemRowMapper = new ItemRowMapper();
-
-            while (resultSet.next()) {
-                Item item = itemRowMapper.mapRow(resultSet);
-                items.add(item);
+            try (ResultSet resultSet = searchPreparedSql.executeQuery()) {
+                while (resultSet.next()) {
+                    Item item = itemRowMapper.mapRow(resultSet);
+                    items.add(item);
+                }
+                return items;
             }
-        } catch (SQLException throwable) {
-            handleSqlException(throwable);
         }
-        return items;
     }
 
-    @Override
+    @SneakyThrows
     public Item getItemById(long itemId) {
-        Item item = null;
         try (Connection connection = dataSource.getConnection();
              PreparedStatement getItemByIdSql = connection.prepareStatement(GET_ITEM_BY_ID_SQL)) {
+            Item item = null;
             getItemByIdSql.setLong(1, itemId);
-            ResultSet resultSet = getItemByIdSql.executeQuery();
-            ItemRowMapper itemRowMapper = new ItemRowMapper();
-            while (resultSet.next()) {
-                item = itemRowMapper.mapRow(resultSet);
+            try (ResultSet resultSet = getItemByIdSql.executeQuery()) {
+                while (resultSet.next()) {
+                    item = itemRowMapper.mapRow(resultSet);
+                }
+                return item;
             }
-        } catch (SQLException throwable) {
-            handleSqlException(throwable);
         }
-        return item;
     }
 }
