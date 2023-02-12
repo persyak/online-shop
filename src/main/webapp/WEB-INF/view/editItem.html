@@ -1,18 +1,18 @@
-<!DOCTYPE html>
+<#ftl output_format="HTML" auto_esc=false>
 <html lang="en">
 <head>
-    <#include "templates/parts/header.html">
+    <#include "templates/header.html">
     <title>Edit item</title>
 </head>
 <body>
 
-<#include "templates/parts/navbar_items_edit.html">
+<#include "templates/navbar_items_edit.html">
 
 <div class="container">
     <h1 class="text-center">EDIT ITEM</h1>
     <h3 class="text-left">Please put values into the form you want to update:</h3>
 
-    <form action="/editItem" method="POST">
+    <form action="/item/edit" method="POST">
         <input type="hidden" name="id" value=${id}>
 
         <label for="name"><b>Name</b></label><br>
@@ -22,11 +22,12 @@
         <label for="daytime"><b>Creation Date (date and time)</b></label><br>
         <input type="datetime-local" id="daytime" name="creationDate" value="${creationDate}"><br>
         <label for="description"><b>Description</b></label><br>
+        <#autoesc>
         <input type="text" id="description" name="description" value="${description}"><br>
-
+        </#autoesc>
         <input type="submit" value="Update">
     </form>
 </div>
-<#include "templates/parts/footer.html">
+<#include "templates/footer.html">
 </body>
 </html>

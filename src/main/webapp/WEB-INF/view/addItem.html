@@ -1,17 +1,17 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <#include "templates/parts/header.html">
+    <#include "templates/header.html">
     <title>Add item</title>
 </head>
 <body>
 
-<#include "templates/parts/navbar_userCart_addItem.html">
+<#include "templates/navbar_userCart_addItem.html">
 
 <div class="container">
     <h1 class="text-center">ADD ITEM</h1>
 
-    <form action="/addItem" method="POST">
+    <form action="/item/add" method="POST">
         <label for="name"><b>Name</b></label><br>
         <input type="text" pattern="[A-Za-z0-9 ]{3,}" id="name" name="name"><br>
         <label for="price"><b>Price</b></label><br>
@@ -21,6 +21,6 @@
         <input type="submit" value="Insert to DB">
     </form>
 </div>
-<#include "templates/parts/footer.html">
+<#include "templates/footer.html">
 </body>
 </html>

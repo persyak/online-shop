@@ -68,6 +68,12 @@
             <artifactId>spring-webmvc</artifactId>
             <version>6.0.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>6.0.4</version>
+        </dependency>
+
 
         <!--ENCRYPTION-->
         <dependency>

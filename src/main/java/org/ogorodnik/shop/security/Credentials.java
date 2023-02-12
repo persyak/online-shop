@@ -4,9 +4,9 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
-@RequiredArgsConstructor
 @Data
 @Value
+@RequiredArgsConstructor
 public class Credentials {
     String name;
     String password;

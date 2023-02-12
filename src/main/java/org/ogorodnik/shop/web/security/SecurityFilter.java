@@ -1,12 +1,13 @@
 package org.ogorodnik.shop.web.security;
 
 import jakarta.servlet.*;
+import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.security.Session;
 import org.ogorodnik.shop.security.SecurityService;
-import org.ogorodnik.shop.utility.ApplicationConfiguration;
+import org.ogorodnik.shop.util.ApplicationConfiguration;
 import org.ogorodnik.shop.web.util.WebUtil;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
@@ -18,6 +19,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
+@WebFilter(urlPatterns = "/*", dispatcherTypes = {DispatcherType.REQUEST})
 public class SecurityFilter implements Filter {
 
     private List<String> excludedUrls;

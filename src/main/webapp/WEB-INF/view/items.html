@@ -1,0 +1,71 @@
+<#ftl output_format="HTML" auto_esc=false>
+<html lang="en">
+<head>
+    <#include "templates/header.html">
+    <title>Items list</title>
+</head>
+<body>
+
+<#include "templates/navbar_items_edit.html">
+
+<nav class="navbar navbar-light bg-light justify-content-between">
+    <div class="container">
+        <a class="navbar-brand">Find items</a>
+        <form class="form-inline" action="/search" method="GET">
+            <input class="form-control mr-sm-1" type="search" placeholder="Search" name="search" aria-label="Search">
+            <button class="btn btn-outline-success my-1 my-sm-0" type="submit">Search</button>
+        </form>
+    </div>
+</nav>
+
+<div class="container">
+    <h1 class="text-center">ITEMS</h1>
+    <table class="table table-striped table-hover">
+        <thread>
+            <tr>
+                <th scope="col" hidden>id</th>
+                <th scope="col">Name</th>
+                <th scope="col">Price</th>
+                <th scope="col">Creation date</th>
+                <th scope="col">Description</th>
+                <th scope="col">Menu</th>
+            </tr>
+        </thread>
+
+        <tbody>
+        <#list items as item>
+        <tr>
+            <td hidden>${item.id}</td>
+            <td>${item.name}</td>
+            <td>${item.price}</td>
+            <td>${item.creationDate}</td>
+            <#autoesc>
+            <td>${item.description}</td>
+            </#autoesc>
+            <td>
+                <form action="/item/edit" class="inline">
+                    <input type="hidden" name="id" value=${item.id}>
+                    <input type="hidden" name="name" value=${item.name}>
+                    <input type="hidden" name="price" value=${item.price}>
+                    <input type="hidden" name="creationDate" value=${item.creationDate}>
+                    <#autoesc>
+                    <input type="hidden" name="description" value=${item.description}>
+                    </#autoesc>
+                    <button class="btn btn-primary" role="button">Edit</button>
+                </form>
+                <form action="/item/delete" method="POST">
+                    <input type="hidden" name="id" value=${item.id}>
+                    <input type="hidden" name="name" value=${item.name}>
+                    <button class="btn btn-primary" role="button">Delete</button>
+                </form>
+                <form action="/userCart/${item.id}" method="POST">
+                    <button class="btn btn-primary" role="button">Add to basket</button>
+                </form>
+            </td>
+        </tr>
+        </#list>
+    </table>
+</div>
+<#include "templates/footer.html">
+</body>
+</html>

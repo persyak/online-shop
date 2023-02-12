@@ -1,30 +1,34 @@
 package org.ogorodnik.shop.security;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mindrot.jbcrypt.BCrypt;
 import org.ogorodnik.shop.service.UserService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 @Slf4j
+@Service
+@RequiredArgsConstructor
 public class SecurityService {
     private final List<Session> sessionList = new CopyOnWriteArrayList<>();
 
-    private final int sessionMaxAge;
-    private final UserService userService;
+    @Value("${session.cookie.max.age}")
+    private int sessionMaxAge;
 
-    public SecurityService(UserService userService, int sessionMaxAge) {
-        this.userService = userService;
-        this.sessionMaxAge = sessionMaxAge;
-    }
+    private final UserService userService;
 
     public Optional<Session> login(Credentials credentials) {
         log.info("Check if user password is correct and user can login");
-        EncryptedPassword encryptedPassword = userService.getUserPassword(credentials.getName());
-        String hashPasswordFromUi = BCrypt.hashpw(credentials.getPassword(), encryptedPassword.getSalt());
-        if (hashPasswordFromUi.equals(encryptedPassword.getPassword())) {
+        Optional<EncryptedPassword> encryptedPassword = userService.getUserPassword(credentials.getName());
+
+        if (encryptedPassword.isPresent() &&
+                BCrypt.hashpw(credentials.getPassword(), encryptedPassword.get().getSalt())
+                        .equals(encryptedPassword.get().getPassword())) {
             LocalDateTime expireDate =
                     LocalDateTime.now().plusSeconds(sessionMaxAge);
             Session session = new Session(UUID.randomUUID().toString(), expireDate);
@@ -32,6 +36,7 @@ public class SecurityService {
             log.info("login is successful");
             return Optional.of(session);
         }
+        
         log.info("Login failed. Password is incorrect or user was not found");
         return Optional.empty();
     }

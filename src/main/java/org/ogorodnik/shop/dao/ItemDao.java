@@ -11,7 +11,7 @@ public interface ItemDao {
 
     void deleteItem(long id);
 
-    void updateItem(Item item, long id);
+    int updateItem(Item item);
 
     List<Item> search(String searchItem);
 
