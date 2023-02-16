@@ -17,12 +17,12 @@ public class ItemService {
         return itemDao.getAll();
     }
 
-    public void addItem(Item item) {
-        itemDao.addItem(item);
+    public Item addItem(Item item) {
+        return itemDao.addItem(item);
     }
 
-    public void deleteItem(long id) {
-        itemDao.deleteItem(id);
+    public int deleteItem(long id) {
+        return itemDao.deleteItem(id);
     }
 
     public Item updateItem(Item item) {

@@ -48,33 +48,39 @@ public class JdbcItemDao implements ItemDao {
     }
 
     @SneakyThrows
-    public void addItem(Item item) {
-        String name = item.getName();
-        double price = item.getPrice();
-        LocalDateTime creationDate = item.getCreationDate();
-        String description = item.getDescription();
+    public Item addItem(Item item) {
 
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement insertPreparedSql = connection.prepareStatement(INSERT_SQL)) {
-            insertPreparedSql.setString(1, name);
-            insertPreparedSql.setDouble(2, price);
+             PreparedStatement insertPreparedSql = connection.prepareStatement(INSERT_SQL,
+                     Statement.RETURN_GENERATED_KEYS)) {
+            insertPreparedSql.setString(1, item.getName());
+            insertPreparedSql.setDouble(2, item.getPrice());
+            insertPreparedSql.setTimestamp(3, java.sql.Timestamp.valueOf(item.getCreationDate()));
+            insertPreparedSql.setString(4, item.getDescription());
 
-            Timestamp timestamp = java.sql.Timestamp.valueOf(creationDate);
-            insertPreparedSql.setTimestamp(3, timestamp);
+            int affectedRows = insertPreparedSql.executeUpdate();
 
-            insertPreparedSql.setString(4, description);
+            if (affectedRows == 0) {
+                throw new SQLException("Creating user failed, no rows affected.");
+            }
 
-            insertPreparedSql.executeUpdate();
+            try (ResultSet generatedKeys = insertPreparedSql.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    item.setId(generatedKeys.getLong(1));
+                } else {
+                    throw new SQLException("Creating user failed, no ID obtained.");
+                }
+            }
         }
+        return item;
     }
 
     @SneakyThrows
-    public void deleteItem(long id) {
+    public int deleteItem(long id) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement deletePreparedSql = connection.prepareStatement(DELETE_SQL)) {
             deletePreparedSql.setLong(1, id);
-
-            deletePreparedSql.execute();
+            return deletePreparedSql.executeUpdate();
         }
     }
 
@@ -96,13 +102,13 @@ public class JdbcItemDao implements ItemDao {
             updatePreparedSql.setString(4, description);
             updatePreparedSql.setLong(5, id);
 
-            int updateItemCount = updatePreparedSql.executeUpdate();
-            if (updateItemCount > 0) {
+            int updateCount = updatePreparedSql.executeUpdate();
+            if (updateCount > 0) {
                 log.info("item {} was update in database", item.getName());
             } else {
                 log.info("item {} was not update in database", item.getName());
             }
-            return updateItemCount;
+            return updateCount;
         }
     }
 
