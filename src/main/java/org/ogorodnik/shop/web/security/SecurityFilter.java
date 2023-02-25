@@ -47,7 +47,7 @@ public class SecurityFilter implements Filter {
         }
         log.info("Check if user is authorised");
 
-        Optional<String> tokenOptional = WebUtil.extractCookieValue(httpServletRequest, "user-token");
+        Optional<String> tokenOptional = WebUtil.extractCookieValue(httpServletRequest, "userToken");
         if (tokenOptional.isEmpty()) {
             log.info("Unauthorised access");
             httpServletResponse.sendRedirect("/login");

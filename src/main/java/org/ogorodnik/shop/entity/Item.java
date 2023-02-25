@@ -10,7 +10,7 @@ import java.time.temporal.ChronoUnit;
 @AllArgsConstructor
 @Data
 public class Item {
-    private long id;
+    long id;
     private String name;
     private double price;
     @Builder.Default
