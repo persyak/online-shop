@@ -24,7 +24,7 @@ public class JdbcItemDao implements ItemDao {
             "SELECT id, name, price, creationDate, description FROM item where name like ? or description like ?";
     private final String GET_ITEM_BY_ID_SQL =
             "SELECT id, name, price, creationDate, description FROM item WHERE id = ?";
-    private final static ItemRowMapper itemRowMapper = new ItemRowMapper();
+    private final static ItemRowMapper ITEM_ROW_MAPPER = new ItemRowMapper();
 
     private final DataSource dataSource;
 
@@ -40,7 +40,7 @@ public class JdbcItemDao implements ItemDao {
 
             List<Item> items = new ArrayList<>();
             while (resultSet.next()) {
-                Item item = itemRowMapper.mapRow(resultSet);
+                Item item = ITEM_ROW_MAPPER.mapRow(resultSet);
                 items.add(item);
             }
             return items;
@@ -65,11 +65,10 @@ public class JdbcItemDao implements ItemDao {
             }
 
             try (ResultSet generatedKeys = insertPreparedSql.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    item.setId(generatedKeys.getLong(1));
-                } else {
+                if (!generatedKeys.next()) {
                     throw new SQLException("Creating user failed, no ID obtained.");
                 }
+                item.setId(generatedKeys.getLong(1));
             }
         }
         return item;
@@ -123,7 +122,7 @@ public class JdbcItemDao implements ItemDao {
             searchPreparedSql.setString(2, searchCriteria);
             try (ResultSet resultSet = searchPreparedSql.executeQuery()) {
                 while (resultSet.next()) {
-                    Item item = itemRowMapper.mapRow(resultSet);
+                    Item item = ITEM_ROW_MAPPER.mapRow(resultSet);
                     items.add(item);
                 }
                 return items;
@@ -139,7 +138,7 @@ public class JdbcItemDao implements ItemDao {
             getItemByIdSql.setLong(1, itemId);
             try (ResultSet resultSet = getItemByIdSql.executeQuery()) {
                 while (resultSet.next()) {
-                    item = itemRowMapper.mapRow(resultSet);
+                    item = ITEM_ROW_MAPPER.mapRow(resultSet);
                 }
                 return item;
             }
