@@ -25,8 +25,8 @@ public class CartService {
         return Optional.empty();
     }
 
-    public Optional<Session> getSession(String userToken) {
-        return securityService.getSession(userToken);
+    public Optional<Session> getSession(Session session) {
+        return securityService.getSession(session.getUserToken());
     }
 
 }

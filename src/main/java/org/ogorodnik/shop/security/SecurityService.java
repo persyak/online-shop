@@ -39,11 +39,9 @@ public class SecurityService {
     }
 
     public boolean logout(String uuid) {
-        Iterator<Session> iterator = sessionList.iterator();
-        while (iterator.hasNext()) {
-            Session session = iterator.next();
+        for (Session session : sessionList) {
             if (uuid.equals(session.getUserToken())) {
-                iterator.remove();
+                sessionList.remove(session);
                 log.info("user has been logged out successfully");
                 return true;
             }
@@ -54,12 +52,10 @@ public class SecurityService {
 
     public Optional<Session> getSession(String userToken) {
         log.info("validate if user is logged in");
-        Iterator<Session> iterator = sessionList.iterator();
-        while (iterator.hasNext()) {
-            Session session = iterator.next();
+        for (Session session : sessionList) {
             if (userToken.equals(session.getUserToken())) {
                 if (session.getExpireDate().isBefore(LocalDateTime.now())) {
-                    iterator.remove();
+                    sessionList.remove(session);
                     return Optional.empty();
                 }
                 return Optional.of(session);

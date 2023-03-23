@@ -8,48 +8,22 @@ import org.ogorodnik.shop.security.Credentials;
 import org.ogorodnik.shop.security.SecurityService;
 import org.ogorodnik.shop.security.Session;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.AuthenticationException;
 import java.util.Optional;
 
 @Slf4j
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class LoginController {
 
     private final SecurityService securityService;
-
-    @Value("${session.cookie.max.age}")
     private int sessionMaxAge;
 
-    @GetMapping("/login")
-    protected String getLoginPage() {
-        log.info("redirecting to login page");
-        return "login";
-    }
-
-    @PostMapping ("/login")
-    protected String login(@ModelAttribute("credentials") Credentials credentials,
-                           HttpServletResponse response) {
-
-        Optional<Session> sessionOptional = securityService.login(credentials);
-        if (sessionOptional.isPresent()) {
-            log.info("login user and redirect to main page");
-            Cookie cookie = new Cookie("userToken", sessionOptional.get().getUserToken());
-
-            cookie.setMaxAge(sessionMaxAge);
-            response.addCookie(cookie);
-            return "redirect:/items";
-        }
-        log.info("failing to login. There is no session for user");
-        return "failedLogin";
-    }
-
     @PostMapping("/api/v1/login")
-    @ResponseBody
-    protected Cookie login(@RequestBody Credentials credentials) throws AuthenticationException {
+    protected Cookie login(@RequestBody Credentials credentials,
+                           HttpServletResponse response) throws AuthenticationException {
 
         Optional<Session> sessionOptional = securityService.login(credentials);
         //TODO: have to think about this exception if login fails
@@ -59,7 +33,13 @@ public class LoginController {
         log.info("login user and redirect to main page");
         Cookie cookie = new Cookie("userToken", sessionOptional.get().getUserToken());
         cookie.setMaxAge(sessionMaxAge);
+        response.addCookie(cookie);
 
         return cookie;
+    }
+
+    @Value("${session.cookie.max.age}")
+    public void setSessionMaxAge(int sessionMaxAge) {
+        this.sessionMaxAge = sessionMaxAge;
     }
 }
