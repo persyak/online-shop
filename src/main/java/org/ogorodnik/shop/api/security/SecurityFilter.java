@@ -1,4 +1,4 @@
-package org.ogorodnik.shop.web.security;
+package org.ogorodnik.shop.api.security;
 
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.security.Session;
 import org.ogorodnik.shop.security.SecurityService;
 import org.ogorodnik.shop.util.ApplicationConfiguration;
-import org.ogorodnik.shop.web.util.WebUtil;
+import org.ogorodnik.shop.api.util.WebUtil;
 import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.WebApplicationContext;
 

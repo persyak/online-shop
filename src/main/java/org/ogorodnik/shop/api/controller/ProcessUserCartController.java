@@ -1,4 +1,4 @@
-package org.ogorodnik.shop.web.controller;
+package org.ogorodnik.shop.api.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,28 +19,19 @@ public class ProcessUserCartController {
 
     @GetMapping("/api/v1/userCart")
     protected List<Item> getUserCart(@RequestAttribute Session session) {
-        Optional<Session> sessionOptional = cartService.getSession(session);
-        if (sessionOptional.isPresent()) {
-            log.info("got user session. processing user card");
-            List<Item> cart = sessionOptional.get().getCart();
-            if (cart.size() > 0) {
-                return cart;
-            }
+        log.info("got user session. processing user card");
+        List<Item> cart = session.getCart();
+        if (cart.size() > 0) {
+            return cart;
         }
         return List.of();
     }
 
     @PostMapping("/api/v1/userCart/{productId}")
     protected List<Item> addToUserCart(@PathVariable long productId, @RequestAttribute Session session) {
-        Optional<Session> sessionOptional = cartService.getSession(session);
-        if (sessionOptional.isPresent()) {
-            List<Item> cart = sessionOptional.get().getCart();
+            List<Item> cart = session.getCart();
             log.info("item with id " + productId + " has been added to the card");
             Optional<Item> optionalItem = cartService.addToCart(cart, productId);
-            if (optionalItem.isPresent()) {
-                return List.of(optionalItem.get());
-            }
-        }
-        return List.of();
+        return optionalItem.map(List::of).orElseGet(List::of);
     }
 }

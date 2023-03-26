@@ -1,4 +1,4 @@
-package org.ogorodnik.shop.web.controller;
+package org.ogorodnik.shop.api.controller;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;

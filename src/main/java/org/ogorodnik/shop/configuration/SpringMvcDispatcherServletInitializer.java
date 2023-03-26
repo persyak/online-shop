@@ -1,7 +1,7 @@
 package org.ogorodnik.shop.configuration;
 
 import jakarta.servlet.Filter;
-import org.ogorodnik.shop.web.security.SecurityFilter;
+import org.ogorodnik.shop.api.security.SecurityFilter;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 
@@ -14,7 +14,7 @@ public class SpringMvcDispatcherServletInitializer
 
     @Override
     protected Class<?>[] getServletConfigClasses() {
-        return new Class<?>[]{WebConfiguration.class};
+        return new Class<?>[]{RestConfiguration.class};
     }
 
     @Override
