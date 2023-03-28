@@ -1,18 +1,19 @@
 package org.ogorodnik.shop.entity;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Builder
-@Getter
-@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class Item {
-    private long id;
+    long id;
     private String name;
     private double price;
-    private LocalDateTime creationDate;
+    @Builder.Default
+    private LocalDateTime creationDate = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
     private String description;
 }

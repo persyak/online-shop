@@ -24,7 +24,7 @@ public class JdbcItemDao implements ItemDao {
             "SELECT id, name, price, creationDate, description FROM item where name like ? or description like ?";
     private final String GET_ITEM_BY_ID_SQL =
             "SELECT id, name, price, creationDate, description FROM item WHERE id = ?";
-    private final static ItemRowMapper itemRowMapper = new ItemRowMapper();
+    private final static ItemRowMapper ITEM_ROW_MAPPER = new ItemRowMapper();
 
     private final DataSource dataSource;
 
@@ -40,7 +40,7 @@ public class JdbcItemDao implements ItemDao {
 
             List<Item> items = new ArrayList<>();
             while (resultSet.next()) {
-                Item item = itemRowMapper.mapRow(resultSet);
+                Item item = ITEM_ROW_MAPPER.mapRow(resultSet);
                 items.add(item);
             }
             return items;
@@ -48,33 +48,38 @@ public class JdbcItemDao implements ItemDao {
     }
 
     @SneakyThrows
-    public void addItem(Item item) {
-        String name = item.getName();
-        double price = item.getPrice();
-        LocalDateTime creationDate = item.getCreationDate();
-        String description = item.getDescription();
+    public Item addItem(Item item) {
 
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement insertPreparedSql = connection.prepareStatement(INSERT_SQL)) {
-            insertPreparedSql.setString(1, name);
-            insertPreparedSql.setDouble(2, price);
+             PreparedStatement insertPreparedSql = connection.prepareStatement(INSERT_SQL,
+                     Statement.RETURN_GENERATED_KEYS)) {
+            insertPreparedSql.setString(1, item.getName());
+            insertPreparedSql.setDouble(2, item.getPrice());
+            insertPreparedSql.setTimestamp(3, java.sql.Timestamp.valueOf(item.getCreationDate()));
+            insertPreparedSql.setString(4, item.getDescription());
 
-            Timestamp timestamp = java.sql.Timestamp.valueOf(creationDate);
-            insertPreparedSql.setTimestamp(3, timestamp);
+            int affectedRows = insertPreparedSql.executeUpdate();
 
-            insertPreparedSql.setString(4, description);
+            if (affectedRows == 0) {
+                throw new SQLException("Creating user failed, no rows affected.");
+            }
 
-            insertPreparedSql.executeUpdate();
+            try (ResultSet generatedKeys = insertPreparedSql.getGeneratedKeys()) {
+                if (!generatedKeys.next()) {
+                    throw new SQLException("Creating user failed, no ID obtained.");
+                }
+                item.setId(generatedKeys.getLong(1));
+            }
         }
+        return item;
     }
 
     @SneakyThrows
-    public void deleteItem(long id) {
+    public int deleteItem(long id) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement deletePreparedSql = connection.prepareStatement(DELETE_SQL)) {
             deletePreparedSql.setLong(1, id);
-
-            deletePreparedSql.execute();
+            return deletePreparedSql.executeUpdate();
         }
     }
 
@@ -96,13 +101,13 @@ public class JdbcItemDao implements ItemDao {
             updatePreparedSql.setString(4, description);
             updatePreparedSql.setLong(5, id);
 
-            int updateItemCount = updatePreparedSql.executeUpdate();
-            if (updateItemCount > 0) {
+            int updateCount = updatePreparedSql.executeUpdate();
+            if (updateCount > 0) {
                 log.info("item {} was update in database", item.getName());
             } else {
                 log.info("item {} was not update in database", item.getName());
             }
-            return updateItemCount;
+            return updateCount;
         }
     }
 
@@ -117,7 +122,7 @@ public class JdbcItemDao implements ItemDao {
             searchPreparedSql.setString(2, searchCriteria);
             try (ResultSet resultSet = searchPreparedSql.executeQuery()) {
                 while (resultSet.next()) {
-                    Item item = itemRowMapper.mapRow(resultSet);
+                    Item item = ITEM_ROW_MAPPER.mapRow(resultSet);
                     items.add(item);
                 }
                 return items;
@@ -133,7 +138,7 @@ public class JdbcItemDao implements ItemDao {
             getItemByIdSql.setLong(1, itemId);
             try (ResultSet resultSet = getItemByIdSql.executeQuery()) {
                 while (resultSet.next()) {
-                    item = itemRowMapper.mapRow(resultSet);
+                    item = ITEM_ROW_MAPPER.mapRow(resultSet);
                 }
                 return item;
             }

@@ -1,12 +1,10 @@
 package org.ogorodnik.shop.security;
 
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import lombok.Value;
+import lombok.*;
 
 @Data
-@Value
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class Credentials {
     String name;
     String password;
