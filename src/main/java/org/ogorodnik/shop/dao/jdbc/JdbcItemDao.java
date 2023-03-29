@@ -11,7 +11,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
 import java.sql.*;
 import java.util.List;
 import java.util.Objects;
@@ -33,8 +32,8 @@ public class JdbcItemDao implements ItemDao {
             "SELECT id, name, price, creationDate, description FROM item WHERE id = ?";
 
     @Autowired
-    public JdbcItemDao(DataSource dataSource, ItemRowMapper itemRowMapper) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
+    public JdbcItemDao(JdbcTemplate jdbcTemplate, ItemRowMapper itemRowMapper) {
+        this.jdbcTemplate = jdbcTemplate;
         this.itemRowMapper = itemRowMapper;
     }
 

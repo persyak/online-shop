@@ -5,6 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.ogorodnik.shop.util.ApplicationConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 
@@ -27,6 +28,11 @@ public class RootConfiguration {
         config.setPassword(password);
 
         return new HikariDataSource(config);
+    }
+
+    @Bean
+    public JdbcTemplate jdbcTemplate(DataSource dataSource) {
+        return new JdbcTemplate(dataSource);
     }
 
     @Bean

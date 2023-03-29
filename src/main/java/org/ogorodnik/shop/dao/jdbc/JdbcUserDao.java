@@ -22,8 +22,8 @@ public class JdbcUserDao implements UserDao {
     private final String GET_PASSWORD_SQL = "select login, password, salt from users where login = ?";
 
     @Autowired
-    public JdbcUserDao(DataSource dataSource, CredentialsRowMapper credentialsRowMapper) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
+    public JdbcUserDao(JdbcTemplate jdbcTemplate, CredentialsRowMapper credentialsRowMapper) {
+        this.jdbcTemplate = jdbcTemplate;
         this.credentialsRowMapper = credentialsRowMapper;
     }
 
