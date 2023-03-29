@@ -22,7 +22,7 @@ public class SecurityService {
 
     public Optional<Session> login(Credentials credentials) {
         log.info("Check if user password is correct and user can login");
-        Optional<EncryptedPassword> encryptedPassword = userService.getUserPassword(credentials.getName());
+        Optional<EncryptedPassword> encryptedPassword = userService.getUserPassword(credentials.getLogin());
 
         if (encryptedPassword.isPresent() &&
                 credentialsEqualPassword(credentials, encryptedPassword.get())) {

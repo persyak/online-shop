@@ -13,7 +13,7 @@ public class UserService {
 
     private final UserDao userDao;
 
-    public Optional<EncryptedPassword> getUserPassword(String name) {
-        return userDao.getUserPassword(name);
+    public Optional<EncryptedPassword> getUserPassword(String login) {
+        return userDao.getUserPassword(login);
     }
 }
