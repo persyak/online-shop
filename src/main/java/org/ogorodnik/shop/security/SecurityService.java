@@ -25,7 +25,7 @@ public class SecurityService {
 
     public Session login(Credentials credentials) throws AuthenticationException {
         log.info("Check if user password is correct and user can login");
-        Credentials credentialsFromDb = userService.getUserPassword(credentials.getLogin());
+        Credentials credentialsFromDb = userService.getCredentials(credentials.getLogin());
 
         if (!credentialsEqualPassword(credentials, credentialsFromDb)) {
             throw new AuthenticationException("Password is not correct");

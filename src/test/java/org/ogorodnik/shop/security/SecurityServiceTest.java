@@ -35,10 +35,10 @@ class SecurityServiceTest {
                 .salt(testSalt)
                 .build();
 
-        Mockito.when(userService.getUserPassword("testUser"))
+        Mockito.when(userService.getCredentials("testUser"))
                 .thenReturn(testCredentialsFromDb);
 
-        Mockito.when(userService.getUserPassword("notExistedUser"))
+        Mockito.when(userService.getCredentials("notExistedUser"))
                 .thenThrow(new AuthenticationException("User does not exist"));
     }
 

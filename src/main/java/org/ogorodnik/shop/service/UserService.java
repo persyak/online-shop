@@ -14,7 +14,7 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    public Credentials getUserPassword(String login) throws AuthenticationException {
+    public Credentials getCredentials(String login) throws AuthenticationException {
         Optional<Credentials> credentials = userRepository.findByLoginIgnoreCase(login);
 
         if (credentials.isEmpty()) {
