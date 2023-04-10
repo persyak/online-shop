@@ -32,16 +32,13 @@ public class ProcessUserCartController {
     }
 
     @PostMapping("/api/v1/userCart/{productId}")
-    protected List<Item> addToUserCart(@PathVariable long productId, @RequestParam String userToken) throws ItemNotFountException {
+    protected Optional<Item> addToUserCart(@PathVariable long productId, @RequestParam String userToken) throws ItemNotFountException {
         Optional<Session> sessionOptional = cartService.getSession(userToken);
         if (sessionOptional.isPresent()) {
             List<Item> cart = sessionOptional.get().getCart();
             log.info("item with id " + productId + " has been added to the card");
-            Optional<Item> optionalItem = cartService.addToCart(cart, productId);
-            if (optionalItem.isPresent()) {
-                return List.of(optionalItem.get());
-            }
+            return Optional.of(cartService.addToCart(cart, productId));
         }
-        return List.of();
+        return Optional.empty();
     }
 }

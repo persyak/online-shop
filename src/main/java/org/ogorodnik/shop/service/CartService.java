@@ -17,13 +17,10 @@ public class CartService {
     private final ItemService itemService;
     private final SecurityService securityService;
 
-    public Optional<Item> addToCart(List<Item> cart, long itemId) throws ItemNotFountException {
+    public Item addToCart(List<Item> cart, long itemId) throws ItemNotFountException {
         Item item = itemService.getItemById(itemId);
-        if (null != item) {
-            cart.add(item);
-            return Optional.of(item);
-        }
-        return Optional.empty();
+        cart.add(item);
+        return item;
     }
 
     public Optional<Session> getSession(String userToken) {
