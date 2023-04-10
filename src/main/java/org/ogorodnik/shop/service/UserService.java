@@ -1,8 +1,9 @@
 package org.ogorodnik.shop.service;
 
 import lombok.RequiredArgsConstructor;
-import org.ogorodnik.shop.dao.UserDao;
-import org.ogorodnik.shop.security.EncryptedPassword;
+import org.apache.tomcat.websocket.AuthenticationException;
+import org.ogorodnik.shop.repository.UserRepository;
+import org.ogorodnik.shop.entity.Credentials;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -11,9 +12,15 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
 
-    private final UserDao userDao;
+    private final UserRepository userRepository;
 
-    public Optional<EncryptedPassword> getUserPassword(String login) {
-        return userDao.getUserPassword(login);
+    public Credentials getUserPassword(String login) throws AuthenticationException {
+        Optional<Credentials> credentials = userRepository.findByLoginIgnoreCase(login);
+
+        if (credentials.isEmpty()) {
+            throw new AuthenticationException("User does not exist");
+        }
+
+        return credentials.get();
     }
 }

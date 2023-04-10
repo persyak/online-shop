@@ -2,7 +2,9 @@ package org.ogorodnik.shop.security;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.websocket.AuthenticationException;
 import org.mindrot.jbcrypt.BCrypt;
+import org.ogorodnik.shop.entity.Credentials;
 import org.ogorodnik.shop.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,27 +17,25 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Service
 @RequiredArgsConstructor
 public class SecurityService {
-    private final List<Session> sessionList = new CopyOnWriteArrayList<>();
 
+    //TODO: I have to think how can I improve sessionList to be able to test logout() method
+    private final List<Session> sessionList = new CopyOnWriteArrayList<>();
     private final UserService userService;
     private int sessionMaxAge;
 
-    public Optional<Session> login(Credentials credentials) {
+    public Session login(Credentials credentials) throws AuthenticationException {
         log.info("Check if user password is correct and user can login");
-        Optional<EncryptedPassword> encryptedPassword = userService.getUserPassword(credentials.getLogin());
+        Credentials credentialsFromDb = userService.getUserPassword(credentials.getLogin());
 
-        if (encryptedPassword.isPresent() &&
-                credentialsEqualPassword(credentials, encryptedPassword.get())) {
-            LocalDateTime expireDate =
-                    LocalDateTime.now().plusSeconds(sessionMaxAge);
-            Session session = new Session(UUID.randomUUID().toString(), expireDate);
-            sessionList.add(session);
-            log.info("login is successful");
-            return Optional.of(session);
+        if (!credentialsEqualPassword(credentials, credentialsFromDb)) {
+            throw new AuthenticationException("Password is not correct");
         }
-
-        log.info("Login failed. Password is incorrect or user was not found");
-        return Optional.empty();
+        LocalDateTime expireDate =
+                LocalDateTime.now().plusSeconds(sessionMaxAge);
+        Session session = new Session(UUID.randomUUID().toString(), expireDate);
+        sessionList.add(session);
+        log.info("login is successful");
+        return session;
     }
 
     public boolean logout(String uuid) {
@@ -65,9 +65,9 @@ public class SecurityService {
     }
 
     private boolean credentialsEqualPassword(
-            Credentials credentials, EncryptedPassword encryptedPassword) {
-        return BCrypt.hashpw(credentials.getPassword(), encryptedPassword.getSalt())
-                .equals(encryptedPassword.getPassword());
+            Credentials credentials, Credentials credentialsFromDb) {
+        return BCrypt.hashpw(credentials.getPassword(), credentialsFromDb.getSalt())
+                .equals(credentialsFromDb.getPassword());
     }
 
     @Value("${session.cookie.max.age}")
