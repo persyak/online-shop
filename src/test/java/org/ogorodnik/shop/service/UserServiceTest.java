@@ -26,7 +26,6 @@ class UserServiceTest {
     @BeforeEach
     void setUp() {
         Credentials testCredentialsFromDb = Credentials.builder()
-                .id(1L)
                 .login("testLogin")
                 .password("testPassword")
                 .salt("testSalt")
@@ -42,7 +41,6 @@ class UserServiceTest {
     @DisplayName("Get Credentials When ValidLogin Provided")
     public void whenExistedLoginProvided_thenReturnCredentials() throws AuthenticationException {
         Credentials credentials = userService.getCredentials("testLogin");
-        assertEquals(1L, credentials.getId());
         assertEquals("testLogin", credentials.getLogin());
         assertEquals("testPassword", credentials.getPassword());
         assertEquals("testSalt", credentials.getSalt());

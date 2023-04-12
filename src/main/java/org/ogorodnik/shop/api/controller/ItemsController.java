@@ -20,7 +20,7 @@ public class ItemsController {
     }
 
     @GetMapping("/api/v1/items/{searchCriteria}")
-    protected Iterable<Item> searchItems(@PathVariable String searchCriteria) {
-        return itemService.findByNameAdnDescription(searchCriteria);
+    protected Iterable<Item> findByNameOrDescription(@PathVariable String searchCriteria) {
+        return itemService.findByNameOrDescription(searchCriteria);
     }
 }

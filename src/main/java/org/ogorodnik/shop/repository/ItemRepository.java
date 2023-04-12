@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ItemRepository extends CrudRepository<Item, Long> {
 
-    public Iterable<Item> findByNameAndDescriptionContaining(String searchName, String SearchDescription);
+    public Iterable<Item> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String searchName, String SearchDescription);
 
 }

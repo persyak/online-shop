@@ -41,8 +41,8 @@ public class ItemService {
         return itemRepository.save(itemDb);
     }
 
-    public Iterable<Item> findByNameAdnDescription(String searchItem) {
-        return itemRepository.findByNameAndDescriptionContaining(searchItem, searchItem);
+    public Iterable<Item> findByNameOrDescription(String searchItem) {
+        return itemRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(searchItem, searchItem);
     }
 
     public Item getItemById(long itemId) throws ItemNotFountException {

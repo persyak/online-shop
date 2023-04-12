@@ -127,15 +127,15 @@ class ItemServiceTest {
                         .build()))
                 .thenReturn(itemUpdatedWithLegacyDescription);
 
-        Mockito.when(itemRepository.findByNameAndDescriptionContaining(
+        Mockito.when(itemRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
                         "testItem", "testItem"))
                 .thenReturn(List.of(itemFirst));
 
-        Mockito.when(itemRepository.findByNameAndDescriptionContaining(
+        Mockito.when(itemRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
                         "description", "description"))
                 .thenReturn(List.of(itemFirst));
 
-        Mockito.when(itemRepository.findByNameAndDescriptionContaining(
+        Mockito.when(itemRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(
                         "nonExistedItem", "nonExistedItem"))
                 .thenReturn(List.of());
 
@@ -235,21 +235,21 @@ class ItemServiceTest {
     @Test
     @DisplayName("Get Data based on found Name by Pattern")
     public void whenValidSearchPattern_thenItemShouldFoundByName() {
-        Iterable<Item> found = itemService.findByNameAdnDescription("testItem");
+        Iterable<Item> found = itemService.findByNameOrDescription("testItem");
         assertEquals("testItemName", found.iterator().next().getName());
     }
 
     @Test
     @DisplayName("Get Data based on found Description by Pattern")
     public void whenValidSearchPattern_thenItemShouldFoundByDescription() {
-        Iterable<Item> found = itemService.findByNameAdnDescription("description");
+        Iterable<Item> found = itemService.findByNameOrDescription("description");
         assertEquals("testDescription", found.iterator().next().getDescription());
     }
 
     @Test
     @DisplayName("No Data found by Invalid Pattern")
     public void whenInvalidSearchPattern_thenNoItemShouldFound() {
-        Iterable<Item> found = itemService.findByNameAdnDescription("nonExistedItem");
+        Iterable<Item> found = itemService.findByNameOrDescription("nonExistedItem");
         assertFalse(found.iterator().hasNext());
     }
 
