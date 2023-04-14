@@ -32,7 +32,8 @@ public class ProcessUserCartController {
     }
 
     @PostMapping("/api/v1/userCart/{productId}")
-    protected Optional<Item> addToUserCart(@PathVariable long productId, @RequestParam String userToken) throws ItemNotFountException {
+    protected Optional<Item> addToUserCart(@PathVariable long productId, @RequestParam String userToken)
+            throws ItemNotFountException {
         Optional<Session> sessionOptional = cartService.getSession(userToken);
         if (sessionOptional.isPresent()) {
             List<Item> cart = sessionOptional.get().getCart();

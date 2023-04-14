@@ -15,6 +15,17 @@ public class ItemController {
 
     private final ItemService itemService;
 
+    @GetMapping("/api/v1/items")
+    protected Iterable<Item> findAll() {
+        log.info("Getting all items from database");
+        return itemService.findAll();
+    }
+
+    @GetMapping("/api/v1/items/{searchCriteria}")
+    protected Iterable<Item> findByNameOrDescription(@PathVariable String searchCriteria) {
+        return itemService.findByNameOrDescription(searchCriteria);
+    }
+
     @PostMapping("/api/v1/item/add")
     protected Item addItem(@Valid @RequestBody Item item) {
         return itemService.addItem(item);

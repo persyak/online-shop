@@ -225,7 +225,7 @@ class ItemServiceTest {
 
     @Test
     @DisplayName("ItemNotFoundException is thrown when item to update is not available")
-    public void whenAbsentItemIsUpdated_thenItemNotFoundExceptionIsThrown() throws ItemNotFountException {
+    public void whenAbsentItemIsUpdated_thenItemNotFoundExceptionIsThrown() {
         Exception exception = assertThrows(ItemNotFountException.class, () -> {
             itemService.updateItem(3L, new Item());
         });

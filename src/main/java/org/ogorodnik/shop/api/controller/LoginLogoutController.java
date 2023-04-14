@@ -1,6 +1,7 @@
 package org.ogorodnik.shop.api.controller;
 
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,18 +12,16 @@ import org.ogorodnik.shop.security.Session;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-public class LoginController {
+public class LoginLogoutController {
 
     private final SecurityService securityService;
     private int sessionMaxAge;
 
     @PostMapping("/api/v1/login")
-    protected Cookie login(@RequestBody Credentials credentials,
+    protected Cookie login(@RequestBody Credentials credentials, HttpServletRequest request,
                            HttpServletResponse response) throws AuthenticationException {
 
         Session session = securityService.login(credentials);
@@ -30,8 +29,26 @@ public class LoginController {
         Cookie cookie = new Cookie("userToken", session.getUserToken());
         cookie.setMaxAge(sessionMaxAge);
         response.addCookie(cookie);
+        request.setAttribute("session", session);
 
         return cookie;
+    }
+
+    @PostMapping("/api/v1/logout")
+    protected String logout(@RequestParam String cookie) {
+        boolean isLoggedOut = false;
+        if (!cookie.isEmpty()) {
+            log.info("logging out user");
+            isLoggedOut = securityService.logout(cookie);
+        }
+
+        if (isLoggedOut) {
+            log.info("user has been logged out");
+            return "logout";
+        } else {
+            log.info("user is not logged in so no logout made");
+            return "notLoggedIn";
+        }
     }
 
     @Value("${session.cookie.max.age}")
