@@ -111,7 +111,7 @@ class LoginLogoutControllerTest {
         Mockito.when(securityService.logout("1c0451d1-12c7-43ff-9a3f-d5ae73e18e36")).thenReturn(true);
 
         MvcResult result = mockMvc.perform(post("/api/v1/logout")
-                .param("cookie", "1c0451d1-12c7-43ff-9a3f-d5ae73e18e36"))
+                        .param("cookie", "1c0451d1-12c7-43ff-9a3f-d5ae73e18e36"))
                 .andExpect(status().isOk())
                 .andReturn();
 

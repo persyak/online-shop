@@ -3,6 +3,7 @@ package org.ogorodnik.shop.service;
 import lombok.RequiredArgsConstructor;
 import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.error.ItemNotFountException;
+import org.ogorodnik.shop.error.SessionNotFoundException;
 import org.ogorodnik.shop.security.SecurityService;
 import org.ogorodnik.shop.security.Session;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,12 @@ public class CartService {
         return item;
     }
 
-    public Optional<Session> getSession(String userToken) {
-        return securityService.getSession(userToken);
+    public Session getSession(String userToken) throws SessionNotFoundException {
+        Optional<Session> sessionOptional = securityService.getSession(userToken);
+
+        if (sessionOptional.isPresent()) {
+            return sessionOptional.get();
+        }
+        throw new SessionNotFoundException("Session not found");
     }
 }

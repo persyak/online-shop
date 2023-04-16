@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.error.ItemNotFountException;
+import org.ogorodnik.shop.error.SessionNotFoundException;
 import org.ogorodnik.shop.security.SecurityService;
 import org.ogorodnik.shop.security.Session;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,17 +75,20 @@ class CartServiceTest {
 
     @Test
     @DisplayName("Return Session when Valid Token is Provided")
-    public void whenExistedTokenProvided_thenReturnSessionOptional() {
-        Optional<Session> sessionOptional = cartService.getSession("existedToken");
-        assertTrue(sessionOptional.isPresent());
-        assertEquals("existedToken", sessionOptional.get().getUserToken());
-        assertEquals(localDateTime, sessionOptional.get().getExpireDate());
-        assertInstanceOf(CopyOnWriteArrayList.class, sessionOptional.get().getCart());
+    public void whenExistedTokenProvided_thenReturnSessionOptional() throws SessionNotFoundException {
+        Session session = cartService.getSession("existedToken");
+        assertEquals("existedToken", session.getUserToken());
+        assertEquals(localDateTime, session.getExpireDate());
+        assertInstanceOf(CopyOnWriteArrayList.class, session.getCart());
     }
 
     @Test
-    @DisplayName("Get Empty Optional when Absent Token is Provided")
-    public void whenAbsentTokenProvided_thenReturnEmptyOptional() {
-        assertTrue(cartService.getSession("absentToken").isEmpty());
+    @DisplayName("Throw SessionNotFoundException when Absent Token is Provided")
+    public void whenAbsentTokenProvided_thenThrowSessionNotFoundException() {
+
+        Exception exception = assertThrows(SessionNotFoundException.class, () -> {
+            cartService.getSession("absentToken");
+        });
+        assertTrue(exception.getMessage().contains("Session not found"));
     }
 }
