@@ -29,7 +29,6 @@ public class ProcessUserCartController {
     protected Item addToUserCart(@PathVariable long productId, @RequestParam String userToken)
             throws ItemNotFountException, SessionNotFoundException {
         List<Item> cart = cartService.getSession(userToken).getCart();
-        log.info("item with id " + productId + " has been added to the card");
         return cartService.addToCart(cart, productId);
     }
 }

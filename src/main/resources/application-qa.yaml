@@ -1,0 +1,12 @@
+spring:
+  config:
+    activate:
+      on-profile: qa
+  datasource:
+    username: postgres
+    url: jdbc:postgresql://127.0.0.1:5433/items
+    hikari:
+      idleTimeout: '30000'
+      maximumPoolSize: '10'
+    dataSourceClassName: org.postgresql.ds.PGSimpleDataSource
+    password: postgres

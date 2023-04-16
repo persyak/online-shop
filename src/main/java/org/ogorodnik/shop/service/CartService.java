@@ -1,6 +1,7 @@
 package org.ogorodnik.shop.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.error.ItemNotFountException;
 import org.ogorodnik.shop.error.SessionNotFoundException;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CartService {
@@ -21,6 +23,7 @@ public class CartService {
     public Item addToCart(List<Item> cart, long itemId) throws ItemNotFountException {
         Item item = itemService.getItemById(itemId);
         cart.add(item);
+        log.info("item with id " + itemId + " has been added to the card");
         return item;
     }
 
