@@ -1,15 +1,19 @@
 package org.ogorodnik.shop.repository;
 
+import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.ogorodnik.shop.entity.Item;
-import org.ogorodnik.shop.repository.testcontainer.AbstractContainerBaseTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.relational.core.conversion.DbActionExecutionException;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -18,15 +22,35 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Testcontainers
 @SpringBootTest
 @Transactional
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class ItemRepositoryTest extends AbstractContainerBaseTest {
+class ItemRepositoryTest {
+
+    @Container
+    public static PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:latest")
+            .withUsername("test")
+            .withPassword("password")
+            .withDatabaseName("items");
+
+    @DynamicPropertySource
+    static void properties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", container::getJdbcUrl);
+        registry.add("spring.datasource.password", container::getPassword);
+        registry.add("spring.datasource.username", container::getUsername);
+    }
+
+    @Autowired
+    private Flyway flyway;
+
     @Autowired
     private ItemRepository itemRepository;
 
     @BeforeEach
     void setUp() {
+
+        flyway.migrate();
+
         Item item = Item.builder()
                 .name("testItemGlobal")
                 .price(100.0)
