@@ -267,4 +267,12 @@ class ItemServiceTest {
         });
         assertTrue(exception.getMessage().contains("Item not available"));
     }
+
+    @Test
+    public void whenNonExistedItemIdProvided_thenThrowItemNotFountExceptionWhenDeletingItem() {
+        Exception exception = assertThrows(ItemNotFountException.class, () -> {
+            itemService.deleteItemById(3L);
+        });
+        assertTrue(exception.getMessage().contains("Item not available"));
+    }
 }

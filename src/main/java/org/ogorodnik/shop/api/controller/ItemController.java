@@ -37,7 +37,7 @@ public class ItemController {
     }
 
     @DeleteMapping("/api/v1/item/delete/{id}")
-    protected String deleteItemById(@PathVariable long id) {
+    protected String deleteItemById(@PathVariable long id) throws Exception {
         itemService.deleteItemById(id);
         return "item has been deleted";
     }

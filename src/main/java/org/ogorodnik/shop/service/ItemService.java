@@ -23,8 +23,15 @@ public class ItemService {
         return itemRepository.save(item);
     }
 
-    public void deleteItemById(long itemId) {
-        itemRepository.deleteById(itemId);
+    public void deleteItemById(long itemId) throws Exception {
+        Optional<Item> item = itemRepository.findById(itemId);
+        if (item.isEmpty()) {
+            throw new ItemNotFountException("Item not available");
+        }
+            itemRepository.deleteById(itemId);
+            if (itemRepository.findById(itemId).isPresent()) {
+                throw new Exception("Something went wrong. Item was not deleted");
+            }
     }
 
     public Item updateItem(Long itemId, Item item) throws ItemNotFountException {
