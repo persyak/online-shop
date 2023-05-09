@@ -8,4 +8,5 @@ public class SpringBootOnlineShopStarter {
     public static void main(String[] args) {
         SpringApplication.run(SpringBootOnlineShopStarter.class, args);
     }
+
 }
