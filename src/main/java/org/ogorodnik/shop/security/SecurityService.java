@@ -2,7 +2,9 @@ package org.ogorodnik.shop.security;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.websocket.AuthenticationException;
 import org.mindrot.jbcrypt.BCrypt;
+import org.ogorodnik.shop.entity.Credentials;
 import org.ogorodnik.shop.service.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,41 +18,33 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @RequiredArgsConstructor
 public class SecurityService {
     private final List<Session> sessionList = new CopyOnWriteArrayList<>();
-
     private final UserService userService;
     private int sessionMaxAge;
 
-    public Optional<Session> login(Credentials credentials) {
+    public Session login(Credentials credentials) throws AuthenticationException {
         log.info("Check if user password is correct and user can login");
-        Optional<EncryptedPassword> encryptedPassword = userService.getUserPassword(credentials.getName());
+        Credentials credentialsFromDb = userService.getCredentials(credentials.getLogin());
 
-        if (encryptedPassword.isPresent() &&
-                credentialsEqualPassword(credentials, encryptedPassword.get())) {
-            LocalDateTime expireDate =
-                    LocalDateTime.now().plusSeconds(sessionMaxAge);
-            Session session = new Session(UUID.randomUUID().toString(), expireDate);
-            sessionList.add(session);
-            log.info("login is successful");
-            return Optional.of(session);
+        if (!credentialsEqualPassword(credentials, credentialsFromDb)) {
+            throw new AuthenticationException("Password is not correct");
         }
-
-        log.info("Login failed. Password is incorrect or user was not found");
-        return Optional.empty();
+        Session session = createSession(credentialsFromDb);
+        sessionList.add(session);
+        log.info("login is successful");
+        return session;
     }
 
-    public boolean logout(String uuid) {
+    public void logout(String uuid) {
         for (Session session : sessionList) {
             if (uuid.equals(session.getUserToken())) {
                 sessionList.remove(session);
                 log.info("user has been logged out successfully");
-                return true;
             }
         }
         log.info("Something went wrong. User can't be found and was not logged out");
-        return false;
     }
 
-    public Optional<Session> getSession(String userToken) {
+    public Optional<Session> createSession(String userToken) {
         log.info("validate if user is logged in");
         for (Session session : sessionList) {
             if (userToken.equals(session.getUserToken())) {
@@ -64,14 +58,19 @@ public class SecurityService {
         return Optional.empty();
     }
 
-    private boolean credentialsEqualPassword(
-            Credentials credentials, EncryptedPassword encryptedPassword) {
-        return BCrypt.hashpw(credentials.getPassword(), encryptedPassword.getSalt())
-                .equals(encryptedPassword.getPassword());
+    private boolean credentialsEqualPassword(Credentials credentials, Credentials credentialsFromDb) {
+        return BCrypt.hashpw(credentials.getPassword(), credentialsFromDb.getSalt())
+                .equals(credentialsFromDb.getPassword());
     }
 
     @Value("${session.cookie.max.age}")
     public void setSessionMaxAge(int sessionMaxAge) {
         this.sessionMaxAge = sessionMaxAge;
+    }
+
+    private Session createSession(Credentials credentials) {
+        LocalDateTime expireDate =
+                LocalDateTime.now().plusSeconds(sessionMaxAge);
+        return new Session(UUID.randomUUID().toString(), expireDate, credentials);
     }
 }
