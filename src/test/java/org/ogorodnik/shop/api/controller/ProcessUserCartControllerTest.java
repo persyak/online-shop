@@ -3,9 +3,10 @@ package org.ogorodnik.shop.api.controller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.ogorodnik.shop.entity.Credentials;
 import org.ogorodnik.shop.entity.Item;
-import org.ogorodnik.shop.error.ItemNotFountException;
-import org.ogorodnik.shop.error.SessionNotFoundException;
+import org.ogorodnik.shop.exception.ItemNotFountException;
+import org.ogorodnik.shop.exception.SessionNotFoundException;
 import org.ogorodnik.shop.security.Session;
 import org.ogorodnik.shop.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,15 +37,21 @@ class ProcessUserCartControllerTest {
     private String nonExistedToken;
     private List<Item> cart;
     private Item item;
+    private Credentials credentials;
 
     @BeforeEach
-    void setUp() throws SessionNotFoundException, ItemNotFountException {
+    void setUp() {
 
         userToken = "1c0451d1-12c7-43ff-9a3f-d5ae73e18e36";
 
         nonExistedToken = "1c0451d1-12c7-43ff-9a3f-doesNotExist";
 
-        session = new Session(userToken, LocalDateTime.now());
+        credentials = Credentials.builder()
+                .login("testLogin")
+                .password("testPassword")
+                .build();
+
+        session = new Session(userToken, LocalDateTime.now(), credentials);
 
         item = Item.builder()
                 .id(1L)
@@ -69,7 +76,7 @@ class ProcessUserCartControllerTest {
     @Test
     public void whenSessionIsPresent_thenReturnUserCart() throws Exception {
 
-        mockMvc.perform(get("/api/v1/userCart")
+        mockMvc.perform(get("/api/v1/cart")
                         .param("userToken", "1c0451d1-12c7-43ff-9a3f-d5ae73e18e36")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -82,11 +89,11 @@ class ProcessUserCartControllerTest {
 
     @Test
     public void whenSessionWithEmptyCart_thenReturnEmptyCart() throws Exception {
-        Session emptyCartSession = new Session(userToken, LocalDateTime.now());
+        Session emptyCartSession = new Session(userToken, LocalDateTime.now(), credentials);
 
         Mockito.when(cartService.getSession(userToken)).thenReturn(emptyCartSession);
 
-        mockMvc.perform(get("/api/v1/userCart")
+        mockMvc.perform(get("/api/v1/cart")
                         .param("userToken", "1c0451d1-12c7-43ff-9a3f-d5ae73e18e36")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -96,7 +103,7 @@ class ProcessUserCartControllerTest {
     @Test
     public void whenSessionIsNotAvailable_thenDoNotGetItemsListAndThrowSessionNotFoundException() throws Exception {
 
-        mockMvc.perform(get("/api/v1/userCart")
+        mockMvc.perform(get("/api/v1/cart")
                         .param("userToken", "1c0451d1-12c7-43ff-9a3f-doesNotExist")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
@@ -106,7 +113,7 @@ class ProcessUserCartControllerTest {
 
     @Test
     public void whenSessionAndItemAreAvailable_thenAddItemToCart() throws Exception {
-        mockMvc.perform(post("/api/v1/userCart/1")
+        mockMvc.perform(post("/api/v1/cart/item/1")
                         .param("userToken", "1c0451d1-12c7-43ff-9a3f-d5ae73e18e36")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -120,7 +127,7 @@ class ProcessUserCartControllerTest {
     public void whenItemIsNotPresent_thenDoNotAddItemToCartAndThrowItemNotFoundException() throws Exception {
         Mockito.when(cartService.addToCart(cart, 2)).thenThrow(new ItemNotFountException("Item not available"));
 
-        mockMvc.perform(post("/api/v1/userCart/2")
+        mockMvc.perform(post("/api/v1/cart/item/2")
                         .param("userToken", "1c0451d1-12c7-43ff-9a3f-d5ae73e18e36")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
@@ -132,7 +139,7 @@ class ProcessUserCartControllerTest {
     public void whenSessionIsNotAvailable_thenDoNotAddItemToCartAndThrowSessionNotFoundException()
             throws Exception {
 
-        mockMvc.perform(post("/api/v1/userCart/1")
+        mockMvc.perform(post("/api/v1/cart/item/1")
                         .param("userToken", "1c0451d1-12c7-43ff-9a3f-doesNotExist")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())

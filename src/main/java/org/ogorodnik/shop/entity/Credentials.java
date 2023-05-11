@@ -9,8 +9,8 @@ import org.springframework.data.annotation.Id;
 @AllArgsConstructor
 public class Credentials {
     @Id
-    Long id;
-    String login;
-    String password;
-    String salt;
+    private Long id;
+    private String login;
+    private String password;
+    private String salt;
 }

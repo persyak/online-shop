@@ -1,6 +1,7 @@
 package org.ogorodnik.shop.security;
 
 import lombok.Getter;
+import org.ogorodnik.shop.entity.Credentials;
 import org.ogorodnik.shop.entity.Item;
 
 import java.time.LocalDateTime;
@@ -13,8 +14,11 @@ public class Session {
     private final LocalDateTime expireDate;
     private final List<Item> cart = new CopyOnWriteArrayList<>();
 
-    public Session(String userToken, LocalDateTime expireDate) {
+    private final Credentials credentials;
+
+    public Session(String userToken, LocalDateTime expireDate, Credentials credentials) {
         this.userToken = userToken;
         this.expireDate = expireDate;
+        this.credentials = credentials;
     }
 }

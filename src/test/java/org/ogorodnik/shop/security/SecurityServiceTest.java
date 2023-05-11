@@ -86,6 +86,6 @@ class SecurityServiceTest {
     @Test
     public void getSession() {
         String testUserToken = "XXXYYY";
-        assert (securityService.getSession(testUserToken).isEmpty());
+        assert (securityService.createSession(testUserToken).isEmpty());
     }
 }

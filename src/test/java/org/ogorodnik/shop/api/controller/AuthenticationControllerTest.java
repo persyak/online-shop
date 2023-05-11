@@ -21,8 +21,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(LoginLogoutController.class)
-class LoginLogoutControllerTest {
+@WebMvcTest(AuthenticationController.class)
+class AuthenticationControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -42,7 +42,7 @@ class LoginLogoutControllerTest {
     @Test
     public void whenValidCredentials_thenPerformLogin() throws Exception {
         LocalDateTime expireDate = LocalDateTime.now();
-        Session session = new Session("1c0451d1-12c7-43ff-9a3f-d5ae73e18e36", expireDate);
+        Session session = new Session("1c0451d1-12c7-43ff-9a3f-d5ae73e18e36", expireDate, credentials);
 
         Mockito.when(securityService.login(credentials)).thenReturn(session);
 
@@ -85,12 +85,12 @@ class LoginLogoutControllerTest {
     @Test
     public void whenInvalidPassword_thenThrowAuthenticationException() throws Exception {
 
-        Credentials BadPasswordCredentials = Credentials.builder()
+        Credentials badPasswordCredentials = Credentials.builder()
                 .login("testLogin")
                 .password("nonExistedPassword")
                 .build();
 
-        Mockito.when(securityService.login(BadPasswordCredentials))
+        Mockito.when(securityService.login(badPasswordCredentials))
                 .thenThrow(new AuthenticationException("Password is not correct"));
 
         mockMvc.perform(post("/api/v1/login")
@@ -106,9 +106,7 @@ class LoginLogoutControllerTest {
     }
 
     @Test
-    public void whenLoggedIn_thenLogout() throws Exception {
-
-        Mockito.when(securityService.logout("1c0451d1-12c7-43ff-9a3f-d5ae73e18e36")).thenReturn(true);
+    public void testLogout() throws Exception {
 
         MvcResult result = mockMvc.perform(post("/api/v1/logout")
                         .param("cookie", "1c0451d1-12c7-43ff-9a3f-d5ae73e18e36"))
@@ -116,18 +114,5 @@ class LoginLogoutControllerTest {
                 .andReturn();
 
         assertEquals("logout", result.getResponse().getContentAsString());
-    }
-
-    @Test
-    public void whenNotLoggedIn_thenReturnNotLoggedInMessage() throws Exception {
-
-        Mockito.when(securityService.logout("xxx-xxx-xxx")).thenReturn(false);
-
-        MvcResult result = mockMvc.perform(post("/api/v1/logout")
-                        .param("cookie", "xxx-xxx-xxx"))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        assertEquals("notLoggedIn", result.getResponse().getContentAsString());
     }
 }

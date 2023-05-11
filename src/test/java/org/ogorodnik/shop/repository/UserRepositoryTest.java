@@ -1,6 +1,5 @@
 package org.ogorodnik.shop.repository;
 
-import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,9 +34,6 @@ class UserRepositoryTest {
         registry.add("spring.datasource.password", container::getPassword);
         registry.add("spring.datasource.username", container::getUsername);
     }
-
-    @Autowired
-    private Flyway flyway;
 
     @Autowired
     private UserRepository userRepository;

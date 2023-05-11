@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.entity.Item;
-import org.ogorodnik.shop.error.ItemNotFountException;
 import org.ogorodnik.shop.service.ItemService;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,12 +31,12 @@ public class ItemController {
     }
 
     @PutMapping("/api/v1/item/edit/{itemId}")
-    protected Item updateItem(@Valid @RequestBody Item item, @PathVariable Long itemId) throws ItemNotFountException {
+    protected Item updateItem(@Valid @RequestBody Item item, @PathVariable Long itemId) {
         return itemService.updateItem(itemId, item);
     }
 
     @DeleteMapping("/api/v1/item/delete/{id}")
-    protected String deleteItemById(@PathVariable long id) throws Exception {
+    protected String deleteItemById(@PathVariable long id) {
         itemService.deleteItemById(id);
         return "item has been deleted";
     }

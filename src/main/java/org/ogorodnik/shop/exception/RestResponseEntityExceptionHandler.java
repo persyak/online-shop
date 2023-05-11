@@ -1,4 +1,4 @@
-package org.ogorodnik.shop.error;
+package org.ogorodnik.shop.exception;
 
 import org.apache.tomcat.websocket.AuthenticationException;
 import org.ogorodnik.shop.entity.ErrorMessage;

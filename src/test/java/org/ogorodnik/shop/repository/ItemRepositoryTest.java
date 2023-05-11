@@ -1,6 +1,5 @@
 package org.ogorodnik.shop.repository;
 
-import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -41,15 +40,10 @@ class ItemRepositoryTest {
     }
 
     @Autowired
-    private Flyway flyway;
-
-    @Autowired
     private ItemRepository itemRepository;
 
     @BeforeEach
     void setUp() {
-
-        flyway.migrate();
 
         Item item = Item.builder()
                 .name("testItemGlobal")

@@ -4,9 +4,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.ogorodnik.shop.entity.Credentials;
 import org.ogorodnik.shop.entity.Item;
-import org.ogorodnik.shop.error.ItemNotFountException;
-import org.ogorodnik.shop.error.SessionNotFoundException;
+import org.ogorodnik.shop.exception.ItemNotFountException;
+import org.ogorodnik.shop.exception.SessionNotFoundException;
 import org.ogorodnik.shop.security.SecurityService;
 import org.ogorodnik.shop.security.Session;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ class CartServiceTest {
     LocalDateTime localDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
 
     @BeforeEach
-    void setUp() throws ItemNotFountException {
+    void setUp() {
         Item item = Item.builder()
                 .id(1L)
                 .name("testItemName")
@@ -43,17 +44,22 @@ class CartServiceTest {
                 .description("testDescription")
                 .build();
 
-        Session session = new Session("existedToken", localDateTime);
+        Credentials credentials = Credentials.builder()
+                .login("testLogin")
+                .password("testPassword")
+                .build();
+
+        Session session = new Session("existedToken", localDateTime, credentials);
 
         Mockito.when(itemService.getItemById(1L)).thenReturn(item);
         Mockito.when(itemService.getItemById(2L)).thenThrow(new ItemNotFountException("Item not available"));
-        Mockito.when(securityService.getSession("existedToken")).thenReturn(Optional.of(session));
-        Mockito.when(securityService.getSession("absentToken")).thenReturn(Optional.empty());
+        Mockito.when(securityService.createSession("existedToken")).thenReturn(Optional.of(session));
+        Mockito.when(securityService.createSession("absentToken")).thenReturn(Optional.empty());
     }
 
     @Test
     @DisplayName("Return Item when Existed Id Provided")
-    public void whenExistedItemIdProvided_thenAddItToCartAndReturn() throws ItemNotFountException {
+    public void whenExistedItemIdProvided_thenAddItToCartAndReturn() {
         List<Item> cart = new ArrayList<>();
         Item item = cartService.addToCart(cart, 1L);
         assertEquals(1, cart.size());
@@ -75,7 +81,7 @@ class CartServiceTest {
 
     @Test
     @DisplayName("Return Session when Valid Token is Provided")
-    public void whenExistedTokenProvided_thenReturnSessionOptional() throws SessionNotFoundException {
+    public void whenExistedTokenProvided_thenReturnSessionOptional() {
         Session session = cartService.getSession("existedToken");
         assertEquals("existedToken", session.getUserToken());
         assertEquals(localDateTime, session.getExpireDate());

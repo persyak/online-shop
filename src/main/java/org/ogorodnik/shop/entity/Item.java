@@ -16,7 +16,7 @@ import java.time.temporal.ChronoUnit;
 @Data
 public class Item {
     @Id
-    Long id;
+    private Long id;
     @NotBlank(message = "Please add item name")
     @Length(min = 3)
     private String name;

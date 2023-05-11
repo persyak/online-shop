@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    url: jdbc:postgresql://127.0.0.1:5433/items_PROD

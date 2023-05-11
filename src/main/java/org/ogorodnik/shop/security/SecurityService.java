@@ -17,8 +17,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Service
 @RequiredArgsConstructor
 public class SecurityService {
-
-    //TODO: I have to think how can I improve sessionList to be able to test logout() method
     private final List<Session> sessionList = new CopyOnWriteArrayList<>();
     private final UserService userService;
     private int sessionMaxAge;
@@ -30,27 +28,23 @@ public class SecurityService {
         if (!credentialsEqualPassword(credentials, credentialsFromDb)) {
             throw new AuthenticationException("Password is not correct");
         }
-        LocalDateTime expireDate =
-                LocalDateTime.now().plusSeconds(sessionMaxAge);
-        Session session = new Session(UUID.randomUUID().toString(), expireDate);
+        Session session = createSession(credentialsFromDb);
         sessionList.add(session);
         log.info("login is successful");
         return session;
     }
 
-    public boolean logout(String uuid) {
+    public void logout(String uuid) {
         for (Session session : sessionList) {
             if (uuid.equals(session.getUserToken())) {
                 sessionList.remove(session);
                 log.info("user has been logged out successfully");
-                return true;
             }
         }
         log.info("Something went wrong. User can't be found and was not logged out");
-        return false;
     }
 
-    public Optional<Session> getSession(String userToken) {
+    public Optional<Session> createSession(String userToken) {
         log.info("validate if user is logged in");
         for (Session session : sessionList) {
             if (userToken.equals(session.getUserToken())) {
@@ -64,8 +58,7 @@ public class SecurityService {
         return Optional.empty();
     }
 
-    private boolean credentialsEqualPassword(
-            Credentials credentials, Credentials credentialsFromDb) {
+    private boolean credentialsEqualPassword(Credentials credentials, Credentials credentialsFromDb) {
         return BCrypt.hashpw(credentials.getPassword(), credentialsFromDb.getSalt())
                 .equals(credentialsFromDb.getPassword());
     }
@@ -73,5 +66,11 @@ public class SecurityService {
     @Value("${session.cookie.max.age}")
     public void setSessionMaxAge(int sessionMaxAge) {
         this.sessionMaxAge = sessionMaxAge;
+    }
+
+    private Session createSession(Credentials credentials) {
+        LocalDateTime expireDate =
+                LocalDateTime.now().plusSeconds(sessionMaxAge);
+        return new Session(UUID.randomUUID().toString(), expireDate, credentials);
     }
 }

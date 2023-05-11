@@ -5,7 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.ogorodnik.shop.entity.Item;
-import org.ogorodnik.shop.error.ItemNotFountException;
+import org.ogorodnik.shop.exception.ItemNotFountException;
 import org.ogorodnik.shop.repository.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -165,7 +165,7 @@ class ItemServiceTest {
 
     @Test
     @DisplayName("Test itemFirst is update with itemSecond")
-    public void whenItemFirstUpdateByItemSecond_thenItemUpdatedReturned() throws ItemNotFountException {
+    public void whenItemFirstUpdateByItemSecond_thenItemUpdatedReturned() {
         Item updateFrom = Item.builder()
                 .name("testItemNameSecond")
                 .price(30.0)
@@ -180,8 +180,7 @@ class ItemServiceTest {
 
     @Test
     @DisplayName("If name is not updated in item, return updated item without name updated")
-    public void whenUpdateItemFirstWithItemSecondWithoutName_thenItemWithoutUpdatedNameReturned()
-            throws ItemNotFountException {
+    public void whenUpdateItemFirstWithItemSecondWithoutName_thenItemWithoutUpdatedNameReturned() {
         Item updateFrom = Item.builder()
                 .price(30.0)
                 .description("testDescriptionSecond")
@@ -195,8 +194,7 @@ class ItemServiceTest {
 
     @Test
     @DisplayName("If price is not updated in item, return updated item without price updated")
-    public void whenUpdateItemFirstWithItemSecondWithoutPrice_thenItemWithoutUpdatedPriceReturned()
-            throws ItemNotFountException {
+    public void whenUpdateItemFirstWithItemSecondWithoutPrice_thenItemWithoutUpdatedPriceReturned() {
         Item updateFrom = Item.builder()
                 .name("testItemNameSecond")
                 .description("testDescriptionSecond")
@@ -210,8 +208,7 @@ class ItemServiceTest {
 
     @Test
     @DisplayName("If description is not updated in item, return updated item without description updated")
-    public void whenUpdateItemFirstWithItemSecondWithoutDescription_thenItemWithoutUpdatedDescriptionReturned()
-            throws ItemNotFountException {
+    public void whenUpdateItemFirstWithItemSecondWithoutDescription_thenItemWithoutUpdatedDescriptionReturned() {
         Item updateFrom = Item.builder()
                 .name("testItemNameSecond")
                 .price(30.0)
@@ -255,7 +252,7 @@ class ItemServiceTest {
 
     @Test
     @DisplayName("Get item by id")
-    public void testGetItemById() throws ItemNotFountException {
+    public void testGetItemById() {
         assertEquals("testItemName", itemService.getItemById(1L).getName());
     }
 

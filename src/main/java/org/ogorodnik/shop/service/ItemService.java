@@ -1,7 +1,7 @@
 package org.ogorodnik.shop.service;
 
 import lombok.RequiredArgsConstructor;
-import org.ogorodnik.shop.error.ItemNotFountException;
+import org.ogorodnik.shop.exception.ItemNotFountException;
 import org.ogorodnik.shop.repository.ItemRepository;
 import org.ogorodnik.shop.entity.Item;
 import org.springframework.stereotype.Service;
@@ -23,18 +23,18 @@ public class ItemService {
         return itemRepository.save(item);
     }
 
-    public void deleteItemById(long itemId) throws Exception {
+    public void deleteItemById(long itemId) {
         Optional<Item> item = itemRepository.findById(itemId);
         if (item.isEmpty()) {
             throw new ItemNotFountException("Item not available");
         }
-            itemRepository.deleteById(itemId);
-            if (itemRepository.findById(itemId).isPresent()) {
-                throw new Exception("Something went wrong. Item was not deleted");
-            }
+        itemRepository.deleteById(itemId);
+        if (itemRepository.findById(itemId).isPresent()) {
+            throw new RuntimeException("Something went wrong. Item was not deleted");
+        }
     }
 
-    public Item updateItem(Long itemId, Item item) throws ItemNotFountException {
+    public Item updateItem(Long itemId, Item item) {
         Item itemDb = getItemById(itemId);
         if (Objects.nonNull(item.getName()) && !"".equalsIgnoreCase(item.getName())) {
             itemDb.setName(item.getName());
@@ -52,7 +52,7 @@ public class ItemService {
         return itemRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(searchItem, searchItem);
     }
 
-    public Item getItemById(long itemId) throws ItemNotFountException {
+    public Item getItemById(long itemId) {
         Optional<Item> item = itemRepository.findById(itemId);
 
         if (item.isEmpty()) {

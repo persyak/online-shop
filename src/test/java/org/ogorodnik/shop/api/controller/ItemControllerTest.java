@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.ogorodnik.shop.entity.Item;
-import org.ogorodnik.shop.error.ItemNotFountException;
+import org.ogorodnik.shop.exception.ItemNotFountException;
 import org.ogorodnik.shop.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -31,7 +31,7 @@ class ItemControllerTest {
     private ItemService itemService;
 
     private Item item;
-    Iterable<Item> itemIterable;
+    private List<Item> list;
 
     @BeforeEach
     void setUp() {
@@ -44,41 +44,39 @@ class ItemControllerTest {
                 .description("testDescription")
                 .build();
 
-        itemIterable = List.of(item);
+        list = List.of(item);
     }
 
     @Test
     public void testFindAll() throws Exception {
-        Mockito.when(itemService.findAll()).thenReturn(itemIterable);
+        Mockito.when(itemService.findAll()).thenReturn(list);
 
         mockMvc.perform(get("/api/v1/items")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(itemIterable.iterator().next().getId()))
-                .andExpect(jsonPath("$[0].name").value(itemIterable.iterator().next().getName()))
-                .andExpect(jsonPath("$[0].price").value(itemIterable.iterator().next().getPrice()))
-                .andExpect(jsonPath("$[0].description").value(itemIterable.iterator()
-                        .next().getDescription()));
+                .andExpect(jsonPath("$[0].id").value("1"))
+                .andExpect(jsonPath("$[0].name").value("testItemName"))
+                .andExpect(jsonPath("$[0].price").value("20.0"))
+                .andExpect(jsonPath("$[0].description").value("testDescription"));
     }
 
     @Test
     public void whenExistedSearchCriteria_thenFindByNameOrDescription() throws Exception {
-        Mockito.when(itemService.findByNameOrDescription("test")).thenReturn(itemIterable);
+        Mockito.when(itemService.findByNameOrDescription("test")).thenReturn(list);
 
         mockMvc.perform(get("/api/v1/items/test")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(itemIterable.iterator().next().getId()))
-                .andExpect(jsonPath("$[0].name").value(itemIterable.iterator().next().getName()))
-                .andExpect(jsonPath("$[0].price").value(itemIterable.iterator().next().getPrice()))
-                .andExpect(jsonPath("$[0].description").value(itemIterable.iterator()
-                        .next().getDescription()));
+                .andExpect(jsonPath("$[0].id").value("1"))
+                .andExpect(jsonPath("$[0].name").value("testItemName"))
+                .andExpect(jsonPath("$[0].price").value("20.0"))
+                .andExpect(jsonPath("$[0].description").value("testDescription"));
     }
 
     @Test
     public void whenNonExistedSearchCriteria_thenReturnEmptyList() throws Exception {
-        itemIterable = List.of();
-        Mockito.when(itemService.findByNameOrDescription("nonExisted")).thenReturn(itemIterable);
+        list = List.of();
+        Mockito.when(itemService.findByNameOrDescription("nonExisted")).thenReturn(list);
         mockMvc.perform(get("/api/v1/items/nonExisted")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
