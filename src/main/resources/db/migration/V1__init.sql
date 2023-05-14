@@ -7,7 +7,7 @@ CREATE TABLE item (
 );
 
 CREATE TABLE credentials (
-    id SERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY NOT NULL,
     login varchar(255),
     password varchar(255),
     salt varchar(500),

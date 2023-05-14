@@ -1,12 +1,12 @@
 package org.ogorodnik.shop.repository;
 
+import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.ogorodnik.shop.entity.Item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.relational.core.conversion.DbActionExecutionException;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.transaction.annotation.Transactional;
@@ -86,14 +86,14 @@ class ItemRepositoryTest {
     }
 
     @Test
-    @DisplayName("Throw DbActionExecutionException when Item with Missing Attribute Provided")
-    public void whenMissingAttributeItemProvided_thenThrowDbActionExecutionException() {
+    @DisplayName("Throw ConstraintViolationException when Item with Missing Attribute Provided")
+    public void whenMissingAttributeItemProvided_thenThrowConstraintViolationException() {
         Item item = Item.builder()
                 .name("testItemName")
                 .creationDate(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES))
                 .description("testDescription")
                 .build();
-        assertThrows(DbActionExecutionException.class, () -> {
+        assertThrows(ConstraintViolationException.class, () -> {
             itemRepository.save(item);
         });
     }
