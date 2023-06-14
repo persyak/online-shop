@@ -3,7 +3,6 @@ package org.ogorodnik.shop.api.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.entity.Item;
-import org.ogorodnik.shop.security.Session;
 import org.ogorodnik.shop.service.CartService;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,20 +11,22 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/v1")
 public class ProcessUserCartController {
 
     private final CartService cartService;
 
-    @GetMapping("/api/v1/cart")
-    protected List<Item> getUserCart(@RequestParam String userToken) {
-        Session session = cartService.getSession(userToken);
-        log.info("got user session. processing user card");
-        return session.getCart();
+    @GetMapping("/cart")
+    protected List<Item> getUserCart(@RequestBody String username) {
+        return cartService.getCart(username);
     }
 
-    @PostMapping("/api/v1/cart/item/{itemId}")
-    protected Item addToUserCart(@PathVariable long itemId, @RequestParam String userToken) {
-        List<Item> cart = cartService.getSession(userToken).getCart();
-        return cartService.addToCart(cart, itemId);
+    //TODO: what is interesting is that if we created DTO and use it in @RequestBody,
+    //TODO: it works differently comparing to using directly: @RequestBody String username
+    @PostMapping("/cart/item/{itemId}")
+    protected Item addToUserCart(
+            @PathVariable long itemId,
+            @RequestBody String username) {
+        return cartService.addToCart(itemId, username);
     }
 }

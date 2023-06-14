@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Long> {
 
-    public Iterable<Item> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String searchName, String SearchDescription);
+    Iterable<Item> findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(String searchName, String SearchDescription);
 
 }
