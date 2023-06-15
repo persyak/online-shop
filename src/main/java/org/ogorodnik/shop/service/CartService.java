@@ -17,6 +17,7 @@ public class CartService {
     private final ItemService itemService;
     private final SessionManager sessionManager;
 
+    //TODO: the cart can be saved into repository (I do not know what is used in commercial projects)
     public Item addToCart(long itemId, String username) {
         Item item = itemService.getItemById(itemId);
         getSession(username).getCart().add(item);

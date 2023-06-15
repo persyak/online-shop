@@ -22,6 +22,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
+    //TODO: implement passing role from client
     public AuthenticationResponse register(RegisterRequest request) {
         Credentials credentials = Credentials.builder()
                 .username(request.getUsername())
