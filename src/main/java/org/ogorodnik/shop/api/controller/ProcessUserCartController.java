@@ -19,17 +19,15 @@ public class ProcessUserCartController {
 
     @GetMapping("/cart")
     @PreAuthorize("hasAnyAuthority('USER')")
-    protected List<Item> getUserCart(@RequestBody String username) {
-        return cartService.getCart(username);
+    protected List<Item> getUserCart() {
+        return cartService.getCart();
     }
 
     //TODO: what is interesting is that if we created DTO and use it in @RequestBody,
     //TODO: it works differently comparing to using directly: @RequestBody String username
     @PostMapping("/cart/item/{itemId}")
     @PreAuthorize("hasAnyAuthority('USER')")
-    protected Item addToUserCart(
-            @PathVariable long itemId,
-            @RequestBody String username) {
-        return cartService.addToCart(itemId, username);
+    protected Item addToUserCart(@PathVariable long itemId) {
+        return cartService.addToCart(itemId);
     }
 }

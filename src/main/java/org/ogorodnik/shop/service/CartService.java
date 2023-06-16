@@ -2,9 +2,12 @@ package org.ogorodnik.shop.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.ogorodnik.shop.entity.Credentials;
 import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.entity.Session;
 import org.ogorodnik.shop.utils.SessionManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,18 +21,24 @@ public class CartService {
     private final SessionManager sessionManager;
 
     //TODO: the cart can be saved into repository (I do not know what is used in commercial projects)
-    public Item addToCart(long itemId, String username) {
+    public Item addToCart(long itemId) {
         Item item = itemService.getItemById(itemId);
-        getSession(username).getCart().add(item);
+        getSession(getUsername()).getCart().add(item);
         log.info("item with id " + itemId + " has been added to the card");
         return item;
     }
 
-    public List<Item> getCart(String username) {
-        return getSession(username).getCart();
+    public List<Item> getCart() {
+        return getSession(getUsername()).getCart();
     }
 
     private Session getSession(String username) {
         return sessionManager.getSession(username);
+    }
+
+    private String getUsername() {
+        Authentication authToken = SecurityContextHolder.getContext().getAuthentication();
+        Credentials credentials = (Credentials) authToken.getPrincipal();
+        return credentials.getUsername();
     }
 }
