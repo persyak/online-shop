@@ -20,6 +20,7 @@ public class ProcessUserCartController {
     @GetMapping("/cart")
     @PreAuthorize("hasAnyAuthority('USER')")
     protected List<Item> getUserCart() {
+        //TODO: is it a good option to place usercart to cookies somehow ?
         return cartService.getCart();
     }
 

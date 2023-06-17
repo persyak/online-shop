@@ -40,4 +40,9 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(errorMessage);
     }
+    @ExceptionHandler(TokenNotFoundException.class)
+    public ResponseEntity<ErrorMessage> tokenNotFoundException(TokenNotFoundException exception){
+        ErrorMessage errorMessage = new ErrorMessage(HttpStatus.NOT_FOUND, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+    }
 }

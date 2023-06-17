@@ -1,4 +1,4 @@
-CREATE TABLE credentials (
+CREATE TABLE IF NOT EXISTS credentials (
     id SERIAL PRIMARY KEY NOT NULL,
     username varchar(255),
     password varchar(255),

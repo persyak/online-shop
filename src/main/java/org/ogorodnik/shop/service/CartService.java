@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.ogorodnik.shop.entity.Credentials;
 import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.entity.Session;
+import org.ogorodnik.shop.exception.TokenNotFoundException;
 import org.ogorodnik.shop.utils.SessionManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,8 +38,12 @@ public class CartService {
     }
 
     private String getUsername() {
-        Authentication authToken = SecurityContextHolder.getContext().getAuthentication();
-        Credentials credentials = (Credentials) authToken.getPrincipal();
-        return credentials.getUsername();
+        try {
+            Authentication authToken = SecurityContextHolder.getContext().getAuthentication();
+            Credentials credentials = (Credentials) authToken.getPrincipal();
+            return credentials.getUsername();
+        } catch (NullPointerException exception) {
+            throw new TokenNotFoundException("Token was not found. Ensure user is authorised");
+        }
     }
 }
