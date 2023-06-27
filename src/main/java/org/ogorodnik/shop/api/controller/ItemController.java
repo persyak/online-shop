@@ -11,35 +11,36 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/items")
 public class ItemController {
 
     private final ItemService itemService;
 
-    @GetMapping("/api/v1/items")
+    @GetMapping
     protected Iterable<Item> findAll() {
         log.info("Getting all items from database");
         return itemService.findAll();
     }
 
-    @GetMapping("/api/v1/items/{searchCriteria}")
+    @GetMapping("/{searchCriteria}")
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     protected Iterable<Item> findByNameOrDescription(@PathVariable String searchCriteria) {
         return itemService.findByNameOrDescription(searchCriteria);
     }
 
-    @PostMapping("/api/v1/item/add")
+    @PostMapping("/add")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     protected Item addItem(@Valid @RequestBody Item item) {
         return itemService.addItem(item);
     }
 
-    @PutMapping("/api/v1/item/edit/{itemId}")
+    @PutMapping("/edit/{itemId}")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     protected Item updateItem(@Valid @RequestBody Item item, @PathVariable Long itemId) {
         return itemService.updateItem(itemId, item);
     }
 
-    @DeleteMapping("/api/v1/item/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     protected String deleteItemById(@PathVariable long id) {
         itemService.deleteItemById(id);
