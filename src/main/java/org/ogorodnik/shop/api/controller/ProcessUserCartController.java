@@ -20,12 +20,9 @@ public class ProcessUserCartController {
     @GetMapping
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     protected List<Item> getUserCart() {
-        //TODO: is it a good option to place usercart to cookies somehow ?
         return cartService.getCart();
     }
 
-    //TODO: what is interesting is that if we created DTO and use it in @RequestBody,
-    //TODO: it works differently comparing to using directly: @RequestBody String username
     @PostMapping("/item/{itemId}")
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN')")
     protected Item addToUserCart(@PathVariable long itemId) {

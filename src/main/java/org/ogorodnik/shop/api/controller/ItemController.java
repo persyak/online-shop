@@ -40,7 +40,6 @@ public class ItemController {
         return itemService.updateItem(itemId, item);
     }
 
-    //TODO: FIXED: make method return item that has been removed
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasAnyAuthority('ADMIN')")
     protected Item deleteItemById(@PathVariable long id) {

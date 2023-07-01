@@ -36,7 +36,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         final String username;
         final String jwtToken;
 
-        //TODO: it's very strange that old token is somehow works (after you restarts application you do not need new token)
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
