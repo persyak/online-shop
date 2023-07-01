@@ -1,6 +1,6 @@
 package org.ogorodnik.shop.repository;
 
-import org.ogorodnik.shop.entity.Credentials;
+import org.ogorodnik.shop.security.entity.Credentials;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,8 +1,9 @@
-package org.ogorodnik.shop.entity;
+package org.ogorodnik.shop.common;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.ogorodnik.shop.entity.Item;
 
 import java.util.Date;
 import java.util.List;

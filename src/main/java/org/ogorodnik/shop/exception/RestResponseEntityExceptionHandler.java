@@ -1,7 +1,7 @@
 package org.ogorodnik.shop.exception;
 
 import org.apache.tomcat.websocket.AuthenticationException;
-import org.ogorodnik.shop.entity.ErrorMessage;
+import org.ogorodnik.shop.exception.entity.ErrorMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

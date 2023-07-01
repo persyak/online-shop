@@ -1,7 +1,7 @@
 package org.ogorodnik.shop.utils;
 
 import lombok.RequiredArgsConstructor;
-import org.ogorodnik.shop.entity.Session;
+import org.ogorodnik.shop.common.Session;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;

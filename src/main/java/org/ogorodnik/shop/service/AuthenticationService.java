@@ -5,7 +5,7 @@ import org.ogorodnik.shop.api.dto.AuthenticationRequest;
 import org.ogorodnik.shop.api.dto.AuthenticationResponse;
 import org.ogorodnik.shop.api.dto.RegisterRequest;
 import org.ogorodnik.shop.security.utils.JwtUtils;
-import org.ogorodnik.shop.entity.Credentials;
+import org.ogorodnik.shop.security.entity.Credentials;
 import org.ogorodnik.shop.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

@@ -2,9 +2,9 @@ package org.ogorodnik.shop.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.ogorodnik.shop.entity.Credentials;
+import org.ogorodnik.shop.security.entity.Credentials;
 import org.ogorodnik.shop.entity.Item;
-import org.ogorodnik.shop.entity.Session;
+import org.ogorodnik.shop.common.Session;
 import org.ogorodnik.shop.exception.TokenNotFoundException;
 import org.ogorodnik.shop.utils.SessionManager;
 import org.springframework.security.core.Authentication;

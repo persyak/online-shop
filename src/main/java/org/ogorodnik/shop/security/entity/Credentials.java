@@ -1,4 +1,4 @@
-package org.ogorodnik.shop.entity;
+package org.ogorodnik.shop.security.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
