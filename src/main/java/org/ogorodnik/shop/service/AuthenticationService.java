@@ -32,7 +32,7 @@ public class AuthenticationService {
                 .build();
         userRepository.save(credentials);
 
-        var jwtToken = jwtUtils.generateToken(credentials);
+        String jwtToken = jwtUtils.generateToken(credentials);
         return AuthenticationResponse.builder().token(jwtToken).build();
     }
 
@@ -41,9 +41,9 @@ public class AuthenticationService {
         String password = request.getPassword();
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 user, password));
-        var credentials = userRepository.findByUsernameIgnoreCase(request.getUsername())
+        Credentials credentials = userRepository.findByUsernameIgnoreCase(request.getUsername())
                 .orElseThrow();
-        var jwtToken = jwtUtils.generateToken(credentials);
+        String jwtToken = jwtUtils.generateToken(credentials);
         return AuthenticationResponse.builder().token(jwtToken).build();
     }
 }

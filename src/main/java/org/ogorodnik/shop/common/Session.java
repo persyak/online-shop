@@ -15,5 +15,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class Session {
     private final String username;
     private final List<Item> cart = new CopyOnWriteArrayList<>();
+
+    //TODO: what is better to use instead of Date? spring.security.Timestamp?
     private final Date date;
 }

@@ -25,7 +25,7 @@ public class CartService {
     public Item addToCart(long itemId) {
         Item item = itemService.getItemById(itemId);
         getSession(getUsername()).getCart().add(item);
-        log.info("item with id " + itemId + " has been added to the card");
+        log.info("item with id {} has been added to the card", itemId);
         return item;
     }
 
