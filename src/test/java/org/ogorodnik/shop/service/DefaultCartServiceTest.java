@@ -9,7 +9,6 @@ import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.security.entity.Role;
 import org.ogorodnik.shop.exception.ItemNotFountException;
 import org.ogorodnik.shop.exception.TokenNotFoundException;
-import org.ogorodnik.shop.utils.SessionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -22,12 +21,10 @@ import java.time.temporal.ChronoUnit;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class CartServiceTest {
+class DefaultCartServiceTest {
 
     @Autowired
     private CartService cartService;
-    @Autowired
-    private SessionManager sessionManager;
     @MockBean
     private ItemService itemService;
     LocalDateTime localDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
