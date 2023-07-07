@@ -19,7 +19,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class ItemServiceTest {
+class DefaultItemServiceTest {
 
     @Autowired
     private ItemService itemService;
