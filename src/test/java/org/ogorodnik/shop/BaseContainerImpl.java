@@ -42,25 +42,25 @@ public abstract class BaseContainerImpl {
         registry.add("spring.datasource.username", container::getUsername);
     }
 
-    protected String getResponseAsString(String jsonPath) {
-        URL resource = getClass().getClassLoader().getResource(jsonPath);
-        try {
-            return FileUtils.readFileToString(new File(resource.toURI()), StandardCharsets.UTF_8);
-        } catch (IOException | URISyntaxException e) {
-            throw new RuntimeException("Unable to find file: " + jsonPath);
-        }
-    }
-
-    protected <T> List<T> getMockedListObjects(String mockPath, Class<T> contentClass) {
-        URL resource = getClass().getClassLoader().getResource(mockPath);
-        try {
-            String fileContent = FileUtils.readFileToString(new File(resource.toURI()), StandardCharsets.UTF_8);
-            return objectMapper.readValue(fileContent,
-                    TypeFactory
-                            .defaultInstance()
-                            .constructParametricType(List.class, contentClass));
-        } catch (IOException | URISyntaxException e) {
-            throw new RuntimeException("Unable to find file: " + mockPath);
-        }
-    }
+//    protected String getResponseAsString(String jsonPath) {
+//        URL resource = getClass().getClassLoader().getResource(jsonPath);
+//        try {
+//            return FileUtils.readFileToString(new File(resource.toURI()), StandardCharsets.UTF_8);
+//        } catch (IOException | URISyntaxException e) {
+//            throw new RuntimeException("Unable to find file: " + jsonPath);
+//        }
+//    }
+//
+//    protected <T> List<T> getMockedListObjects(String mockPath, Class<T> contentClass) {
+//        URL resource = getClass().getClassLoader().getResource(mockPath);
+//        try {
+//            String fileContent = FileUtils.readFileToString(new File(resource.toURI()), StandardCharsets.UTF_8);
+//            return objectMapper.readValue(fileContent,
+//                    TypeFactory
+//                            .defaultInstance()
+//                            .constructParametricType(List.class, contentClass));
+//        } catch (IOException | URISyntaxException e) {
+//            throw new RuntimeException("Unable to find file: " + mockPath);
+//        }
+//    }
 }
