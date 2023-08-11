@@ -31,7 +31,7 @@ public class ItemControllerITest extends BaseContainerImpl {
             LocalDateTime.of(2023, 8, 11, 11, 35, 35);
 
     @Test
-    @DataSet(value = "datasets/item-dataset.json",
+    @DataSet(value = "datasets/item/item-dataset.json",
             cleanAfter = true, skipCleaningFor = "flyway_schema_history")
     public void testFindAll() throws Exception {
 
@@ -50,7 +50,7 @@ public class ItemControllerITest extends BaseContainerImpl {
     }
 
     @Test
-    @DataSet(value = "datasets/item-search.json",
+    @DataSet(value = "datasets/item/item-search.json",
             cleanAfter = true, skipCleaningFor = "flyway_schema_history")
     @WithMockUser(authorities = "USER")
     public void whenItemIsPresent_thenFIndItemByNameAndDescription() throws Exception {
@@ -85,7 +85,7 @@ public class ItemControllerITest extends BaseContainerImpl {
 
     @Test
     @WithMockUser(authorities = "ADMIN")
-    @ExpectedDataSet(value = "datasets/item-dataset.json")
+    @ExpectedDataSet(value = "datasets/item/item-dataset.json")
     public void whenAddItem_thenAddedItemReturnedAndOkStatusReceived() throws Exception {
 
         SQLStatementCountValidator.reset();
@@ -111,9 +111,9 @@ public class ItemControllerITest extends BaseContainerImpl {
 
     @Test
     @WithMockUser(authorities = "ADMIN")
-    @DataSet(value = "datasets/item-dataset.json",
+    @DataSet(value = "datasets/item/item-dataset.json",
             cleanAfter = true, cleanBefore = true, skipCleaningFor = "flyway_schema_history")
-    @ExpectedDataSet(value = "datasets/item-updated.json")
+    @ExpectedDataSet(value = "datasets/item/item-updated.json")
     public void whenValidIdProvided_thenUpdateAndReturnUpdatedItem() throws Exception {
 
         SQLStatementCountValidator.reset();
@@ -139,9 +139,9 @@ public class ItemControllerITest extends BaseContainerImpl {
 
     @Test
     @WithMockUser(authorities = "ADMIN")
-    @DataSet(value = "datasets/item-dataset.json",
+    @DataSet(value = "datasets/item/item-dataset.json",
             cleanAfter = true, skipCleaningFor = "flyway_schema_history")
-    @ExpectedDataSet(value = "datasets/item-dataset.json")
+    @ExpectedDataSet(value = "datasets/item/item-dataset.json")
     public void whenNonExistedIdProvidedDuringItemUpdate_thenThrowItemNotFountException() throws Exception {
 
         SQLStatementCountValidator.reset();
@@ -164,9 +164,9 @@ public class ItemControllerITest extends BaseContainerImpl {
 
     @Test
     @WithMockUser(authorities = "ADMIN")
-    @DataSet(value = "datasets/item-dataset.json",
+    @DataSet(value = "datasets/item/item-dataset.json",
             cleanAfter = true, skipCleaningFor = "flyway_schema_history")
-    @ExpectedDataSet(value = "datasets/item-deleted.json")
+    @ExpectedDataSet(value = "datasets/item/item-deleted.json")
     public void testDeleteItemById() throws Exception {
 
         SQLStatementCountValidator.reset();
