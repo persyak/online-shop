@@ -6,6 +6,13 @@
       "price": 10.0,
       "creation_date": "2023-08-11 11:35:35",
       "description": "description"
+    },
+    {
+      "id": 2,
+      "name": "searchItem",
+      "price": 20.0,
+      "creation_date": "2023-08-11 11:35:35",
+      "description": "searchItemDescription"
     }
   ]
 }
