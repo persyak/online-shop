@@ -1,0 +1,12 @@
+{
+  "credentials": [
+    {
+      "id": 1,
+      "username": "userName",
+      "password": "$2a$10$6pcucAmMynt7bSwhthXa3urn6d6ACi5uQYNQdaoBZn3QPjY0QO5eW",
+      "firstname": "firstName",
+      "lastname": "lastName",
+      "role": "ADMIN"
+    }
+  ]
+}

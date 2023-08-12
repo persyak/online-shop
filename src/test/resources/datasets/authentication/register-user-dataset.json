@@ -1,0 +1,11 @@
+{
+  "credentials": [
+    {
+      "id": 1,
+      "username": "userName",
+      "firstname": "firstName",
+      "lastname": "lastName",
+      "role": "ADMIN"
+    }
+  ]
+}
