@@ -6,7 +6,7 @@ import org.mockito.Mockito;
 import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.exception.ItemNotFountException;
 
-import org.ogorodnik.shop.service.CartService;
+import org.ogorodnik.shop.service.implementation.DefaultCartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,7 +32,7 @@ class ProcessUserCartControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private CartService cartService;
+    private DefaultCartService cartService;
 
     private final List<Item> cart = new ArrayList<>();
     private Item item;

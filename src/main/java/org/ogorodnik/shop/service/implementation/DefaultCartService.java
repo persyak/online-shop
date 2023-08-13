@@ -2,7 +2,6 @@ package org.ogorodnik.shop.service.implementation;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.ogorodnik.shop.security.entity.Credentials;
 import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.common.Session;
 import org.ogorodnik.shop.exception.TokenNotFoundException;
@@ -60,7 +59,6 @@ public class DefaultCartService implements CartService {
         if (null == authToken) {
             throw new TokenNotFoundException("Token was not found. Ensure user is authorised");
         }
-        Credentials credentials = (Credentials) authToken.getPrincipal();
-        return credentials.getUsername();
+        return authToken.getPrincipal().toString();
     }
 }
