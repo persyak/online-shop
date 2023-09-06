@@ -5,7 +5,3 @@ spring:
     hikari:
       idleTimeout: 30000
       maximumPoolSize: 10
-session:
-  cookie:
-    max:
-      age: 14400

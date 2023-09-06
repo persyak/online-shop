@@ -4,34 +4,29 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.ogorodnik.shop.entity.Credentials;
+import org.ogorodnik.shop.security.entity.Credentials;
 import org.ogorodnik.shop.entity.Item;
+import org.ogorodnik.shop.security.entity.Role;
 import org.ogorodnik.shop.exception.ItemNotFountException;
-import org.ogorodnik.shop.exception.SessionNotFoundException;
-import org.ogorodnik.shop.security.SecurityService;
-import org.ogorodnik.shop.security.Session;
+import org.ogorodnik.shop.exception.TokenNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-class CartServiceTest {
+class DefaultCartServiceTest {
 
     @Autowired
     private CartService cartService;
     @MockBean
     private ItemService itemService;
-    @MockBean
-    private SecurityService securityService;
     LocalDateTime localDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
 
     @BeforeEach
@@ -45,24 +40,25 @@ class CartServiceTest {
                 .build();
 
         Credentials credentials = Credentials.builder()
-                .login("testLogin")
+                .username("testLogin")
                 .password("testPassword")
+                .firstname("firstname")
+                .lastname("lastname")
+                .role(Role.USER)
                 .build();
 
-        Session session = new Session("existedToken", localDateTime, credentials);
+        UsernamePasswordAuthenticationToken authToken =
+                new UsernamePasswordAuthenticationToken(credentials, null, credentials.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authToken);
 
         Mockito.when(itemService.getItemById(1L)).thenReturn(item);
         Mockito.when(itemService.getItemById(2L)).thenThrow(new ItemNotFountException("Item not available"));
-        Mockito.when(securityService.createSession("existedToken")).thenReturn(Optional.of(session));
-        Mockito.when(securityService.createSession("absentToken")).thenReturn(Optional.empty());
     }
 
     @Test
     @DisplayName("Return Item when Existed Id Provided")
     public void whenExistedItemIdProvided_thenAddItToCartAndReturn() {
-        List<Item> cart = new ArrayList<>();
-        Item item = cartService.addToCart(cart, 1L);
-        assertEquals(1, cart.size());
+        Item item = cartService.addToCart(1L);
         assertEquals("testItemName", item.getName());
         assertEquals(20.0, item.getPrice());
         assertEquals("testDescription", item.getDescription());
@@ -71,30 +67,20 @@ class CartServiceTest {
     @Test
     @DisplayName("Throw ItemNotFoundException when Absent Id Provided")
     public void whenNotExistedItemIdProvided_thenThrowItemNotFoundException() {
-        List<Item> cart = new ArrayList<>();
-
         Exception exception = assertThrows(ItemNotFountException.class, () -> {
-            cartService.addToCart(cart, 2L);
+            cartService.addToCart(2L);
         });
         assertTrue(exception.getMessage().contains("Item not available"));
     }
 
     @Test
-    @DisplayName("Return Session when Valid Token is Provided")
-    public void whenExistedTokenProvided_thenReturnSessionOptional() {
-        Session session = cartService.getSession("existedToken");
-        assertEquals("existedToken", session.getUserToken());
-        assertEquals(localDateTime, session.getExpireDate());
-        assertInstanceOf(CopyOnWriteArrayList.class, session.getCart());
-    }
+    @DisplayName("Throw TokenNotFoundException when token is not available")
+    public void whenTokenIsNotAvailable_thenThrowTokenNotFoundException() {
+        SecurityContextHolder.clearContext();
 
-    @Test
-    @DisplayName("Throw SessionNotFoundException when Absent Token is Provided")
-    public void whenAbsentTokenProvided_thenThrowSessionNotFoundException() {
-
-        Exception exception = assertThrows(SessionNotFoundException.class, () -> {
-            cartService.getSession("absentToken");
+        Exception exception = assertThrows(TokenNotFoundException.class, () -> {
+            cartService.addToCart(1L);
         });
-        assertTrue(exception.getMessage().contains("Session not found"));
+        assertTrue(exception.getMessage().contains("Token was not found. Ensure user is authorised"));
     }
 }

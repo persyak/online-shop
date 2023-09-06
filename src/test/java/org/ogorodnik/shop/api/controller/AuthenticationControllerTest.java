@@ -1,118 +1,107 @@
 package org.ogorodnik.shop.api.controller;
 
-import org.apache.tomcat.websocket.AuthenticationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.ogorodnik.shop.entity.Credentials;
-import org.ogorodnik.shop.security.SecurityService;
-import org.ogorodnik.shop.security.Session;
+import org.ogorodnik.shop.api.dto.AuthenticationRequest;
+import org.ogorodnik.shop.api.dto.AuthenticationResponse;
+import org.ogorodnik.shop.api.dto.RegisterRequest;
+import org.ogorodnik.shop.security.entity.Role;
+import org.ogorodnik.shop.service.implementation.DefaultAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 
-import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(AuthenticationController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class AuthenticationControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private SecurityService securityService;
-
-    private Credentials credentials;
+    private DefaultAuthenticationService defaultAuthenticationService;
+    private AuthenticationResponse response;
 
     @BeforeEach
     void setUp() {
-        credentials = Credentials.builder()
-                .login("testLogin")
-                .password("testPassword")
+        response = AuthenticationResponse.builder()
+                .token("testToken")
                 .build();
     }
 
     @Test
-    public void whenValidCredentials_thenPerformLogin() throws Exception {
-        LocalDateTime expireDate = LocalDateTime.now();
-        Session session = new Session("1c0451d1-12c7-43ff-9a3f-d5ae73e18e36", expireDate, credentials);
+    public void testRegisterUser() throws Exception {
+        RegisterRequest registerRequest = RegisterRequest.builder()
+                .firstname("firstName")
+                .lastname("lastName")
+                .username("userName")
+                .password("password")
+                .role(Role.ADMIN)
+                .build();
 
-        Mockito.when(securityService.login(credentials)).thenReturn(session);
+        Mockito.when(defaultAuthenticationService.register(registerRequest)).thenReturn(response);
 
-        mockMvc.perform(post("/api/v1/login")
+        mockMvc.perform(post("/api/v1/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
-                                    "login": "testLogin",
-                                    "password": "testPassword"
+                                    "username": "userName",
+                                    "password": "password",
+                                    "firstname": "firstName",
+                                    "lastname": "lastName",
+                                    "role": "ADMIN"
                                 }"""))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("userToken"))
-                .andExpect(jsonPath("$.value").value(session.getUserToken()))
-                .andExpect(jsonPath("$.maxAge").value(14400));
+                .andExpect(jsonPath("$.token").value("testToken"));
     }
 
     @Test
-    public void whenInvalidCredentials_thenThrowAuthenticationException() throws Exception {
+    public void whenValidCredentialsProvided_thenAuthenticateAndReturnToken() throws Exception {
 
-        Credentials nonExistedCredentials = Credentials.builder()
-                .login("nonExistedLogin")
-                .password("nonExistedPassword")
+        AuthenticationRequest validRequest = AuthenticationRequest.builder()
+                .username("validUser")
+                .password("validPassword")
                 .build();
 
-        Mockito.when(securityService.login(nonExistedCredentials))
-                .thenThrow(new AuthenticationException("User does not exist"));
+        Mockito.when(defaultAuthenticationService.authenticate(validRequest)).thenReturn(response);
 
-        mockMvc.perform(post("/api/v1/login")
+        mockMvc.perform(post("/api/v1/auth/authenticate")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
-                                    "login": "nonExistedLogin",
-                                    "password": "nonExistedPassword"
+                                    "username": "validUser",
+                                    "password": "validPassword"
                                 }"""))
-                .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.status").value("UNAUTHORIZED"))
-                .andExpect(jsonPath("$.message").value("User does not exist"));
-    }
-
-    @Test
-    public void whenInvalidPassword_thenThrowAuthenticationException() throws Exception {
-
-        Credentials badPasswordCredentials = Credentials.builder()
-                .login("testLogin")
-                .password("nonExistedPassword")
-                .build();
-
-        Mockito.when(securityService.login(badPasswordCredentials))
-                .thenThrow(new AuthenticationException("Password is not correct"));
-
-        mockMvc.perform(post("/api/v1/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("""
-                                {
-                                    "login": "testLogin",
-                                    "password": "nonExistedPassword"
-                                }"""))
-                .andExpect(status().isUnauthorized())
-                .andExpect(jsonPath("$.status").value("UNAUTHORIZED"))
-                .andExpect(jsonPath("$.message").value("Password is not correct"));
-    }
-
-    @Test
-    public void testLogout() throws Exception {
-
-        MvcResult result = mockMvc.perform(post("/api/v1/logout")
-                        .param("cookie", "1c0451d1-12c7-43ff-9a3f-d5ae73e18e36"))
                 .andExpect(status().isOk())
-                .andReturn();
+                .andExpect(jsonPath("$.token").value("testToken"));
+    }
 
-        assertEquals("logout", result.getResponse().getContentAsString());
+    @Test
+    public void whenInvalidUserName_thenThrowAuthenticationException() throws Exception {
+
+        AuthenticationRequest invalidRequest = AuthenticationRequest.builder()
+                .username("invalidUser")
+                .password("invalidPassword")
+                .build();
+
+        Mockito.when(defaultAuthenticationService.authenticate(invalidRequest))
+                .thenThrow(new BadCredentialsException("User not found"));
+
+        mockMvc.perform(post("/api/v1/auth/authenticate")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "username": "invalidUser",
+                                    "password": "invalidPassword"
+                                }"""))
+                .andExpect(status().isForbidden());
     }
 }

@@ -1,4 +1,4 @@
-package org.ogorodnik.shop.entity;
+package org.ogorodnik.shop.exception.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -3,20 +3,21 @@ package org.ogorodnik.shop.api.controller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.ogorodnik.shop.entity.Credentials;
 import org.ogorodnik.shop.entity.Item;
 import org.ogorodnik.shop.exception.ItemNotFountException;
-import org.ogorodnik.shop.exception.SessionNotFoundException;
-import org.ogorodnik.shop.security.Session;
-import org.ogorodnik.shop.service.CartService;
+
+import org.ogorodnik.shop.service.implementation.DefaultCartService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -24,34 +25,20 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(ProcessUserCartController.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 class ProcessUserCartControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private CartService cartService;
+    private DefaultCartService cartService;
 
-    private Session session;
-    private String userToken;
-    private String nonExistedToken;
-    private List<Item> cart;
+    private final List<Item> cart = new ArrayList<>();
     private Item item;
-    private Credentials credentials;
 
     @BeforeEach
     void setUp() {
-
-        userToken = "1c0451d1-12c7-43ff-9a3f-d5ae73e18e36";
-
-        nonExistedToken = "1c0451d1-12c7-43ff-9a3f-doesNotExist";
-
-        credentials = Credentials.builder()
-                .login("testLogin")
-                .password("testPassword")
-                .build();
-
-        session = new Session(userToken, LocalDateTime.now(), credentials);
 
         item = Item.builder()
                 .id(1L)
@@ -61,23 +48,15 @@ class ProcessUserCartControllerTest {
                 .description("testDescription")
                 .build();
 
-        cart = session.getCart();
-
         cart.add(item);
-
-        Mockito.when(cartService.getSession(userToken)).thenReturn(session);
-
-        Mockito.when(cartService.addToCart(cart, 1)).thenReturn(item);
-
-        Mockito.when(cartService.getSession(nonExistedToken))
-                .thenThrow(new SessionNotFoundException("Session not found"));
     }
 
     @Test
+    @WithMockUser(authorities = "USER")
     public void whenSessionIsPresent_thenReturnUserCart() throws Exception {
+        Mockito.when(cartService.getCart()).thenReturn(cart);
 
         mockMvc.perform(get("/api/v1/cart")
-                        .param("userToken", "1c0451d1-12c7-43ff-9a3f-d5ae73e18e36")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(1))
@@ -88,33 +67,21 @@ class ProcessUserCartControllerTest {
     }
 
     @Test
+    @WithMockUser(authorities = "USER")
     public void whenSessionWithEmptyCart_thenReturnEmptyCart() throws Exception {
-        Session emptyCartSession = new Session(userToken, LocalDateTime.now(), credentials);
-
-        Mockito.when(cartService.getSession(userToken)).thenReturn(emptyCartSession);
+        Mockito.when(cartService.getCart()).thenReturn(new ArrayList<>());
 
         mockMvc.perform(get("/api/v1/cart")
-                        .param("userToken", "1c0451d1-12c7-43ff-9a3f-d5ae73e18e36")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(0));
     }
 
     @Test
-    public void whenSessionIsNotAvailable_thenDoNotGetItemsListAndThrowSessionNotFoundException() throws Exception {
-
-        mockMvc.perform(get("/api/v1/cart")
-                        .param("userToken", "1c0451d1-12c7-43ff-9a3f-doesNotExist")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.status").value("NOT_FOUND"))
-                .andExpect(jsonPath("$.message").value("Session not found"));
-    }
-
-    @Test
-    public void whenSessionAndItemAreAvailable_thenAddItemToCart() throws Exception {
+    @WithMockUser(authorities = "USER")
+    public void testAddItemToCart() throws Exception {
+        Mockito.when(cartService.addToCart(1)).thenReturn(item);
         mockMvc.perform(post("/api/v1/cart/item/1")
-                        .param("userToken", "1c0451d1-12c7-43ff-9a3f-d5ae73e18e36")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(item.getId()))
@@ -124,26 +91,14 @@ class ProcessUserCartControllerTest {
     }
 
     @Test
+    @WithMockUser(authorities = "USER")
     public void whenItemIsNotPresent_thenDoNotAddItemToCartAndThrowItemNotFoundException() throws Exception {
-        Mockito.when(cartService.addToCart(cart, 2)).thenThrow(new ItemNotFountException("Item not available"));
+        Mockito.when(cartService.addToCart(2)).thenThrow(new ItemNotFountException("Item not available"));
 
         mockMvc.perform(post("/api/v1/cart/item/2")
-                        .param("userToken", "1c0451d1-12c7-43ff-9a3f-d5ae73e18e36")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.status").value("NOT_FOUND"))
                 .andExpect(jsonPath("$.message").value("Item not available"));
-    }
-
-    @Test
-    public void whenSessionIsNotAvailable_thenDoNotAddItemToCartAndThrowSessionNotFoundException()
-            throws Exception {
-
-        mockMvc.perform(post("/api/v1/cart/item/1")
-                        .param("userToken", "1c0451d1-12c7-43ff-9a3f-doesNotExist")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.status").value("NOT_FOUND"))
-                .andExpect(jsonPath("$.message").value("Session not found"));
     }
 }
