@@ -257,7 +257,7 @@ class DefaultItemServiceTest {
     }
 
     @Test
-    @DisplayName("ItemNotFoundException is thrown when item is not available by id")
+//    @DisplayName("ItemNotFoundException is thrown when item is not available by id")
     public void whenAbsentId_thenItemNotFoundExceptionThrown() {
         Exception exception = assertThrows(ItemNotFountException.class, () -> {
             itemService.getItemById(3L);
